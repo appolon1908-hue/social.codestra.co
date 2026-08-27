@@ -25,6 +25,13 @@ import {
   SocialAiGenerationRequestDto,
   SocialBrandCreateDto,
 } from '@gitroom/nestjs-libraries/dtos/social-control/social-brand.dto';
+import { SocialApprovalService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-approval.service';
+import {
+  SocialApprovalDecisionDto,
+  SocialApprovalPolicyDto,
+  SocialApprovalRequestDto,
+  SocialExternalReviewTokenDto,
+} from '@gitroom/nestjs-libraries/dtos/social-control/social-approval.dto';
 
 @ApiTags('Codestra Social private control plane')
 @Controller('/internal/v1/social')
@@ -34,8 +41,48 @@ export class InternalSocialController {
     private readonly social: SocialControlService,
     private readonly onboarding: SocialOnboardingService,
     private readonly billing: SocialBillingService,
-    private readonly brands: SocialBrandService
+    private readonly brands: SocialBrandService,
+    private readonly approvals: SocialApprovalService
   ) {}
+
+  @Post('/approval-policies')
+  @RequireServiceScopes('social.approvals.write')
+  createApprovalPolicy(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Body() body: SocialApprovalPolicyDto
+  ) {
+    return this.approvals.createPolicy(auth, body);
+  }
+
+  @Post('/approvals')
+  @RequireServiceScopes('social.approvals.write')
+  submitApproval(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Headers('idempotency-key') key: string | undefined,
+    @Body() body: SocialApprovalRequestDto
+  ) {
+    return this.approvals.submit(auth, key, body);
+  }
+
+  @Post('/approvals/:approvalId/decisions')
+  @RequireServiceScopes('social.approvals.decide')
+  decideApproval(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Param('approvalId') id: string,
+    @Body() body: SocialApprovalDecisionDto
+  ) {
+    return this.approvals.decide(auth, id, body);
+  }
+
+  @Post('/approvals/:approvalId/review-tokens')
+  @RequireServiceScopes('social.approvals.share')
+  createReviewToken(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Param('approvalId') id: string,
+    @Body() body: SocialExternalReviewTokenDto
+  ) {
+    return this.approvals.createReviewToken(auth, id, body);
+  }
 
   @Get('/onboarding')
   @RequireServiceScopes('social.onboarding.read')

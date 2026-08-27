@@ -9,50 +9,52 @@ datasource db {
 }
 
 model Organization {
-  id                   String                     @id @default(uuid())
-  name                 String
-  description          String?
-  apiKey               String?
-  paymentId            String?
-  streakSince          DateTime?
-  createdAt            DateTime                   @default(now())
-  updatedAt            DateTime                   @updatedAt
-  allowTrial           Boolean                    @default(false)
-  isTrailing           Boolean                    @default(false)
-  shortlink            ShortLinkPreference        @default(ASK)
-  autoPost             AutoPost[]
-  Comments             Comments[]
-  credits              Credits[]
-  customers            Customer[]
-  errors               Errors[]
-  github               GitHub[]
-  Integration          Integration[]
-  media                Media[]
-  buyerOrganization    MessagesGroup[]
-  notifications        Notifications[]
-  plugs                Plugs[]
-  post                 Post[]                     @relation("organization")
-  submittedPost        Post[]                     @relation("submittedForOrg")
-  sets                 Sets[]
-  signatures           Signatures[]
-  subscription         Subscription?
-  tags                 Tags[]
-  thirdParty           ThirdParty[]
-  usedCodes            UsedCodes[]
-  users                UserOrganization[]
-  webhooks             Webhooks[]
-  oauthApp             OAuthApp[]
-  oauthAuthorizations  OAuthAuthorization[]
-  sessions             AuthSession[]
-  apiKeys              OrganizationApiKey[]
-  webhookSubscriptions WebhookSubscription[]
-  socialCommands       SocialPublicationCommand[]
-  socialOutboxEvents   SocialOutboxEvent[]
-  socialProviderInbox  SocialProviderInbox[]
-  socialOnboarding     SocialTenantOnboarding?
-  socialBillingEvents  SocialBillingEventInbox[]
-  socialBrandProfiles  SocialBrandProfile[]
-  socialAiGenerations  SocialAiGeneration[]
+  id                     String                     @id @default(uuid())
+  name                   String
+  description            String?
+  apiKey                 String?
+  paymentId              String?
+  streakSince            DateTime?
+  createdAt              DateTime                   @default(now())
+  updatedAt              DateTime                   @updatedAt
+  allowTrial             Boolean                    @default(false)
+  isTrailing             Boolean                    @default(false)
+  shortlink              ShortLinkPreference        @default(ASK)
+  autoPost               AutoPost[]
+  Comments               Comments[]
+  credits                Credits[]
+  customers              Customer[]
+  errors                 Errors[]
+  github                 GitHub[]
+  Integration            Integration[]
+  media                  Media[]
+  buyerOrganization      MessagesGroup[]
+  notifications          Notifications[]
+  plugs                  Plugs[]
+  post                   Post[]                     @relation("organization")
+  submittedPost          Post[]                     @relation("submittedForOrg")
+  sets                   Sets[]
+  signatures             Signatures[]
+  subscription           Subscription?
+  tags                   Tags[]
+  thirdParty             ThirdParty[]
+  usedCodes              UsedCodes[]
+  users                  UserOrganization[]
+  webhooks               Webhooks[]
+  oauthApp               OAuthApp[]
+  oauthAuthorizations    OAuthAuthorization[]
+  sessions               AuthSession[]
+  apiKeys                OrganizationApiKey[]
+  webhookSubscriptions   WebhookSubscription[]
+  socialCommands         SocialPublicationCommand[]
+  socialOutboxEvents     SocialOutboxEvent[]
+  socialProviderInbox    SocialProviderInbox[]
+  socialOnboarding       SocialTenantOnboarding?
+  socialBillingEvents    SocialBillingEventInbox[]
+  socialBrandProfiles    SocialBrandProfile[]
+  socialAiGenerations    SocialAiGeneration[]
+  socialApprovalPolicies SocialApprovalPolicy[]
+  socialApprovalRequests SocialApprovalRequest[]
 
   @@index([apiKey])
   @@index([streakSince])
@@ -527,6 +529,91 @@ model SocialAiGeneration {
 
   @@unique([tenantId, idempotencyKey])
   @@index([tenantId, state, createdAt])
+}
+
+enum SocialApprovalState {
+  PENDING
+  APPROVED
+  REJECTED
+  CHANGES_REQUESTED
+  CANCELED
+}
+
+enum SocialApprovalDecisionKind {
+  APPROVE
+  REJECT
+  REQUEST_CHANGES
+}
+
+model SocialApprovalPolicy {
+  id           String                  @id @default(uuid())
+  tenantId     String
+  name         String
+  version      Int                     @default(1)
+  stages       Json
+  active       Boolean                 @default(true)
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+  organization Organization            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  requests     SocialApprovalRequest[]
+
+  @@unique([tenantId, name, version])
+  @@index([tenantId, active])
+}
+
+model SocialApprovalRequest {
+  id             String                      @id @default(uuid())
+  tenantId       String
+  policyId       String
+  resourceType   String
+  resourceId     String
+  revisionId     String
+  submittedBy    String
+  state          SocialApprovalState         @default(PENDING)
+  currentStage   Int                         @default(0)
+  idempotencyKey String
+  payloadHash    String
+  correlationId  String
+  createdAt      DateTime                    @default(now())
+  updatedAt      DateTime                    @updatedAt
+  organization   Organization                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  policy         SocialApprovalPolicy        @relation(fields: [policyId], references: [id], onDelete: Restrict)
+  decisions      SocialApprovalDecision[]
+  reviewTokens   SocialExternalReviewToken[]
+
+  @@unique([tenantId, idempotencyKey])
+  @@index([tenantId, state, createdAt])
+}
+
+model SocialApprovalDecision {
+  id        String                     @id @default(uuid())
+  tenantId  String
+  requestId String
+  stage     Int
+  actor     String
+  decision  SocialApprovalDecisionKind
+  comment   String?
+  createdAt DateTime                   @default(now())
+  request   SocialApprovalRequest      @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@unique([requestId, stage, actor])
+  @@index([tenantId, createdAt])
+}
+
+model SocialExternalReviewToken {
+  id        String                @id @default(uuid())
+  tenantId  String
+  requestId String
+  tokenHash String                @unique
+  expiresAt DateTime
+  maxUses   Int                   @default(1)
+  uses      Int                   @default(0)
+  revokedAt DateTime?
+  createdBy String
+  createdAt DateTime              @default(now())
+  request   SocialApprovalRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, expiresAt])
 }
 
 model Customer {
