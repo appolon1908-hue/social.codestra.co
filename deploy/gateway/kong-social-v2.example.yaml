@@ -1,0 +1,100 @@
+_format_version: '3.0'
+_transform: true
+
+# Reviewable DB-less candidate. The platform gateway repository owns promotion,
+# secrets, certificates and the effective runtime configuration.
+services:
+  - name: codestra-middleware-social-v2
+    url: https://middleware:8443
+    connect_timeout: 3000
+    read_timeout: 15000
+    write_timeout: 15000
+    retries: 1
+    tags: [codestra-social-v2, middleware-only]
+    routes:
+      - name: codestra-social-api-v2
+        hosts: [api.codestra.co]
+        paths: [/v2/social]
+        methods: [GET, POST, PUT, PATCH, DELETE, OPTIONS]
+        protocols: [https]
+        strip_path: false
+        preserve_host: true
+        https_redirect_status_code: 308
+        path_handling: v0
+        tags: [codestra-social-v2, public-api]
+      - name: codestra-social-webhooks-v2
+        hosts: [api.codestra.co]
+        paths: [/v2/webhooks/social]
+        methods: [POST]
+        protocols: [https]
+        strip_path: false
+        preserve_host: true
+        https_redirect_status_code: 308
+        path_handling: v0
+        tags: [codestra-social-v2, signed-webhook-ingress]
+
+plugins:
+  - name: correlation-id
+    service: codestra-middleware-social-v2
+    config:
+      header_name: X-Correlation-ID
+      generator: uuid
+      echo_downstream: true
+
+  - name: request-size-limiting
+    route: codestra-social-api-v2
+    config:
+      allowed_payload_size: 2
+      size_unit: megabytes
+      require_content_length: true
+
+  - name: request-size-limiting
+    route: codestra-social-webhooks-v2
+    config:
+      allowed_payload_size: 1
+      size_unit: megabytes
+      require_content_length: true
+
+  - name: rate-limiting
+    route: codestra-social-api-v2
+    config: &redisRateLimit
+      minute: 300
+      hour: 10000
+      policy: redis
+      limit_by: ip
+      redis_host: redis
+      redis_port: 6379
+      redis_database: 4
+      redis_timeout: 2000
+      fault_tolerant: false
+      hide_client_headers: false
+
+  - name: rate-limiting
+    route: codestra-social-webhooks-v2
+    config:
+      <<: *redisRateLimit
+      minute: 1200
+      hour: 50000
+
+  - name: request-transformer
+    service: codestra-middleware-social-v2
+    config:
+      remove:
+        headers:
+          - X-Authenticated-User
+          - X-Authenticated-Subject
+          - X-Authenticated-Tenant
+          - X-Consumer-ID
+          - X-Consumer-Username
+          - X-Forwarded-Client-Cert
+          - X-Service-Identity
+
+  - name: response-transformer
+    service: codestra-middleware-social-v2
+    config:
+      remove:
+        headers:
+          - Server
+          - X-Powered-By
+          - X-Kong-Upstream-Latency
+          - X-Kong-Proxy-Latency

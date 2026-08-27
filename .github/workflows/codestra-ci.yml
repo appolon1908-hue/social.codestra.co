@@ -82,6 +82,9 @@ jobs:
           "contracts/**/*.{json,yaml}"
           "deploy/**/*.yaml"
 
+      - name: Validate Kong and Caddy social isolation policy
+        run: pnpm validate:kong-social
+
       - name: Run focused security and control-plane tests
         run: pnpm run test:security
 
