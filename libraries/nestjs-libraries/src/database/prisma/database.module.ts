@@ -65,6 +65,7 @@ import { SocialBillingService } from '@gitroom/nestjs-libraries/database/prisma/
 import { SocialBrandRepository } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-brand.repository';
 import { SocialBrandService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-brand.service';
 import { SocialApprovalService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-approval.service';
+import { SocialCampaignService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-campaign.service';
 
 @Global()
 @Module({
@@ -135,6 +136,7 @@ import { SocialApprovalService } from '@gitroom/nestjs-libraries/database/prisma
     SocialBrandRepository,
     SocialBrandService,
     SocialApprovalService,
+    SocialCampaignService,
   ],
   get exports() {
     return this.providers;
