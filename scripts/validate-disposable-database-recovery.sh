@@ -9,7 +9,9 @@ fi
 schema="libraries/nestjs-libraries/src/database/prisma/schema.prisma"
 pnpm exec prisma migrate status --schema "$schema"
 before="$(pnpm exec prisma migrate status --schema "$schema" 2>&1)"
-pnpm exec prisma migrate reset --force --skip-generate --schema "$schema"
+printf '%s\n' 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;' | \
+  pnpm exec prisma db execute --stdin --schema "$schema"
+pnpm exec prisma migrate deploy --schema "$schema"
 after="$(pnpm exec prisma migrate status --schema "$schema" 2>&1)"
 
 grep -q "Database schema is up to date" <<<"$before"
