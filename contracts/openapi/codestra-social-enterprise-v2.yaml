@@ -58,6 +58,63 @@ paths:
       parameters: *mutationHeaders
       responses:
         '202': { $ref: '#/components/responses/Accepted' }
+  /billing/catalog:
+    get:
+      operationId: getBillingCatalog
+      security: []
+      summary: Return the signed, server-owned public plan catalog
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /billing/subscription:
+    get:
+      operationId: getTenantSubscription
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /billing/usage:
+    get:
+      operationId: getTenantUsage
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /billing/checkout-sessions:
+    post:
+      operationId: createBillingCheckoutSession
+      summary: Create a server-priced Stripe Checkout session
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+        '422':
+          {
+            description: Plan,
+            currency,
+            seat or transition policy rejected the command,
+          }
+  /billing/portal-sessions:
+    post:
+      operationId: createBillingPortalSession
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /billing/plan-changes:
+    post:
+      operationId: requestBillingPlanChange
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+        '409':
+          {
+            description: Subscription state does not permit the requested transition,
+          }
+  /billing/cancellation:
+    post:
+      operationId: requestBillingCancellation
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /billing/invoices:
+    get:
+      operationId: listBillingInvoices
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
   /campaigns:
     get:
       operationId: listCampaigns

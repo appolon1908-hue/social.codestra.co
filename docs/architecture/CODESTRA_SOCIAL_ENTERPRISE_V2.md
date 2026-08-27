@@ -73,20 +73,51 @@ decisions are auditable. Training on tenant content is disabled by default.
    Klyrow email, Telnexa SMS and approved enterprise systems.
 10. **Enterprise administration** — tenants, plans, quotas, audit, retention,
     exports, incident operations, capabilities and release identity.
+11. **SaaS billing and entitlements** — monthly or annual plans, trials, seats,
+    usage allowances, invoices, upgrades, downgrades, grace periods,
+    cancellation and an auditable capability snapshot.
+
+## SaaS subscription design
+
+Stripe is the payment processor and financial event source. Codestra Social owns
+the tenant's product-entitlement snapshot; it never trusts price, plan, currency,
+quantity or capability values supplied by a browser. Middleware verifies Stripe
+signatures, persists the billing webhook inbox, deduplicates event IDs and sends
+normalized billing commands to the product over the private service boundary.
+
+The initial catalog supports Free Trial, Starter, Professional, Agency and
+Enterprise plans with monthly and annual prices. Catalog versions are immutable;
+existing subscriptions retain their accepted version until a reviewed change.
+Entitlements include workspace count, users/seats, connected accounts, scheduled
+posts, AI generation budget, approval stages, analytics retention, external
+reviewers, API access and support level.
+
+Subscription states are `trialing`, `active`, `past_due`, `grace`, `paused`,
+`cancel_at_period_end`, `canceled` and `incomplete`. A durable transition record
+contains the provider event ID, effective period, prior/new state and reason.
+Past-due handling preserves read/export access, stops new premium work, never
+deletes content automatically and never silently cancels already accepted
+publication commands.
+
+Checkout, portal-session and plan-change commands require CSRF protection,
+recent authentication, tenant-admin capability, correlation ID and idempotency.
+Provider webhook handlers are replay-safe and cannot accept browser sessions.
+Financial records and secrets never appear in analytics, logs or n8n payloads.
 
 ## Portals and canonical URLs
 
-| Portal          | URL                                          | Audience                    | Purpose                                                   |
-| --------------- | -------------------------------------------- | --------------------------- | --------------------------------------------------------- |
-| Marketing       | `https://social.codestra.co/`                | Prospects                   | Product, pricing, security and signup                     |
-| Workspace       | `https://social.codestra.co/app`             | Creators and managers       | Studio, calendar, campaigns and analytics                 |
-| Engagement      | `https://social.codestra.co/app/inbox`       | Community and support teams | Triage, assign and escalate engagement                    |
-| Client portal   | `https://social.codestra.co/client`          | Brand customers             | Briefs, status, approvals and reports                     |
-| Reviewer portal | `https://social.codestra.co/review/{token}`  | Time-limited reviewers      | Approve or request changes without broad workspace access |
-| Operations      | `https://social.codestra.co/ops`             | Internal operators          | Deliveries, inbox/outbox, reconciliation and incidents    |
-| Administration  | `https://social.codestra.co/admin`           | Codestra administrators     | Tenants, capabilities, audit and release state            |
-| Public API      | `https://api.codestra.co/v2/social`          | Authorized clients          | Middleware-governed commands and reads                    |
-| Webhook ingress | `https://api.codestra.co/v2/webhooks/social` | Registered senders          | Signed, replay-safe inbound events                        |
+| Portal          | URL                                               | Audience                    | Purpose                                                   |
+| --------------- | ------------------------------------------------- | --------------------------- | --------------------------------------------------------- |
+| Marketing       | `https://social.codestra.co/`                     | Prospects                   | Product, pricing, security and signup                     |
+| Workspace       | `https://social.codestra.co/app`                  | Creators and managers       | Studio, calendar, campaigns and analytics                 |
+| Engagement      | `https://social.codestra.co/app/inbox`            | Community and support teams | Triage, assign and escalate engagement                    |
+| Client portal   | `https://social.codestra.co/client`               | Brand customers             | Briefs, status, approvals and reports                     |
+| Reviewer portal | `https://social.codestra.co/review/{token}`       | Time-limited reviewers      | Approve or request changes without broad workspace access |
+| Operations      | `https://social.codestra.co/ops`                  | Internal operators          | Deliveries, inbox/outbox, reconciliation and incidents    |
+| Administration  | `https://social.codestra.co/admin`                | Codestra administrators     | Tenants, capabilities, audit and release state            |
+| Billing         | `https://social.codestra.co/app/settings/billing` | Tenant administrators       | Plan, seats, usage, invoices and payment portal           |
+| Public API      | `https://api.codestra.co/v2/social`               | Authorized clients          | Middleware-governed commands and reads                    |
+| Webhook ingress | `https://api.codestra.co/v2/webhooks/social`      | Registered senders          | Signed, replay-safe inbound events                        |
 
 Private product endpoints remain under `/internal/v2/social/*` and are never
 routed by the public virtual host.
