@@ -50,6 +50,8 @@ import { AdminStatsRepository } from '@gitroom/nestjs-libraries/database/prisma/
 import { AdminStatsService } from '@gitroom/nestjs-libraries/database/prisma/admin-stats/admin-stats.service';
 import { SessionService } from '@gitroom/nestjs-libraries/security/session.service';
 import { SecureWebhooksService } from '@gitroom/nestjs-libraries/security/secure-webhooks.service';
+import { SocialControlRepository } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-control.repository';
+import { SocialControlService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-control.service';
 
 @Global()
 @Module({
@@ -105,6 +107,8 @@ import { SecureWebhooksService } from '@gitroom/nestjs-libraries/security/secure
     AdminStatsService,
     SessionService,
     SecureWebhooksService,
+    SocialControlRepository,
+    SocialControlService,
   ],
   get exports() {
     return this.providers;

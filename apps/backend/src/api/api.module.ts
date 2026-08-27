@@ -50,6 +50,7 @@ import {
   CsrfMiddleware,
   PublicAuthOriginMiddleware,
 } from '@gitroom/backend/services/auth/csrf.middleware';
+import { InternalSocialController } from '@gitroom/backend/api/routes/internal-social.controller';
 
 const authenticatedController = [
   UsersController,
@@ -83,6 +84,7 @@ const authenticatedController = [
     EnterpriseController,
     NoAuthIntegrationsController,
     OAuthController,
+    InternalSocialController,
     ...authenticatedController,
   ],
   providers: [

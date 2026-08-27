@@ -26,6 +26,9 @@ services:
       PASSWORD_RESET_SIGNING_KEY_FILE: /run/secrets/password_reset_signing_key
       WEBHOOK_MASTER_KEY_FILE: /run/secrets/webhook_master_key
       WEBHOOK_DELIVERY_ENABLED: 'false'
+      SOCIAL_PUBLISHING_ENABLED: 'false'
+      SOCIAL_PROVIDER_CALLBACKS_ENABLED: 'false'
+      ENABLE_EXTERNAL_DELIVERY: 'false'
       PUBLISHING_KILL_SWITCH: 'true'
       METRICS_ENABLED: 'false'
       TRUSTED_PROXY_IPS: ${TRUSTED_PROXY_IPS:?exact Caddy container address required; loopback is trusted internally}

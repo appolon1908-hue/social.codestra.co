@@ -9,17 +9,17 @@ datasource db {
 }
 
 model Organization {
-  id                   String                @id @default(uuid())
+  id                   String                     @id @default(uuid())
   name                 String
   description          String?
   apiKey               String?
   paymentId            String?
   streakSince          DateTime?
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  allowTrial           Boolean               @default(false)
-  isTrailing           Boolean               @default(false)
-  shortlink            ShortLinkPreference   @default(ASK)
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
+  allowTrial           Boolean                    @default(false)
+  isTrailing           Boolean                    @default(false)
+  shortlink            ShortLinkPreference        @default(ASK)
   autoPost             AutoPost[]
   Comments             Comments[]
   credits              Credits[]
@@ -31,8 +31,8 @@ model Organization {
   buyerOrganization    MessagesGroup[]
   notifications        Notifications[]
   plugs                Plugs[]
-  post                 Post[]                @relation("organization")
-  submittedPost        Post[]                @relation("submittedForOrg")
+  post                 Post[]                     @relation("organization")
+  submittedPost        Post[]                     @relation("submittedForOrg")
   sets                 Sets[]
   signatures           Signatures[]
   subscription         Subscription?
@@ -46,6 +46,8 @@ model Organization {
   sessions             AuthSession[]
   apiKeys              OrganizationApiKey[]
   webhookSubscriptions WebhookSubscription[]
+  socialCommands       SocialPublicationCommand[]
+  socialOutboxEvents   SocialOutboxEvent[]
 
   @@index([apiKey])
   @@index([streakSince])
@@ -411,6 +413,7 @@ model Integration {
   orderItems              OrderItems[]
   plugs                   Plugs[]
   posts                   Post[]
+  socialDeliveries        SocialDelivery[]
 
   @@unique([organizationId, internalId])
   @@index([rootInternalId])
@@ -423,6 +426,119 @@ model Integration {
   @@index([inBetweenSteps])
   @@index([refreshNeeded])
   @@index([disabled])
+}
+
+model SocialPublicationCommand {
+  id                            String             @id @default(uuid())
+  tenantId                      String
+  commandVersion                String
+  requestedBy                   String
+  correlationId                 String
+  idempotencyKey                String
+  payloadHash                   String
+  content                       String
+  mediaIds                      String[]           @default([])
+  metadata                      Json
+  scheduleAt                    DateTime?
+  state                         SocialCommandState @default(REQUESTED)
+  publishingEnabledAtAcceptance Boolean            @default(false)
+  errorCode                     String?
+  createdAt                     DateTime           @default(now())
+  updatedAt                     DateTime           @updatedAt
+  tenant                        Organization       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  deliveries                    SocialDelivery[]
+
+  @@unique([tenantId, idempotencyKey])
+  @@index([tenantId, state, createdAt])
+  @@index([correlationId])
+  @@index([scheduleAt, state])
+}
+
+model SocialDelivery {
+  id             String                   @id @default(uuid())
+  commandId      String
+  tenantId       String
+  accountId      String
+  provider       String
+  settings       Json
+  state          SocialDeliveryState      @default(PENDING)
+  attempt        Int                      @default(0)
+  providerPostId String?
+  errorCode      String?
+  nextAttemptAt  DateTime?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  reconciledAt   DateTime?
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  command        SocialPublicationCommand @relation(fields: [commandId], references: [id], onDelete: Cascade)
+  integration    Integration              @relation(fields: [accountId], references: [id], onDelete: Restrict)
+
+  @@unique([commandId, accountId])
+  @@index([tenantId, state, nextAttemptAt])
+  @@index([accountId, createdAt])
+  @@index([providerPostId])
+}
+
+model SocialOutboxEvent {
+  id             String            @id @default(uuid())
+  tenantId       String
+  eventType      String
+  eventVersion   String
+  occurredAt     DateTime
+  receivedAt     DateTime          @default(now())
+  correlationId  String
+  causationId    String?
+  idempotencyKey String
+  payload        Json
+  metadata       Json
+  state          SocialOutboxState @default(PENDING)
+  attempt        Int               @default(0)
+  nextAttemptAt  DateTime?
+  leaseOwner     String?
+  leaseExpiresAt DateTime?
+  deliveredAt    DateTime?
+  errorCode      String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  tenant         Organization      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, idempotencyKey])
+  @@index([state, nextAttemptAt, createdAt])
+  @@index([tenantId, eventType, createdAt])
+  @@index([correlationId])
+}
+
+enum SocialCommandState {
+  REQUESTED
+  PERSISTED
+  QUEUED
+  BLOCKED
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  DEAD_LETTERED
+  CANCELLED
+}
+
+enum SocialDeliveryState {
+  PENDING
+  BLOCKED
+  PUBLISHING
+  PROVIDER_ACCEPTED
+  PUBLISHED
+  RETRY_WAIT
+  FAILED
+  DEAD_LETTERED
+  CANCELLED
+}
+
+enum SocialOutboxState {
+  PENDING
+  LEASED
+  RETRY_WAIT
+  DELIVERED
+  DEAD_LETTERED
 }
 
 model Signatures {
