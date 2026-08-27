@@ -1,0 +1,66 @@
+groups:
+  - name: codestra-social
+    interval: 30s
+    rules:
+      - alert: CodestraSocialOutboxDeadLettered
+        expr: codestra_social_outbox_dead_letters > 0
+        for: 5m
+        labels:
+          severity: critical
+          service: codestra-social
+        annotations:
+          summary: Codestra Social has dead-lettered Middleware events
+          runbook: docs/operations/SOCIAL_OBSERVABILITY.md#outbox-dead-lettered
+
+      - alert: CodestraSocialOutboxStalled
+        expr: codestra_social_outbox_oldest_pending_seconds > 300
+        for: 10m
+        labels:
+          severity: critical
+          service: codestra-social
+        annotations:
+          summary: Oldest Codestra Social outbox event exceeds five minutes
+          runbook: docs/operations/SOCIAL_OBSERVABILITY.md#outbox-stalled
+
+      - alert: CodestraSocialDeliveryFailures
+        expr: codestra_social_delivery_failed > 0
+        for: 10m
+        labels:
+          severity: warning
+          service: codestra-social
+        annotations:
+          summary: Social deliveries require reconciliation
+          runbook: docs/operations/SOCIAL_OBSERVABILITY.md#delivery-failures
+
+      - alert: CodestraSocialProviderInboxFailures
+        expr: codestra_social_provider_inbox_failed > 0
+        for: 5m
+        labels:
+          severity: warning
+          service: codestra-social
+        annotations:
+          summary: Verified provider events failed semantic processing
+          runbook: docs/operations/SOCIAL_OBSERVABILITY.md#provider-inbox-failures
+
+      - alert: CodestraSocialDependencyDown
+        expr: codestra_dependency_up{dependency=~"postgresql|redis|temporal"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: codestra-social
+        annotations:
+          summary: A required Codestra Social dependency is unavailable
+          runbook: docs/operations/SOCIAL_OBSERVABILITY.md#dependency-down
+
+      - alert: CodestraSocialUnsafePublishingFlags
+        expr: |
+          codestra_social_safety_flag{flag="publishing_enabled"}
+          * ignoring(flag)
+          (1 - codestra_social_safety_flag{flag="external_delivery_enabled"}) == 1
+        for: 1m
+        labels:
+          severity: critical
+          service: codestra-social
+        annotations:
+          summary: Publishing flags are in an inconsistent state
+          runbook: docs/operations/SOCIAL_OBSERVABILITY.md#unsafe-flags
