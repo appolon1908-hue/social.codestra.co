@@ -60,6 +60,8 @@ import { SocialMiddlewareClient } from '@gitroom/nestjs-libraries/integrations/c
 import { SocialMiddlewareOutboxDispatcher } from '@gitroom/nestjs-libraries/integrations/codestra/social-middleware-outbox.dispatcher';
 import { SocialOnboardingRepository } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-onboarding.repository';
 import { SocialOnboardingService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-onboarding.service';
+import { SocialBillingRepository } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-billing.repository';
+import { SocialBillingService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-billing.service';
 
 @Global()
 @Module({
@@ -125,6 +127,8 @@ import { SocialOnboardingService } from '@gitroom/nestjs-libraries/database/pris
     SocialMiddlewareOutboxDispatcher,
     SocialOnboardingRepository,
     SocialOnboardingService,
+    SocialBillingRepository,
+    SocialBillingService,
   ],
   get exports() {
     return this.providers;
