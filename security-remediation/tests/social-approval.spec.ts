@@ -3,16 +3,14 @@ describe('Codestra approvals', () => {
   it('enforces separation of duties', async () => {
     const prisma: any = {
       socialApprovalRequest: {
-        findFirst: jest
-          .fn()
-          .mockResolvedValue({
-            id: 'a',
-            tenantId: 't',
-            state: 'PENDING',
-            submittedBy: 'owner',
-            currentStage: 0,
-            policy: { stages: [{}] },
-          }),
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'a',
+          tenantId: 't',
+          state: 'PENDING',
+          submittedBy: 'owner',
+          currentStage: 0,
+          policy: { stages: [{}] },
+        }),
       },
       $transaction: async (fn: any) => fn(prisma),
     };
@@ -41,5 +39,33 @@ describe('Codestra approvals', () => {
     expect(
       prisma.socialExternalReviewToken.create.mock.calls[0][0].data.tokenHash
     ).not.toBe(out.review_token);
+  });
+  it('fails closed when another reviewer wins the same stage', async () => {
+    const prisma: any = {
+      socialApprovalRequest: {
+        findFirst: jest.fn().mockResolvedValue({
+          id: 'a',
+          tenantId: 't',
+          state: 'PENDING',
+          submittedBy: 'owner',
+          currentStage: 0,
+          policy: { stages: [{}] },
+        }),
+        updateMany: jest.fn().mockResolvedValue({ count: 0 }),
+      },
+      $transaction: async (fn: any) => fn(prisma),
+    };
+    const service = new SocialApprovalService(prisma);
+    await expect(
+      service.decide({ tenantId: 't' } as any, 'a', {
+        actor: 'reviewer',
+        decision: 'approve',
+      })
+    ).rejects.toThrow('approval_concurrent_decision');
+    expect(prisma.socialApprovalRequest.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ state: 'PENDING', currentStage: 0 }),
+      })
+    );
   });
 });

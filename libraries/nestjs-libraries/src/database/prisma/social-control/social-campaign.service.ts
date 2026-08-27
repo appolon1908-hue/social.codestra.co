@@ -13,9 +13,23 @@ import {
 @Injectable()
 export class SocialCampaignService {
   constructor(private readonly prisma: PrismaService) {}
-  create(auth: ServiceAuthContext, input: SocialCampaignCreateDto) {
-    if (new Date(input.ends_at) <= new Date(input.starts_at))
+  async create(auth: ServiceAuthContext, input: SocialCampaignCreateDto) {
+    const startsAt = new Date(input.starts_at);
+    const endsAt = new Date(input.ends_at);
+    if (
+      Number.isNaN(startsAt.getTime()) ||
+      Number.isNaN(endsAt.getTime()) ||
+      endsAt <= startsAt
+    )
       throw new BadRequestException('campaign_date_range_invalid');
+    this.assertTimezone(input.timezone);
+    if (input.brand_id) {
+      const brand = await this.prisma.socialBrandProfile.findFirst({
+        where: { id: input.brand_id, tenantId: auth.tenantId },
+        select: { id: true },
+      });
+      if (!brand) throw new NotFoundException('brand_not_found');
+    }
     return this.prisma.socialCampaign.create({
       data: {
         tenantId: auth.tenantId,
@@ -24,17 +38,25 @@ export class SocialCampaignService {
         objective: input.objective,
         ownerId: input.owner_id,
         timezone: input.timezone,
-        startsAt: new Date(input.starts_at),
-        endsAt: new Date(input.ends_at),
+        startsAt,
+        endsAt,
         budget: input.budget as Prisma.InputJsonObject,
       },
     });
   }
   calendar(auth: ServiceAuthContext, from: string, to: string) {
+    const startsAt = new Date(from);
+    const endsAt = new Date(to);
+    if (
+      Number.isNaN(startsAt.getTime()) ||
+      Number.isNaN(endsAt.getTime()) ||
+      endsAt < startsAt
+    )
+      throw new BadRequestException('calendar_date_range_invalid');
     return this.prisma.socialCampaignItem.findMany({
       where: {
         tenantId: auth.tenantId,
-        scheduledAt: { gte: new Date(from), lte: new Date(to) },
+        scheduledAt: { gte: startsAt, lte: endsAt },
       },
       include: { campaign: true },
       orderBy: { scheduledAt: 'asc' },
@@ -50,6 +72,9 @@ export class SocialCampaignService {
     });
     if (!campaign) throw new NotFoundException('campaign_not_found');
     const when = new Date(input.scheduled_at);
+    if (Number.isNaN(when.getTime()))
+      throw new BadRequestException('campaign_item_date_invalid');
+    this.assertTimezone(input.timezone);
     if (when < campaign.startsAt || when > campaign.endsAt)
       throw new BadRequestException('campaign_item_outside_window');
     let state: 'APPROVAL_REQUIRED' | 'APPROVED' = 'APPROVAL_REQUIRED';
@@ -58,6 +83,7 @@ export class SocialCampaignService {
         where: {
           id: input.approval_request_id,
           tenantId: auth.tenantId,
+          resourceId: input.content_revision_id,
           revisionId: input.content_revision_id,
           state: 'APPROVED',
         },
@@ -76,5 +102,12 @@ export class SocialCampaignService {
         state,
       },
     });
+  }
+  private assertTimezone(timezone: string) {
+    try {
+      new Intl.DateTimeFormat('en-US', { timeZone: timezone }).format();
+    } catch {
+      throw new BadRequestException('timezone_invalid');
+    }
   }
 }

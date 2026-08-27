@@ -89,6 +89,7 @@ export class SocialEngagementService {
       where: { id, tenantId: auth.tenantId },
     });
     if (!item) throw new NotFoundException('engagement_not_found');
+    if (item.state === 'ESCALATED') return { ...item, replayed: true };
     return this.prisma.$transaction(async (tx) => {
       await tx.socialEngagementAction.create({
         data: {
