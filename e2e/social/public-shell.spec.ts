@@ -3,7 +3,13 @@ import path from 'node:path';
 
 const axePath = path.resolve('node_modules/axe-core/axe.min.js');
 
-for (const route of ['/auth/login', '/auth/forgot', '/auth/activate']) {
+for (const route of [
+  '/auth/login',
+  '/auth/forgot',
+  '/auth/activate',
+  '/developers',
+  '/developers/openapi',
+]) {
   test(`${route} renders without broken links or serious accessibility defects`, async ({
     page,
   }) => {

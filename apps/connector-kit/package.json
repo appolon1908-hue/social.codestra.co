@@ -1,0 +1,16 @@
+{
+  "name": "@codestra/connector-kit",
+  "version": "1.0.0-alpha.1",
+  "description": "Fail-closed connector framework for Codestra Middleware",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "check": "tsc --noEmit"
+  },
+  "license": "AGPL-3.0",
+  "dependencies": {}
+}

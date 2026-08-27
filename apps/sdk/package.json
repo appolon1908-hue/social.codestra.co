@@ -1,10 +1,12 @@
 {
-  "name": "@postiz/node",
-  "version": "1.0.8",
-  "description": "The ultimate social media scheduling tool",
+  "name": "@codestra/social-sdk",
+  "version": "2.0.0-alpha.1",
+  "description": "Typed client for the Codestra Social enterprise API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsup",
+    "check": "tsc --noEmit",
     "publish": "tsup && pnpm publish --access public"
   },
   "files": [
@@ -13,11 +15,11 @@
   "keywords": [
     "social media",
     "scheduling tool",
-    "social media scheduling tool"
+    "social media scheduling tool",
+    "codestra",
+    "sdk"
   ],
-  "author": "Nevo David",
+  "author": "Codestra LLC",
   "license": "AGPL-3.0",
-  "dependencies": {
-    "node-fetch": "^3.3.2"
-  }
+  "dependencies": {}
 }

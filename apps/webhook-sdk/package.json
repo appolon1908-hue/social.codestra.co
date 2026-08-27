@@ -1,0 +1,16 @@
+{
+  "name": "@codestra/webhook-sdk",
+  "version": "1.0.0-alpha.1",
+  "description": "Codestra signed webhook verification and replay protection",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "check": "tsc --noEmit"
+  },
+  "license": "AGPL-3.0",
+  "dependencies": {}
+}

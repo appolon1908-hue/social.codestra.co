@@ -1,0 +1,16 @@
+{
+  "specversion": "1.0",
+  "id": "00000000-0000-4000-8000-000000000001",
+  "source": "codestra.social",
+  "type": "social.publication.completed.v2",
+  "subject": "publication/00000000-0000-4000-8000-000000000010",
+  "time": "2026-08-27T00:00:00.000Z",
+  "tenantid": "tenant_sandbox_example",
+  "correlationid": "00000000-0000-4000-8000-000000000002",
+  "datacontenttype": "application/json",
+  "data": {
+    "publication_id": "00000000-0000-4000-8000-000000000010",
+    "provider": "sandbox",
+    "provider_post_id": "sandbox-post-1"
+  }
+}
