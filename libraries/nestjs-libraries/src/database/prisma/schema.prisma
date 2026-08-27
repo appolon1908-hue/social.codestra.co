@@ -49,10 +49,55 @@ model Organization {
   socialCommands       SocialPublicationCommand[]
   socialOutboxEvents   SocialOutboxEvent[]
   socialProviderInbox  SocialProviderInbox[]
+  socialOnboarding     SocialTenantOnboarding?
 
   @@index([apiKey])
   @@index([streakSince])
   @@index([paymentId])
+}
+
+enum SocialOnboardingState {
+  CREATED
+  IDENTITY_VERIFIED
+  WORKSPACE_CONFIGURED
+  BRAND_READY
+  ACCOUNTS_CONNECTED
+  POLICY_READY
+  DRY_RUN_PASSED
+  READY_FOR_ACTIVATION
+}
+
+model SocialTenantOnboarding {
+  id           String                       @id @default(uuid())
+  tenantId     String                       @unique
+  state        SocialOnboardingState        @default(CREATED)
+  readiness    Json                         @default("{}")
+  version      Int                          @default(0)
+  createdAt    DateTime                     @default(now())
+  updatedAt    DateTime                     @updatedAt
+  organization Organization                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  transitions  SocialOnboardingTransition[]
+
+  @@index([state, updatedAt])
+}
+
+model SocialOnboardingTransition {
+  id             String                 @id @default(uuid())
+  tenantId       String
+  onboardingId   String
+  idempotencyKey String
+  payloadHash    String
+  correlationId  String
+  actor          String
+  fromState      SocialOnboardingState
+  toState        SocialOnboardingState
+  evidence       Json                   @default("{}")
+  createdAt      DateTime               @default(now())
+  onboarding     SocialTenantOnboarding @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, idempotencyKey])
+  @@index([tenantId, createdAt])
+  @@index([onboardingId, createdAt])
 }
 
 model Tags {

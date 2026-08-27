@@ -58,6 +58,8 @@ import { SocialProviderWebhookVerifier } from '@gitroom/nestjs-libraries/securit
 import { SocialMiddlewareOutboxRepository } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-middleware-outbox.repository';
 import { SocialMiddlewareClient } from '@gitroom/nestjs-libraries/integrations/codestra/social-middleware.client';
 import { SocialMiddlewareOutboxDispatcher } from '@gitroom/nestjs-libraries/integrations/codestra/social-middleware-outbox.dispatcher';
+import { SocialOnboardingRepository } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-onboarding.repository';
+import { SocialOnboardingService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-onboarding.service';
 
 @Global()
 @Module({
@@ -121,6 +123,8 @@ import { SocialMiddlewareOutboxDispatcher } from '@gitroom/nestjs-libraries/inte
     SocialMiddlewareOutboxRepository,
     SocialMiddlewareClient,
     SocialMiddlewareOutboxDispatcher,
+    SocialOnboardingRepository,
+    SocialOnboardingService,
   ],
   get exports() {
     return this.providers;
