@@ -41,10 +41,20 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 12
+      redis:
+        image: redis:7.4-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
     env:
       CHECKPOINT_DISABLE: '1'
       DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/codestra_ci
       NEXT_PUBLIC_BACKEND_URL: http://127.0.0.1:3000
+      REDIS_URL: redis://127.0.0.1:6379
       NODE_OPTIONS: --max-old-space-size=6144
       PRISMA_HIDE_UPDATE_MESSAGE: '1'
     steps:
@@ -79,6 +89,9 @@ jobs:
       - name: Confirm migration status
         run: pnpm run prisma-migrate-status
 
+      - name: Exercise disposable database recovery and migration replay
+        run: pnpm run test:db-recovery
+
       - name: Validate versioned contracts and deployment YAML
         run: >-
           pnpm exec prettier --check
@@ -87,6 +100,9 @@ jobs:
 
       - name: Validate Kong and Caddy social isolation policy
         run: pnpm validate:kong-social
+
+      - name: Validate fail-closed social release policy
+        run: pnpm validate:social-release
 
       - name: Run focused security and control-plane tests
         run: pnpm run test:security
@@ -100,6 +116,12 @@ jobs:
       - name: Build frontend
         run: pnpm run build:frontend
 
+      - name: Install isolated browser runtime
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run browser, mobile, link, and accessibility gates
+        run: pnpm run test:e2e:social
+
       - name: Upload test evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -108,5 +130,7 @@ jobs:
           path: |
             junit.xml
             security-remediation/reports/
+            playwright-report/
+            test-results/
           if-no-files-found: ignore
           retention-days: 14
