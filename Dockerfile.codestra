@@ -18,7 +18,7 @@ RUN cd node_modules/@temporalio/core-bridge \
     && cp /usr/include/google/protobuf/field_mask.proto sdk-core/crates/protos/protos/api_upstream/google/protobuf/field_mask.proto \
     && cargo build --locked --release -p temporal-sdk-typescript-bridge \
     && cp target/release/libtemporal_sdk_typescript_bridge.so releases/x86_64-unknown-linux-gnu/index.node
-RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build
+RUN NODE_OPTIONS="--max-old-space-size=6144" pnpm run build
 RUN CI=true pnpm prune --prod \
     && rm -rf node_modules/@temporalio/core-bridge/target /root/.cache /root/.local/share/pnpm/store
 

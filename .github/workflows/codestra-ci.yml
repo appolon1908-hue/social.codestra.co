@@ -45,10 +45,13 @@ jobs:
       CHECKPOINT_DISABLE: '1'
       DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/codestra_ci
       NEXT_PUBLIC_BACKEND_URL: http://127.0.0.1:3000
+      NODE_OPTIONS: --max-old-space-size=6144
       PRISMA_HIDE_UPDATE_MESSAGE: '1'
     steps:
       - name: Check out exact revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Install pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
