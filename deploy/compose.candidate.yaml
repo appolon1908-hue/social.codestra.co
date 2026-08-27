@@ -42,6 +42,8 @@ services:
       ENABLE_EXTERNAL_DELIVERY: 'false'
       PUBLISHING_KILL_SWITCH: 'true'
       METRICS_ENABLED: 'false'
+      METRICS_ALLOWED_IPS: ${METRICS_ALLOWED_IPS:-}
+      IMAGE_DIGEST: ${CODESTRA_IMAGE_DIGEST:-unknown}
       TRUSTED_PROXY_IPS: ${TRUSTED_PROXY_IPS:?exact Caddy container address required; loopback is trusted internally}
       AGENT_JSON_LIMIT: 2mb
 
