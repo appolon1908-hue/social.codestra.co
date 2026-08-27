@@ -32,7 +32,7 @@
     "commands:build:development": "pnpm --filter ./apps/commands run build",
     "prisma-generate": "prisma generate --schema ./libraries/nestjs-libraries/src/database/prisma/schema.prisma",
     "prisma-validate": "prisma validate --schema ./libraries/nestjs-libraries/src/database/prisma/schema.prisma",
-    "prisma-migrate-deploy": "prisma migrate deploy --schema ./libraries/nestjs-libraries/src/database/prisma/schema.prisma",
+    "prisma-migrate-deploy": "node ./scripts/prisma-deploy.mjs",
     "prisma-migrate-status": "prisma migrate status --schema ./libraries/nestjs-libraries/src/database/prisma/schema.prisma",
     "prisma-db-push": "prisma db push --schema ./libraries/nestjs-libraries/src/database/prisma/schema.prisma",
     "prisma-db-push:destructive-local": "node ./scripts/prisma-destructive-local.mjs push",

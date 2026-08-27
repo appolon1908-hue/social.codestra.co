@@ -19,10 +19,13 @@ is not production-ready merely because an image exists.
 
 ## Migration gate
 
-Run `prisma migrate deploy` as a protected one-shot job using the exact candidate
-image digest. The runtime container refuses `MIGRATE_ON_START=true`; replicas do
-not race migrations during rollout. The migration job receives only its scoped
-database secret and exits before application rollout.
+Run `pnpm run prisma-migrate-deploy` as a protected one-shot job using the exact
+candidate image digest. On an empty database, the wrapper applies the reviewed
+pg_dump baseline in its own connection, records that baseline in Prisma, and
+then deploys later migrations. It refuses an existing untracked database. The
+runtime container refuses `MIGRATE_ON_START=true`; replicas do not race migrations
+during rollout. The migration job receives only its scoped database secret and
+exits before application rollout.
 
 Before the one-shot job:
 
