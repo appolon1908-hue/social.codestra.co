@@ -48,6 +48,7 @@ model Organization {
   webhookSubscriptions WebhookSubscription[]
   socialCommands       SocialPublicationCommand[]
   socialOutboxEvents   SocialOutboxEvent[]
+  socialProviderInbox  SocialProviderInbox[]
 
   @@index([apiKey])
   @@index([streakSince])
@@ -509,6 +510,31 @@ model SocialOutboxEvent {
   @@index([correlationId])
 }
 
+model SocialProviderInbox {
+  id              String                   @id @default(uuid())
+  tenantId        String
+  provider        String
+  providerEventId String
+  eventType       String
+  eventVersion    String
+  occurredAt      DateTime
+  receivedAt      DateTime                 @default(now())
+  processedAt     DateTime?
+  correlationId   String
+  payloadHash     String
+  payload         Json
+  state           SocialProviderInboxState @default(RECEIVED)
+  errorCode       String?
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  tenant          Organization             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, provider, providerEventId])
+  @@index([state, receivedAt])
+  @@index([tenantId, provider, occurredAt])
+  @@index([correlationId])
+}
+
 enum SocialCommandState {
   REQUESTED
   PERSISTED
@@ -539,6 +565,12 @@ enum SocialOutboxState {
   RETRY_WAIT
   DELIVERED
   DEAD_LETTERED
+}
+
+enum SocialProviderInboxState {
+  RECEIVED
+  PROCESSED
+  FAILED
 }
 
 model Signatures {

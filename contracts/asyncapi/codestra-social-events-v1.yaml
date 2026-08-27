@@ -48,6 +48,8 @@ components:
             - social.post.scheduled
             - social.post.published
             - social.post.failed
+            - social.provider.accepted
+            - social.post.cancelled
             - social.channel.connected
             - social.channel.expiring
             - social.channel.disconnected
