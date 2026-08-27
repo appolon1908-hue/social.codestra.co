@@ -1,0 +1,46 @@
+# Reviewable candidate. Exact upstream addresses, trust networks and certificate
+# configuration belong to the authoritative gateway repository.
+
+social.codestra.co {
+  encode zstd gzip
+
+  @private path /internal/* /monitor/metrics* /monitor/ready* /monitor/version*
+  respond @private 404
+
+  @dangerous method TRACE CONNECT
+  respond @dangerous 405
+
+  header {
+    -Server
+    Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'"
+    Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Referrer-Policy strict-origin-when-cross-origin
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options nosniff
+    X-Frame-Options SAMEORIGIN
+  }
+
+  request_body {
+    max_size 25MB
+  }
+
+  reverse_proxy codestra-social:5000 {
+    header_up X-Forwarded-Proto https
+    health_uri /monitor/live
+    health_interval 15s
+    health_timeout 3s
+    fail_duration 30s
+  }
+}
+
+api.codestra.co {
+  encode zstd gzip
+  header -Server
+
+  @unsupported method TRACE CONNECT
+  respond @unsupported 405
+
+  reverse_proxy kong:8000 {
+    header_up X-Forwarded-Proto https
+  }
+}
