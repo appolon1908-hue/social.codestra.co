@@ -878,17 +878,19 @@ importers:
 
   apps/commands: {}
 
+  apps/connector-kit: {}
+
   apps/extension: {}
 
   apps/frontend: {}
 
+  apps/n8n-nodes: {}
+
   apps/orchestrator: {}
 
-  apps/sdk:
-    dependencies:
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
+  apps/sdk: {}
+
+  apps/webhook-sdk: {}
 
 packages:
 

@@ -1,78 +1,106 @@
 asyncapi: 3.0.0
 info:
-  title: Codestra Social normalized events
-  version: 1.0.0
-  description: Events emitted by Codestra Social to the Middleware signed inbox.
-defaultContentType: application/json
+  title: Codestra Social enterprise events
+  version: 2.0.0
+  description: >-
+    CloudEvents-compatible, at-least-once events delivered through the
+    Middleware signed webhook outbox. Consumers must deduplicate by event id.
+defaultContentType: application/cloudevents+json
+servers:
+  production:
+    host: api.codestra.co
+    protocol: https
+    pathname: /v2/webhooks/social
+    security:
+      - $ref: '#/components/securitySchemes/signedWebhook'
 channels:
   socialEvents:
-    address: /v1/webhooks/social/events
+    address: /events
     messages:
-      socialEvent:
+      event:
         $ref: '#/components/messages/SocialEvent'
 operations:
-  deliverSocialEvent:
-    action: send
+  receiveSocialEvent:
+    action: receive
     channel:
       $ref: '#/channels/socialEvents'
     messages:
-      - $ref: '#/channels/socialEvents/messages/socialEvent'
+      - $ref: '#/channels/socialEvents/messages/event'
 components:
   messages:
     SocialEvent:
       name: socialEvent
-      title: Versioned Codestra social event
+      title: Versioned Codestra Social CloudEvent
+      headers:
+        $ref: '#/components/schemas/SignatureHeaders'
       payload:
         $ref: '#/components/schemas/EventEnvelope'
   schemas:
+    SignatureHeaders:
+      type: object
+      required: [x-codestra-signature, x-codestra-timestamp]
+      properties:
+        x-codestra-signature: { type: string, pattern: '^v1=[a-f0-9]{64}$' }
+        x-codestra-timestamp: { type: string, pattern: '^[0-9]{10}$' }
     EventEnvelope:
       type: object
       additionalProperties: false
       required:
-        - event_id
-        - event_type
-        - event_version
-        - occurred_at
-        - received_at
-        - source
-        - tenant_id
-        - correlation_id
-        - idempotency_key
-        - payload
+        [
+          specversion,
+          id,
+          source,
+          type,
+          time,
+          tenantid,
+          correlationid,
+          datacontenttype,
+          data,
+        ]
       properties:
-        event_id: { type: string, format: uuid }
-        event_type:
-          enum:
-            - social.post.created
-            - social.post.approved
-            - social.post.scheduled
-            - social.post.published
-            - social.post.failed
-            - social.provider.accepted
-            - social.post.cancelled
-            - social.channel.connected
-            - social.channel.expiring
-            - social.channel.disconnected
-            - social.comment.received
-            - social.mention.received
-            - social.lead.captured
-        event_version: { const: '1.0' }
-        occurred_at: { type: string, format: date-time }
-        received_at: { type: string, format: date-time }
-        source: { const: codestra-social }
-        tenant_id: { type: string, minLength: 1, maxLength: 100 }
-        customer_id: { type: [string, 'null'] }
-        correlation_id: { type: string, format: uuid }
-        causation_id: { type: [string, 'null'] }
-        idempotency_key: { type: string, minLength: 16, maxLength: 200 }
-        payload: { type: object, additionalProperties: true }
-        metadata:
-          type: object
-          additionalProperties: true
-          properties:
-            provider: { type: string }
-            provider_account_id: { type: string }
-            provider_event_id: { type: string }
+        specversion: { const: '1.0' }
+        id: { type: string, format: uuid }
+        source: { const: codestra.social }
+        type: { $ref: '#/components/schemas/EventType' }
+        subject: { type: string, maxLength: 500 }
+        time: { type: string, format: date-time }
+        tenantid: { type: string, minLength: 1, maxLength: 100 }
+        correlationid: { type: string, format: uuid }
+        causationid: { type: [string, 'null'] }
+        datacontenttype: { const: application/json }
+        data: { type: object, additionalProperties: true }
+    EventType:
+      enum:
+        - social.brand.created.v2
+        - social.brand.revised.v2
+        - social.ai.generation.requested.v2
+        - social.ai.generation.blocked.v2
+        - social.content.created.v2
+        - social.content.approved.v2
+        - social.content.changes_requested.v2
+        - social.campaign.created.v2
+        - social.campaign.activated.v2
+        - social.campaign.paused.v2
+        - social.publication.requested.v2
+        - social.publication.scheduled.v2
+        - social.publication.completed.v2
+        - social.publication.failed.v2
+        - social.publication.canceled.v2
+        - social.provider.accepted.v2
+        - social.account.connected.v2
+        - social.account.expiring.v2
+        - social.account.disconnected.v2
+        - social.engagement.received.v2
+        - social.engagement.assigned.v2
+        - social.engagement.replied.v2
+        - social.engagement.resolved.v2
+        - social.engagement.sla_breached.v2
+        - social.engagement.escalation.requested.v2
+        - social.report.ready.v2
+        - social.subscription.changed.v2
+        - social.connector.unhealthy.v2
+        - social.delivery.dead_lettered.v2
+        - social.webhook.endpoint.disabled.v2
   securitySchemes:
     signedWebhook:
       type: httpApiKey

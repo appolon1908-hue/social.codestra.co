@@ -1,0 +1,28 @@
+{
+  "name": "@codestra/n8n-nodes",
+  "version": "1.0.0-alpha.1",
+  "description": "Codestra Social actions and triggers for n8n",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "nodes",
+    "credentials"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "check": "tsc --noEmit"
+  },
+  "license": "AGPL-3.0",
+  "dependencies": {},
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/CodestraApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Codestra.node.js",
+      "dist/nodes/CodestraTrigger.node.js"
+    ]
+  }
+}

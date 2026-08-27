@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Codestra Social enterprise API
-  version: 2.0.0
+  version: 2.1.0
   description: >-
     Public contract exposed by api.codestra.co through Kong and authoritative
     Middleware. Provider credentials and private product endpoints are excluded.
@@ -9,6 +9,17 @@ servers:
   - url: https://api.codestra.co/v2/social
 security:
   - userOAuth: []
+tags:
+  - { name: Onboarding }
+  - { name: Brands }
+  - { name: Content }
+  - { name: Approvals }
+  - { name: Campaigns }
+  - { name: Engagement }
+  - { name: Analytics }
+  - { name: Billing }
+  - { name: Integrations }
+  - { name: Webhooks }
 paths:
   /onboarding:
     post:
@@ -83,11 +94,7 @@ paths:
       responses:
         '202': { $ref: '#/components/responses/Accepted' }
         '422':
-          {
-            description: Plan,
-            currency,
-            seat or transition policy rejected the command,
-          }
+          description: Plan, currency, seat, or transition policy rejected the command
   /billing/portal-sessions:
     post:
       operationId: createBillingPortalSession
@@ -125,6 +132,37 @@ paths:
       parameters: *mutationHeaders
       responses:
         '202': { $ref: '#/components/responses/Accepted' }
+  /campaigns/{campaignId}:
+    parameters:
+      - $ref: '#/components/parameters/CampaignId'
+    get:
+      operationId: getCampaign
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      operationId: updateCampaign
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /campaigns/{campaignId}/items:
+    post:
+      operationId: addCampaignItem
+      parameters:
+        - $ref: '#/components/parameters/CampaignId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /calendar:
+    get:
+      operationId: getCorporateCalendar
+      parameters:
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
   /content/revisions:
     post:
       operationId: createContentRevision
@@ -138,16 +176,34 @@ paths:
       responses:
         '202': { $ref: '#/components/responses/Accepted' }
         '422':
-          {
-            description: Brand,
-            model,
-            source or risk policy rejected the request,
-          }
+          description: Brand, model, source, or risk policy rejected the request
   /approvals:
     get:
       operationId: listApprovalTasks
       responses:
         '200': { $ref: '#/components/responses/Ok' }
+    post:
+      operationId: submitApproval
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /approvals/{approvalId}:
+    get:
+      operationId: getApproval
+      parameters:
+        - $ref: '#/components/parameters/ApprovalId'
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /approvals/{approvalId}/review-tokens:
+    post:
+      operationId: createExternalReviewToken
+      parameters:
+        - $ref: '#/components/parameters/ApprovalId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
   /approvals/{approvalId}/decisions:
     post:
       operationId: decideApproval
@@ -158,7 +214,7 @@ paths:
       responses:
         '202': { $ref: '#/components/responses/Accepted' }
         '409':
-          { description: Stale revision, duplicate actor or invalid transition }
+          description: Stale revision, duplicate actor, or invalid transition
   /publications:
     post:
       operationId: requestPublication
@@ -196,6 +252,24 @@ paths:
         - $ref: '#/components/parameters/IdempotencyKey'
       responses:
         '202': { $ref: '#/components/responses/Accepted' }
+  /engagement/{engagementId}/reply:
+    post:
+      operationId: replyToEngagement
+      parameters:
+        - $ref: '#/components/parameters/EngagementId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /engagement/{engagementId}/resolution:
+    put:
+      operationId: resolveEngagement
+      parameters:
+        - $ref: '#/components/parameters/EngagementId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
   /analytics/overview:
     get:
       operationId: getAnalyticsOverview
@@ -219,6 +293,60 @@ paths:
       operationId: listIntegrationHealth
       responses:
         '200': { $ref: '#/components/responses/Ok' }
+  /integrations/{connector}/health:
+    get:
+      operationId: getConnectorHealth
+      parameters:
+        - $ref: '#/components/parameters/Connector'
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /integrations/{connector}/commands:
+    post:
+      operationId: submitConnectorCommand
+      security:
+        - serviceOAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Connector'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /automation/commands:
+    post:
+      operationId: submitAutomationCommand
+      security:
+        - serviceOAuth: []
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /webhooks/endpoints:
+    get:
+      operationId: listWebhookEndpoints
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+    post:
+      operationId: createWebhookEndpoint
+      parameters: *mutationHeaders
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+  /webhooks/endpoints/{webhookId}/rotate-secret:
+    post:
+      operationId: rotateWebhookSecret
+      parameters:
+        - $ref: '#/components/parameters/WebhookId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+  /webhooks/deliveries/{deliveryId}/replay:
+    post:
+      operationId: replayWebhookDelivery
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
   /audit:
     get:
       operationId: searchAudit
@@ -275,6 +403,36 @@ components:
       in: path
       required: true
       schema: { type: string, format: uuid }
+    WebhookId:
+      name: webhookId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    DeliveryId:
+      name: deliveryId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    Connector:
+      name: connector
+      in: path
+      required: true
+      schema: { enum: [middleware, odoo, n8n, klyrow, telnexa] }
+    From:
+      name: from
+      in: query
+      required: true
+      schema: { type: string, format: date-time }
+    To:
+      name: to
+      in: query
+      required: true
+      schema: { type: string, format: date-time }
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema: { type: string, maxLength: 500 }
   responses:
     Accepted:
       description: Durable command accepted
@@ -288,7 +446,30 @@ components:
               command_id: { type: string, format: uuid }
               state: { enum: [accepted, blocked] }
               replayed: { type: boolean }
+    Created:
+      description: Tenant-scoped resource created
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ResourceEnvelope' }
     Ok:
       description: Tenant-scoped response
     NotFound:
       description: Resource is absent from the caller tenant
+  schemas:
+    ResourceEnvelope:
+      type: object
+      additionalProperties: false
+      required: [id, correlation_id]
+      properties:
+        id: { type: string, format: uuid }
+        correlation_id: { type: string, format: uuid }
+        data: { type: object, additionalProperties: true }
+    Error:
+      type: object
+      additionalProperties: false
+      required: [code, message, correlation_id]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        correlation_id: { type: string, format: uuid }
+        details: {}

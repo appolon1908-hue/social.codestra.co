@@ -1,0 +1,13 @@
+{
+  "context": {
+    "tenantId": "tenant_sandbox_example",
+    "correlationId": "00000000-0000-4000-8000-000000000002",
+    "idempotencyKey": "sandbox-command-000000000001",
+    "liveWritesEnabled": false
+  },
+  "command": {
+    "type": "social.contact.sync.requested",
+    "payload": { "contact_id": "sandbox-contact-1" }
+  },
+  "expected": { "accepted": false, "blocked_by": "live_write_kill_switch" }
+}

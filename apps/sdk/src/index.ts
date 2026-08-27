@@ -1,95 +1,43 @@
-import { CreatePostDto } from '@gitroom/nestjs-libraries/dtos/posts/create.post.dto';
-import { GetPostsDto } from '@gitroom/nestjs-libraries/dtos/posts/get.posts.dto';
-import fetch, { FormData } from 'node-fetch';
-
-function toQueryString(obj: Record<string, any>): string {
-  const params = new URLSearchParams();
-  Object.entries(obj).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      params.append(key, String(value));
-    }
-  });
-  return params.toString();
-}
-
-export default class Postiz {
-  constructor(
-    private _apiKey: string,
-    private _path = 'https://api.postiz.com'
-  ) {}
-
-  async post(posts: CreatePostDto) {
-    return (
-      await fetch(`${this._path}/public/v1/posts`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: this._apiKey,
-        },
-        body: JSON.stringify(posts),
-      })
-    ).json();
-  }
-
-  async postList(filters: GetPostsDto) {
-    return (
-      await fetch(`${this._path}/public/v1/posts?${toQueryString(filters)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: this._apiKey,
-        },
-      })
-    ).json();
-  }
-
-  async upload(file: Buffer, extension: string) {
-    const formData = new FormData();
-    const type =
-      extension === 'png'
-        ? 'image/png'
-        : extension === 'jpg'
-        ? 'image/jpeg'
-        : extension === 'gif'
-        ? 'image/gif'
-        : extension === 'jpeg'
-        ? 'image/jpeg'
-        : 'image/jpeg';
-
-    const blob = new Blob([file], { type });
-    formData.append('file', blob, extension);
-
-    return (
-      await fetch(`${this._path}/public/v1/upload`, {
-        method: 'POST',
-        // @ts-ignore
-        body: formData,
-        headers: {
-          Authorization: this._apiKey,
-        },
-      })
-    ).json();
-  }
-
-  async integrations() {
-    return (
-      await fetch(`${this._path}/public/v1/integrations`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: this._apiKey,
-        },
-      })
-    ).json();
-  }
-
-  deletePost(id: string) {
-    return fetch(`${this._path}/public/v1/posts/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: this._apiKey,
-      },
-    });
+import { CodestraHttpClient } from './client';
+import { CodestraActions, CollectionResource } from './resources';
+import { CodestraClientOptions } from './types';
+export * from './client';
+export * from './resources';
+export * from './types';
+export * from './generated/operations';
+export class CodestraSocial {
+  readonly onboarding;
+  readonly brands;
+  readonly content;
+  readonly approvals;
+  readonly campaigns;
+  readonly calendar;
+  readonly publications;
+  readonly engagement;
+  readonly analytics;
+  readonly reports;
+  readonly billing;
+  readonly integrations;
+  readonly webhooks;
+  readonly audit;
+  readonly actions;
+  constructor(options: CodestraClientOptions) {
+    const http = new CodestraHttpClient(options);
+    this.onboarding = new CollectionResource(http, '/onboarding');
+    this.brands = new CollectionResource(http, '/brand-profiles');
+    this.content = new CollectionResource(http, '/content/revisions');
+    this.approvals = new CollectionResource(http, '/approvals');
+    this.campaigns = new CollectionResource(http, '/campaigns');
+    this.calendar = new CollectionResource(http, '/calendar');
+    this.publications = new CollectionResource(http, '/publications');
+    this.engagement = new CollectionResource(http, '/engagement');
+    this.analytics = new CollectionResource(http, '/analytics');
+    this.reports = new CollectionResource(http, '/reports');
+    this.billing = new CollectionResource(http, '/billing');
+    this.integrations = new CollectionResource(http, '/integrations');
+    this.webhooks = new CollectionResource(http, '/webhooks');
+    this.audit = new CollectionResource(http, '/audit');
+    this.actions = new CodestraActions(http);
   }
 }
+export default CodestraSocial;
