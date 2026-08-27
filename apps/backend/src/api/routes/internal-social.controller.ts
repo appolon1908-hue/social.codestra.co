@@ -37,6 +37,12 @@ import {
   SocialCampaignCreateDto,
   SocialCampaignItemDto,
 } from '@gitroom/nestjs-libraries/dtos/social-control/social-campaign.dto';
+import { SocialEngagementService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-engagement.service';
+import {
+  SocialEngagementAssignDto,
+  SocialEngagementEscalateDto,
+  SocialEngagementIngestDto,
+} from '@gitroom/nestjs-libraries/dtos/social-control/social-engagement.dto';
 
 @ApiTags('Codestra Social private control plane')
 @Controller('/internal/v1/social')
@@ -48,8 +54,44 @@ export class InternalSocialController {
     private readonly billing: SocialBillingService,
     private readonly brands: SocialBrandService,
     private readonly approvals: SocialApprovalService,
-    private readonly campaigns: SocialCampaignService
+    private readonly campaigns: SocialCampaignService,
+    private readonly engagement: SocialEngagementService
   ) {}
+
+  @Post('/engagement')
+  @RequireServiceScopes('social.engagement.ingest')
+  ingestEngagement(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Body() body: SocialEngagementIngestDto
+  ) {
+    return this.engagement.ingest(auth, body);
+  }
+
+  @Get('/engagement')
+  @RequireServiceScopes('social.engagement.read')
+  listEngagement(@GetServiceAuth() auth: ServiceAuthContext) {
+    return this.engagement.list(auth);
+  }
+
+  @Post('/engagement/:engagementId/assignment')
+  @RequireServiceScopes('social.engagement.assign')
+  assignEngagement(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Param('engagementId') id: string,
+    @Body() body: SocialEngagementAssignDto
+  ) {
+    return this.engagement.assign(auth, id, body);
+  }
+
+  @Post('/engagement/:engagementId/escalations')
+  @RequireServiceScopes('social.engagement.escalate')
+  escalateEngagement(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Param('engagementId') id: string,
+    @Body() body: SocialEngagementEscalateDto
+  ) {
+    return this.engagement.escalate(auth, id, body);
+  }
   @Post('/campaigns')
   @RequireServiceScopes('social.campaigns.write')
   createCampaign(

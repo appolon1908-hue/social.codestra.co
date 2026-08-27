@@ -1,0 +1,9 @@
+CREATE TYPE "SocialEngagementState" AS ENUM ('OPEN','ASSIGNED','PENDING_CUSTOMER','RESOLVED','ESCALATED','SPAM');
+CREATE TABLE "SocialEngagementItem" ("id" TEXT NOT NULL,"tenantId" TEXT NOT NULL,"providerEventId" TEXT NOT NULL,"provider" TEXT NOT NULL,"accountId" TEXT NOT NULL,"kind" TEXT NOT NULL,"externalAuthor" JSONB NOT NULL,"content" TEXT NOT NULL,"occurredAt" TIMESTAMP(3) NOT NULL,"sentiment" TEXT,"priority" INTEGER NOT NULL DEFAULT 3,"state" "SocialEngagementState" NOT NULL DEFAULT 'OPEN',"assignedTo" TEXT,"slaDueAt" TIMESTAMP(3),"odooReference" TEXT,"correlationId" TEXT NOT NULL,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,"updatedAt" TIMESTAMP(3) NOT NULL,CONSTRAINT "SocialEngagementItem_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "SocialEngagementAction" ("id" TEXT NOT NULL,"tenantId" TEXT NOT NULL,"engagementId" TEXT NOT NULL,"action" TEXT NOT NULL,"actor" TEXT NOT NULL,"metadata" JSONB NOT NULL DEFAULT '{}',"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "SocialEngagementAction_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "SocialEngagementItem_providerEventId_key" ON "SocialEngagementItem"("providerEventId");
+CREATE INDEX "SocialEngagementItem_tenantId_state_priority_occurredAt_idx" ON "SocialEngagementItem"("tenantId","state","priority","occurredAt");
+CREATE INDEX "SocialEngagementItem_tenantId_assignedTo_state_idx" ON "SocialEngagementItem"("tenantId","assignedTo","state");
+CREATE INDEX "SocialEngagementAction_tenantId_createdAt_idx" ON "SocialEngagementAction"("tenantId","createdAt");
+ALTER TABLE "SocialEngagementItem" ADD CONSTRAINT "SocialEngagementItem_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "SocialEngagementAction" ADD CONSTRAINT "SocialEngagementAction_engagementId_fkey" FOREIGN KEY ("engagementId") REFERENCES "SocialEngagementItem"("id") ON DELETE CASCADE ON UPDATE CASCADE;

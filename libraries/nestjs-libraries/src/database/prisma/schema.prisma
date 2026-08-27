@@ -56,6 +56,7 @@ model Organization {
   socialApprovalPolicies SocialApprovalPolicy[]
   socialApprovalRequests SocialApprovalRequest[]
   socialCampaigns        SocialCampaign[]
+  socialEngagementItems  SocialEngagementItem[]
 
   @@index([apiKey])
   @@index([streakSince])
@@ -671,6 +672,54 @@ model SocialCampaignItem {
 
   @@unique([campaignId, contentRevisionId, scheduledAt])
   @@index([tenantId, scheduledAt, state])
+}
+
+enum SocialEngagementState {
+  OPEN
+  ASSIGNED
+  PENDING_CUSTOMER
+  RESOLVED
+  ESCALATED
+  SPAM
+}
+
+model SocialEngagementItem {
+  id              String                   @id @default(uuid())
+  tenantId        String
+  providerEventId String                   @unique
+  provider        String
+  accountId       String
+  kind            String
+  externalAuthor  Json
+  content         String
+  occurredAt      DateTime
+  sentiment       String?
+  priority        Int                      @default(3)
+  state           SocialEngagementState    @default(OPEN)
+  assignedTo      String?
+  slaDueAt        DateTime?
+  odooReference   String?
+  correlationId   String
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  organization    Organization             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  actions         SocialEngagementAction[]
+
+  @@index([tenantId, state, priority, occurredAt])
+  @@index([tenantId, assignedTo, state])
+}
+
+model SocialEngagementAction {
+  id           String               @id @default(uuid())
+  tenantId     String
+  engagementId String
+  action       String
+  actor        String
+  metadata     Json                 @default("{}")
+  createdAt    DateTime             @default(now())
+  engagement   SocialEngagementItem @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, createdAt])
 }
 
 model Customer {
