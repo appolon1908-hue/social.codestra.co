@@ -51,6 +51,8 @@ model Organization {
   socialProviderInbox  SocialProviderInbox[]
   socialOnboarding     SocialTenantOnboarding?
   socialBillingEvents  SocialBillingEventInbox[]
+  socialBrandProfiles  SocialBrandProfile[]
+  socialAiGenerations  SocialAiGeneration[]
 
   @@index([apiKey])
   @@index([streakSince])
@@ -457,6 +459,74 @@ model SocialBillingEventInbox {
   @@unique([tenantId, idempotencyKey])
   @@index([tenantId, occurredAt])
   @@index([state, createdAt])
+}
+
+enum SocialAiGenerationState {
+  REQUESTED
+  BLOCKED
+  REVIEW_REQUIRED
+  APPROVED
+  REJECTED
+}
+
+model SocialBrandProfile {
+  id                   String                @id @default(uuid())
+  tenantId             String
+  name                 String
+  activeRevisionNumber Int                   @default(1)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  organization         Organization          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  revisions            SocialBrandRevision[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId, updatedAt])
+}
+
+model SocialBrandRevision {
+  id                  String               @id @default(uuid())
+  tenantId            String
+  brandId             String
+  revisionNumber      Int
+  voice               Json
+  audience            Json
+  visualRules         Json
+  prohibitedTopics    String[]
+  prohibitedClaims    String[]
+  requiredDisclaimers String[]
+  locales             String[]
+  createdBy           String
+  createdAt           DateTime             @default(now())
+  brand               SocialBrandProfile   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  generations         SocialAiGeneration[]
+
+  @@unique([brandId, revisionNumber])
+  @@index([tenantId, createdAt])
+}
+
+model SocialAiGeneration {
+  id              String                  @id @default(uuid())
+  tenantId        String
+  brandRevisionId String
+  idempotencyKey  String
+  payloadHash     String
+  correlationId   String
+  requestedBy     String
+  objective       String
+  prompt          String
+  sources         Json
+  modelPolicy     Json
+  riskFindings    Json
+  riskScore       Int
+  state           SocialAiGenerationState
+  output          Json?
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  organization    Organization            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  brandRevision   SocialBrandRevision     @relation(fields: [brandRevisionId], references: [id], onDelete: Restrict)
+
+  @@unique([tenantId, idempotencyKey])
+  @@index([tenantId, state, createdAt])
 }
 
 model Customer {
