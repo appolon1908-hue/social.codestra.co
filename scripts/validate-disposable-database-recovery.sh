@@ -11,7 +11,7 @@ pnpm exec prisma migrate status --schema "$schema"
 before="$(pnpm exec prisma migrate status --schema "$schema" 2>&1)"
 printf '%s\n' 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;' | \
   pnpm exec prisma db execute --stdin --schema "$schema"
-pnpm exec prisma migrate deploy --schema "$schema"
+pnpm run prisma-migrate-deploy
 after="$(pnpm exec prisma migrate status --schema "$schema" 2>&1)"
 
 grep -q "Database schema is up to date" <<<"$before"
