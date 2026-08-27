@@ -50,6 +50,7 @@ model Organization {
   socialOutboxEvents   SocialOutboxEvent[]
   socialProviderInbox  SocialProviderInbox[]
   socialOnboarding     SocialTenantOnboarding?
+  socialBillingEvents  SocialBillingEventInbox[]
 
   @@index([apiKey])
   @@index([streakSince])
@@ -390,21 +391,72 @@ model Credits {
 }
 
 model Subscription {
-  id               String           @id @default(cuid())
-  organizationId   String           @unique
-  subscriptionTier SubscriptionTier
-  identifier       String?
-  cancelAt         DateTime?
-  period           Period
-  totalChannels    Int
-  isLifetime       Boolean          @default(false)
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-  deletedAt        DateTime?
-  organization     Organization     @relation(fields: [organizationId], references: [id])
+  id                  String                @id @default(cuid())
+  organizationId      String                @unique
+  subscriptionTier    SubscriptionTier
+  identifier          String?
+  cancelAt            DateTime?
+  period              Period
+  totalChannels       Int
+  isLifetime          Boolean               @default(false)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  deletedAt           DateTime?
+  state               SaasSubscriptionState @default(ACTIVE)
+  catalogVersion      String                @default("legacy-v1")
+  planCode            String                @default("legacy")
+  seatQuantity        Int                   @default(1)
+  entitlements        Json                  @default("{}")
+  currentPeriodStart  DateTime?
+  currentPeriodEnd    DateTime?
+  graceUntil          DateTime?
+  cancelAtPeriodEnd   Boolean               @default(false)
+  providerUpdatedAt   DateTime?
+  lastProviderEventId String?
+  organization        Organization          @relation(fields: [organizationId], references: [id])
 
   @@index([organizationId])
   @@index([deletedAt])
+}
+
+enum SaasSubscriptionState {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  GRACE
+  PAUSED
+  CANCEL_AT_PERIOD_END
+  CANCELED
+  INCOMPLETE
+}
+
+enum SocialBillingInboxState {
+  RECEIVED
+  APPLIED
+  REJECTED
+}
+
+model SocialBillingEventInbox {
+  id                     String                  @id @default(uuid())
+  tenantId               String
+  providerEventId        String                  @unique
+  idempotencyKey         String
+  payloadHash            String
+  eventType              String
+  occurredAt             DateTime
+  providerCustomerId     String
+  providerSubscriptionId String?
+  state                  SocialBillingInboxState @default(RECEIVED)
+  errorCode              String?
+  normalized             Json
+  correlationId          String
+  createdAt              DateTime                @default(now())
+  processedAt            DateTime?
+  organization           Organization            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, idempotencyKey])
+  @@index([tenantId, occurredAt])
+  @@index([state, createdAt])
 }
 
 model Customer {

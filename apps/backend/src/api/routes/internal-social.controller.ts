@@ -18,6 +18,8 @@ import {
 import { ServiceAuthContext } from '@gitroom/nestjs-libraries/security/service-auth/service-auth.types';
 import { SocialOnboardingService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-onboarding.service';
 import { SocialOnboardingTransitionDto } from '@gitroom/nestjs-libraries/dtos/social-control/social-onboarding.dto';
+import { SocialBillingService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-billing.service';
+import { SocialBillingEventDto } from '@gitroom/nestjs-libraries/dtos/social-control/social-billing-event.dto';
 
 @ApiTags('Codestra Social private control plane')
 @Controller('/internal/v1/social')
@@ -25,13 +27,24 @@ import { SocialOnboardingTransitionDto } from '@gitroom/nestjs-libraries/dtos/so
 export class InternalSocialController {
   constructor(
     private readonly social: SocialControlService,
-    private readonly onboarding: SocialOnboardingService
+    private readonly onboarding: SocialOnboardingService,
+    private readonly billing: SocialBillingService
   ) {}
 
   @Get('/onboarding')
   @RequireServiceScopes('social.onboarding.read')
   getOnboarding(@GetServiceAuth() auth: ServiceAuthContext) {
     return this.onboarding.get(auth);
+  }
+
+  @Post('/billing/events')
+  @RequireServiceScopes('social.billing.events.write')
+  acceptBillingEvent(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Headers('idempotency-key') idempotencyKey: string | undefined,
+    @Body() body: SocialBillingEventDto
+  ) {
+    return this.billing.accept(auth, idempotencyKey, body);
   }
 
   @Post('/onboarding/transitions')
