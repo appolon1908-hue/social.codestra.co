@@ -1,0 +1,46 @@
+FROM rust@sha256:af306cfa71d987911a781c37b59d7d67d934f49684058f96cf72079c3626bfe0 AS rust-toolchain
+
+FROM node@sha256:9f6d5975c7dca860947d3915877f85607946403fc55349f39b4bc3688448bb6e AS build
+ARG NEXT_PUBLIC_VERSION
+ENV NEXT_PUBLIC_VERSION=$NEXT_PUBLIC_VERSION
+COPY --from=rust-toolchain /usr/local/cargo /usr/local/cargo
+COPY --from=rust-toolchain /usr/local/rustup /usr/local/rustup
+ENV PATH=/usr/local/cargo/bin:$PATH RUSTUP_HOME=/usr/local/rustup CARGO_HOME=/usr/local/cargo
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+      clang cmake g++ make pkg-config protobuf-compiler libprotobuf-dev python3-pip libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+RUN npm --no-update-notifier --no-fund --global install pnpm@10.34.0
+WORKDIR /app
+COPY . /app
+RUN pnpm install --frozen-lockfile
+RUN cd node_modules/@temporalio/core-bridge \
+    && cp /usr/include/google/protobuf/field_mask.proto sdk-core/crates/protos/protos/api_upstream/google/protobuf/field_mask.proto \
+    && cargo build --locked --release -p temporal-sdk-typescript-bridge \
+    && cp target/release/libtemporal_sdk_typescript_bridge.so releases/x86_64-unknown-linux-gnu/index.node
+RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build
+RUN CI=true pnpm prune --prod \
+    && rm -rf node_modules/@temporalio/core-bridge/target /root/.cache /root/.local/share/pnpm/store
+
+FROM debian@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac944a6aa7ab59f2add76a7bd AS runtime
+ARG SOURCE_REVISION
+ARG BUILD_VERSION
+ARG BUILD_CREATED
+LABEL org.opencontainers.image.source="https://github.com/codestra/codestra-social" \
+      org.opencontainers.image.revision=$SOURCE_REVISION \
+      org.opencontainers.image.version=$BUILD_VERSION \
+      org.opencontainers.image.created=$BUILD_CREATED \
+      org.opencontainers.image.licenses="AGPL-3.0"
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends nginx libstdc++6 \
+    && rm -rf /var/lib/apt/lists/* \
+    && install -d -o 10001 -g 10001 /app /www /uploads /config
+COPY --from=build /usr/local/bin/node /usr/local/bin/node
+WORKDIR /app
+COPY --from=build --chown=10001:10001 /app /app
+COPY --chown=10001:10001 var/docker/nginx.codestra.conf /etc/nginx/nginx.conf
+COPY --chown=10001:10001 var/docker/runtime-supervisor.mjs /usr/local/bin/codestra-runtime-supervisor.mjs
+ENV NODE_ENV=production HOME=/www SOURCE_REVISION=$SOURCE_REVISION IMAGE_VERSION=$BUILD_VERSION BUILD_CREATED=$BUILD_CREATED
+USER 10001:10001
+EXPOSE 5000
+CMD ["node", "/usr/local/bin/codestra-runtime-supervisor.mjs"]

@@ -1,0 +1,155 @@
+groups:
+  - name: codestra-social-security
+    rules:
+      - alert: CodestraSocialUnavailable
+        expr: probe_success{instance="https://social.codestra.co"} == 0
+        for: 5m
+        labels: { severity: critical, owner: platform, environment: production }
+        annotations:
+          summary: Codestra public HTTPS is unavailable
+          runbook: /runbooks/codestra-social/public-https
+      - alert: CodestraWebhookDeadLetter
+        expr: codestra_webhook_dead_letters > 0
+        for: 5m
+        labels: { severity: high, owner: platform, environment: production }
+        annotations:
+          summary: Codestra has webhook dead letters
+          runbook: /runbooks/codestra-social/webhook-dead-letter
+      - alert: CodestraPublicationFailure
+        expr: codestra_publication_failures > 0
+        for: 10m
+        labels:
+          { severity: high, owner: social-operations, environment: production }
+        annotations:
+          summary: Codestra has failed publications
+          runbook: /runbooks/codestra-social/publication-failure
+      - alert: CodestraBackupStale
+        expr: time() - postiz_backup_last_success_timestamp_seconds > 129600
+        for: 15m
+        labels: { severity: critical, owner: platform, environment: production }
+        annotations:
+          summary: Codestra backup is older than 36 hours
+          runbook: /runbooks/codestra-social/backup-stale
+      - alert: CodestraTlsExpiry30Days
+        expr: probe_ssl_earliest_cert_expiry{instance="https://social.codestra.co"} - time() < 2592000
+        for: 1h
+        labels: { severity: warning, owner: platform, environment: production }
+        annotations:
+          summary: Codestra TLS certificate expires within 30 days
+          runbook: /runbooks/codestra-social/tls-renewal
+      - alert: CodestraTlsExpiry14Days
+        expr: probe_ssl_earliest_cert_expiry{instance="https://social.codestra.co"} - time() < 1209600
+        for: 1h
+        labels: { severity: high, owner: platform, environment: production }
+        annotations:
+          summary: Codestra TLS certificate expires within 14 days
+          runbook: /runbooks/codestra-social/tls-renewal
+      - alert: CodestraTlsExpiry7Days
+        expr: probe_ssl_earliest_cert_expiry{instance="https://social.codestra.co"} - time() < 604800
+        for: 15m
+        labels: { severity: critical, owner: platform, environment: production }
+        annotations:
+          summary: Codestra TLS certificate expires within 7 days
+          runbook: /runbooks/codestra-social/tls-renewal
+      - alert: CodestraLoginFailureSpike
+        expr: sum(rate(codestra_auth_attempts_total{outcome="failure"}[5m])) > 0.5
+        for: 10m
+        labels: { severity: high, owner: security, environment: production }
+        annotations:
+          summary: Codestra login failures exceed the approved threshold
+          runbook: /runbooks/codestra-social/credential-stuffing
+      - alert: CodestraWorkerUnavailable
+        expr: (codestra_worker_up == 0) or absent(codestra_worker_up)
+        for: 5m
+        labels: { severity: critical, owner: platform, environment: production }
+        annotations:
+          summary: A Codestra publishing worker is unavailable
+          runbook: /runbooks/codestra-social/worker-unavailable
+      - alert: CodestraQueueBacklog
+        expr: codestra_publishing_queue_depth > 100
+        for: 15m
+        labels:
+          { severity: high, owner: social-operations, environment: production }
+        annotations:
+          summary: Codestra publishing queue depth is elevated
+          runbook: /runbooks/codestra-social/queue-backlog
+      - alert: CodestraScheduledPostDelay
+        expr: codestra_oldest_scheduled_job_delay_seconds > 300
+        for: 10m
+        labels:
+          { severity: high, owner: social-operations, environment: production }
+        annotations:
+          summary: Codestra scheduled publications are delayed
+          runbook: /runbooks/codestra-social/scheduled-delay
+      - alert: CodestraOAuthRefreshFailure
+        expr: increase(codestra_oauth_refresh_total{outcome="failure"}[15m]) > 3
+        for: 5m
+        labels:
+          { severity: high, owner: social-operations, environment: production }
+        annotations:
+          summary: Codestra OAuth refresh failures are elevated
+          runbook: /runbooks/codestra-social/oauth-refresh
+      - alert: CodestraProviderCircuitOpen
+        expr: codestra_provider_circuit_open > 0
+        for: 5m
+        labels:
+          { severity: high, owner: social-operations, environment: production }
+        annotations:
+          summary: A social-provider circuit breaker is open
+          runbook: /runbooks/codestra-social/provider-outage
+      - alert: CodestraPostgresUnavailable
+        expr: (codestra_dependency_up{dependency="postgresql"} == 0) or absent(codestra_dependency_up{dependency="postgresql"})
+        for: 2m
+        labels: { severity: critical, owner: platform, environment: production }
+        annotations:
+          summary: Codestra PostgreSQL is unavailable
+          runbook: /runbooks/codestra-social/postgresql
+      - alert: CodestraRedisUnavailable
+        expr: (codestra_dependency_up{dependency="redis"} == 0) or absent(codestra_dependency_up{dependency="redis"})
+        for: 2m
+        labels: { severity: critical, owner: platform, environment: production }
+        annotations:
+          summary: Codestra Redis is unavailable
+          runbook: /runbooks/codestra-social/redis
+      - alert: CodestraTemporalUnavailable
+        expr: (codestra_dependency_up{dependency="temporal"} == 0) or absent(codestra_dependency_up{dependency="temporal"})
+        for: 2m
+        labels: { severity: critical, owner: platform, environment: production }
+        annotations:
+          summary: Codestra Temporal is unavailable
+          runbook: /runbooks/codestra-social/temporal
+      - alert: CodestraElasticsearchUnavailable
+        expr: (codestra_dependency_up{dependency="elasticsearch"} == 0) or absent(codestra_dependency_up{dependency="elasticsearch"})
+        for: 5m
+        labels: { severity: high, owner: platform, environment: production }
+        annotations:
+          summary: Codestra Elasticsearch is unavailable
+          runbook: /runbooks/codestra-social/elasticsearch
+      - alert: CodestraMediaFailure
+        expr: increase(codestra_media_failures_total[15m]) > 0
+        for: 5m
+        labels: { severity: high, owner: platform, environment: production }
+        annotations:
+          summary: Codestra media storage failures were detected
+          runbook: /runbooks/codestra-social/media-storage
+      - alert: CodestraAgentUnavailable
+        expr: codestra_ai_available == 0
+        for: 15m
+        labels: { severity: warning, owner: product, environment: production }
+        annotations:
+          summary: Codestra AI Agent is unavailable
+          runbook: /runbooks/codestra-social/ai-agent
+      - alert: CodestraDiskHigh
+        expr: 100 * (1 - node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) > 80
+        for: 15m
+        labels: { severity: high, owner: platform, environment: production }
+        annotations:
+          summary: Codestra host disk usage exceeds 80 percent
+          runbook: /runbooks/codestra-social/disk
+      - alert: CodestraInodesHigh
+        expr: 100 * (1 - node_filesystem_files_free{mountpoint="/"} / node_filesystem_files{mountpoint="/"}) > 80
+        for: 15m
+        labels: { severity: high, owner: platform, environment: production }
+        annotations:
+          summary: Codestra host inode usage exceeds 80 percent
+          runbook: /runbooks/codestra-social/disk

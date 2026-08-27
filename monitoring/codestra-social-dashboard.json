@@ -1,0 +1,100 @@
+{
+  "title": "Codestra Social - Production Readiness",
+  "uid": "codestra-social",
+  "schemaVersion": 39,
+  "tags": ["codestra", "social", "production"],
+  "time": { "from": "now-6h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "environment",
+        "type": "custom",
+        "query": "production,staging",
+        "current": { "text": "production", "value": "production" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Public HTTPS",
+      "type": "stat",
+      "targets": [
+        { "expr": "probe_success{instance=\"https://social.codestra.co\"}" }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
+    },
+    {
+      "id": 2,
+      "title": "Release identity",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "codestra_build_info{environment=\"$environment\"}",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "gridPos": { "x": 6, "y": 0, "w": 18, "h": 4 }
+    },
+    {
+      "id": 3,
+      "title": "Dependencies",
+      "type": "stat",
+      "targets": [{ "expr": "codestra_dependency_up" }],
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 5 }
+    },
+    {
+      "id": 4,
+      "title": "Webhook queue and dead letters",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "codestra_webhook_pending", "legendFormat": "pending" },
+        {
+          "expr": "codestra_webhook_dead_letters",
+          "legendFormat": "dead letters"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 5 }
+    },
+    {
+      "id": 5,
+      "title": "Publishing health",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "codestra_publishing_queue_depth", "legendFormat": "queue" },
+        {
+          "expr": "codestra_oldest_scheduled_job_delay_seconds",
+          "legendFormat": "oldest delay"
+        },
+        { "expr": "codestra_publication_failures", "legendFormat": "failures" }
+      ],
+      "gridPos": { "x": 0, "y": 9, "w": 12, "h": 6 }
+    },
+    {
+      "id": 6,
+      "title": "Backup age",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "time() - postiz_backup_last_success_timestamp_seconds" }
+      ],
+      "gridPos": { "x": 12, "y": 9, "w": 12, "h": 6 }
+    },
+    {
+      "id": 7,
+      "title": "Host capacity",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "100 * (1 - node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"})",
+          "legendFormat": "disk %"
+        },
+        {
+          "expr": "100 * (1 - node_filesystem_files_free{mountpoint=\"/\"} / node_filesystem_files{mountpoint=\"/\"})",
+          "legendFormat": "inodes %"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 15, "w": 24, "h": 6 }
+    }
+  ]
+}

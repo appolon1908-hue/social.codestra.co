@@ -1,0 +1,48 @@
+services:
+  postiz:
+    image: codestra-social:${CODESTRA_IMAGE_VERSION:?immutable candidate version required}
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 512
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=512m,mode=1777
+    secrets:
+      - jwt_signing_key
+      - data_encryption_key_v1
+      - api_key_pepper
+      - session_token_pepper
+      - oauth_token_pepper
+      - password_reset_signing_key
+      - webhook_master_key
+    environment:
+      DISABLE_REGISTRATION: 'true'
+      JWT_SIGNING_KEY_FILE: /run/secrets/jwt_signing_key
+      DATA_ENCRYPTION_KEY_V1_FILE: /run/secrets/data_encryption_key_v1
+      DATA_ENCRYPTION_KEY_VERSION: '1'
+      API_KEY_PEPPER_FILE: /run/secrets/api_key_pepper
+      SESSION_TOKEN_PEPPER_FILE: /run/secrets/session_token_pepper
+      OAUTH_TOKEN_PEPPER_FILE: /run/secrets/oauth_token_pepper
+      PASSWORD_RESET_SIGNING_KEY_FILE: /run/secrets/password_reset_signing_key
+      WEBHOOK_MASTER_KEY_FILE: /run/secrets/webhook_master_key
+      WEBHOOK_DELIVERY_ENABLED: 'false'
+      PUBLISHING_KILL_SWITCH: 'true'
+      METRICS_ENABLED: 'false'
+      TRUSTED_PROXY_IPS: ${TRUSTED_PROXY_IPS:?exact Caddy container address required; loopback is trusted internally}
+      AGENT_JSON_LIMIT: 2mb
+
+secrets:
+  jwt_signing_key:
+    file: '${CODESTRA_SECRETS_DIR:?protected secret directory required}/jwt-signing-key'
+  data_encryption_key_v1:
+    file: '${CODESTRA_SECRETS_DIR}/data-encryption-key-v1'
+  api_key_pepper:
+    file: '${CODESTRA_SECRETS_DIR}/api-key-pepper'
+  session_token_pepper:
+    file: '${CODESTRA_SECRETS_DIR}/session-token-pepper'
+  oauth_token_pepper:
+    file: '${CODESTRA_SECRETS_DIR}/oauth-token-pepper'
+  password_reset_signing_key:
+    file: '${CODESTRA_SECRETS_DIR}/password-reset-signing-key'
+  webhook_master_key:
+    file: '${CODESTRA_SECRETS_DIR}/webhook-master-key'
