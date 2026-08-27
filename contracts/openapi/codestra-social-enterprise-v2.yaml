@@ -1,0 +1,237 @@
+openapi: 3.1.0
+info:
+  title: Codestra Social enterprise API
+  version: 2.0.0
+  description: >-
+    Public contract exposed by api.codestra.co through Kong and authoritative
+    Middleware. Provider credentials and private product endpoints are excluded.
+servers:
+  - url: https://api.codestra.co/v2/social
+security:
+  - userOAuth: []
+paths:
+  /onboarding:
+    post:
+      operationId: startOnboarding
+      summary: Start or replay tenant onboarding
+      parameters: &mutationHeaders
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+    get:
+      operationId: getOnboarding
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /onboarding/readiness:
+    get:
+      operationId: getOnboardingReadiness
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /onboarding/activate:
+    post:
+      operationId: requestTenantActivation
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+        '409': { description: Readiness prerequisites or safety policy failed }
+  /brand-profiles:
+    get:
+      operationId: listBrandProfiles
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+    post:
+      operationId: createBrandProfile
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /brand-profiles/{brandId}:
+    parameters:
+      - $ref: '#/components/parameters/BrandId'
+    get:
+      operationId: getBrandProfile
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      operationId: updateBrandProfile
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /campaigns:
+    get:
+      operationId: listCampaigns
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+    post:
+      operationId: createCampaign
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /content/revisions:
+    post:
+      operationId: createContentRevision
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /content/generate:
+    post:
+      operationId: generateGovernedContent
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+        '422':
+          {
+            description: Brand,
+            model,
+            source or risk policy rejected the request,
+          }
+  /approvals:
+    get:
+      operationId: listApprovalTasks
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /approvals/{approvalId}/decisions:
+    post:
+      operationId: decideApproval
+      parameters:
+        - $ref: '#/components/parameters/ApprovalId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+        '409':
+          { description: Stale revision, duplicate actor or invalid transition }
+  /publications:
+    post:
+      operationId: requestPublication
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /publications/{publicationId}:
+    get:
+      operationId: getPublication
+      parameters:
+        - $ref: '#/components/parameters/PublicationId'
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /engagement:
+    get:
+      operationId: listEngagement
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /engagement/{engagementId}/assignment:
+    put:
+      operationId: assignEngagement
+      parameters:
+        - $ref: '#/components/parameters/EngagementId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /engagement/{engagementId}/escalations:
+    post:
+      operationId: escalateEngagement
+      parameters:
+        - $ref: '#/components/parameters/EngagementId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /analytics/overview:
+    get:
+      operationId: getAnalyticsOverview
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /analytics/campaigns/{campaignId}:
+    get:
+      operationId: getCampaignAttribution
+      parameters:
+        - $ref: '#/components/parameters/CampaignId'
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /reports:
+    post:
+      operationId: requestReport
+      parameters: *mutationHeaders
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+  /integrations:
+    get:
+      operationId: listIntegrationHealth
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+  /audit:
+    get:
+      operationId: searchAudit
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+components:
+  securitySchemes:
+    userOAuth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.codestra.co/realms/codestra/protocol/openid-connect/auth
+          tokenUrl: https://auth.codestra.co/realms/codestra/protocol/openid-connect/token
+          scopes: {}
+    serviceOAuth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.codestra.co/realms/codestra/protocol/openid-connect/token
+          scopes: {}
+  parameters:
+    CorrelationId:
+      name: X-Correlation-ID
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, minLength: 16, maxLength: 200 }
+    BrandId:
+      name: brandId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    ApprovalId:
+      name: approvalId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    PublicationId:
+      name: publicationId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    EngagementId:
+      name: engagementId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    CampaignId:
+      name: campaignId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+  responses:
+    Accepted:
+      description: Durable command accepted
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            required: [command_id, state, replayed]
+            properties:
+              command_id: { type: string, format: uuid }
+              state: { enum: [accepted, blocked] }
+              replayed: { type: boolean }
+    Ok:
+      description: Tenant-scoped response
+    NotFound:
+      description: Resource is absent from the caller tenant

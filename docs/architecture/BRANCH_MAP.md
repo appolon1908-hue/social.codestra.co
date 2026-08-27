@@ -38,6 +38,10 @@ portal/external-review
 provider/<provider-name>
 ```
 
+The reviewed enterprise continuation, portal URL map, and additional delivery
+order are defined in `ENTERPRISE_BRANCH_MAP.md`. Do not bypass that stack by
+merging a final portal or operations branch directly into `main`.
+
 ## Cross-repository dependencies
 
 This repository publishes consumer requirements but does not own these runtime
