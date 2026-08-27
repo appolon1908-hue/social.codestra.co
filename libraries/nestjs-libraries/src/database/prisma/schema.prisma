@@ -55,6 +55,7 @@ model Organization {
   socialAiGenerations    SocialAiGeneration[]
   socialApprovalPolicies SocialApprovalPolicy[]
   socialApprovalRequests SocialApprovalRequest[]
+  socialCampaigns        SocialCampaign[]
 
   @@index([apiKey])
   @@index([streakSince])
@@ -614,6 +615,62 @@ model SocialExternalReviewToken {
   request   SocialApprovalRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
 
   @@index([tenantId, expiresAt])
+}
+
+enum SocialCampaignState {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELED
+}
+
+enum SocialCampaignItemState {
+  DRAFT
+  APPROVAL_REQUIRED
+  APPROVED
+  SCHEDULED
+  BLOCKED
+  CANCELED
+}
+
+model SocialCampaign {
+  id           String               @id @default(uuid())
+  tenantId     String
+  brandId      String?
+  name         String
+  objective    String
+  ownerId      String
+  timezone     String
+  startsAt     DateTime
+  endsAt       DateTime
+  state        SocialCampaignState  @default(DRAFT)
+  budget       Json                 @default("{}")
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  organization Organization         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  items        SocialCampaignItem[]
+
+  @@unique([tenantId, name, startsAt])
+  @@index([tenantId, state, startsAt])
+}
+
+model SocialCampaignItem {
+  id                String                  @id @default(uuid())
+  tenantId          String
+  campaignId        String
+  contentRevisionId String
+  approvalRequestId String?
+  scheduledAt       DateTime
+  timezone          String
+  targets           Json
+  state             SocialCampaignItemState @default(DRAFT)
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  campaign          SocialCampaign          @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, contentRevisionId, scheduledAt])
+  @@index([tenantId, scheduledAt, state])
 }
 
 model Customer {

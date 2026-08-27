@@ -1,0 +1,10 @@
+CREATE TYPE "SocialCampaignState" AS ENUM ('DRAFT','ACTIVE','PAUSED','COMPLETED','CANCELED');
+CREATE TYPE "SocialCampaignItemState" AS ENUM ('DRAFT','APPROVAL_REQUIRED','APPROVED','SCHEDULED','BLOCKED','CANCELED');
+CREATE TABLE "SocialCampaign" ("id" TEXT NOT NULL,"tenantId" TEXT NOT NULL,"brandId" TEXT,"name" TEXT NOT NULL,"objective" TEXT NOT NULL,"ownerId" TEXT NOT NULL,"timezone" TEXT NOT NULL,"startsAt" TIMESTAMP(3) NOT NULL,"endsAt" TIMESTAMP(3) NOT NULL,"state" "SocialCampaignState" NOT NULL DEFAULT 'DRAFT',"budget" JSONB NOT NULL DEFAULT '{}',"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,"updatedAt" TIMESTAMP(3) NOT NULL,CONSTRAINT "SocialCampaign_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "SocialCampaignItem" ("id" TEXT NOT NULL,"tenantId" TEXT NOT NULL,"campaignId" TEXT NOT NULL,"contentRevisionId" TEXT NOT NULL,"approvalRequestId" TEXT,"scheduledAt" TIMESTAMP(3) NOT NULL,"timezone" TEXT NOT NULL,"targets" JSONB NOT NULL,"state" "SocialCampaignItemState" NOT NULL DEFAULT 'DRAFT',"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,"updatedAt" TIMESTAMP(3) NOT NULL,CONSTRAINT "SocialCampaignItem_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "SocialCampaign_tenantId_name_startsAt_key" ON "SocialCampaign"("tenantId","name","startsAt");
+CREATE INDEX "SocialCampaign_tenantId_state_startsAt_idx" ON "SocialCampaign"("tenantId","state","startsAt");
+CREATE UNIQUE INDEX "SocialCampaignItem_campaignId_contentRevisionId_scheduledAt_key" ON "SocialCampaignItem"("campaignId","contentRevisionId","scheduledAt");
+CREATE INDEX "SocialCampaignItem_tenantId_scheduledAt_state_idx" ON "SocialCampaignItem"("tenantId","scheduledAt","state");
+ALTER TABLE "SocialCampaign" ADD CONSTRAINT "SocialCampaign_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "SocialCampaignItem" ADD CONSTRAINT "SocialCampaignItem_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "SocialCampaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;

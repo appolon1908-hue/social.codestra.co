@@ -32,6 +32,11 @@ import {
   SocialApprovalRequestDto,
   SocialExternalReviewTokenDto,
 } from '@gitroom/nestjs-libraries/dtos/social-control/social-approval.dto';
+import { SocialCampaignService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-campaign.service';
+import {
+  SocialCampaignCreateDto,
+  SocialCampaignItemDto,
+} from '@gitroom/nestjs-libraries/dtos/social-control/social-campaign.dto';
 
 @ApiTags('Codestra Social private control plane')
 @Controller('/internal/v1/social')
@@ -42,8 +47,35 @@ export class InternalSocialController {
     private readonly onboarding: SocialOnboardingService,
     private readonly billing: SocialBillingService,
     private readonly brands: SocialBrandService,
-    private readonly approvals: SocialApprovalService
+    private readonly approvals: SocialApprovalService,
+    private readonly campaigns: SocialCampaignService
   ) {}
+  @Post('/campaigns')
+  @RequireServiceScopes('social.campaigns.write')
+  createCampaign(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Body() body: SocialCampaignCreateDto
+  ) {
+    return this.campaigns.create(auth, body);
+  }
+  @Post('/campaigns/:campaignId/items')
+  @RequireServiceScopes('social.campaigns.write')
+  addCampaignItem(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Param('campaignId') id: string,
+    @Body() body: SocialCampaignItemDto
+  ) {
+    return this.campaigns.addItem(auth, id, body);
+  }
+  @Get('/campaign-calendar')
+  @RequireServiceScopes('social.campaigns.read')
+  campaignCalendar(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Headers('x-calendar-from') from: string,
+    @Headers('x-calendar-to') to: string
+  ) {
+    return this.campaigns.calendar(auth, from, to);
+  }
 
   @Post('/approval-policies')
   @RequireServiceScopes('social.approvals.write')
