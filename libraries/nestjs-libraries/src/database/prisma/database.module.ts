@@ -52,6 +52,9 @@ import { SessionService } from '@gitroom/nestjs-libraries/security/session.servi
 import { SecureWebhooksService } from '@gitroom/nestjs-libraries/security/secure-webhooks.service';
 import { SocialControlRepository } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-control.repository';
 import { SocialControlService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-control.service';
+import { SocialProviderEventsRepository } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-provider-events.repository';
+import { SocialProviderEventsService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-provider-events.service';
+import { SocialProviderWebhookVerifier } from '@gitroom/nestjs-libraries/security/social-provider-webhook.verifier';
 
 @Global()
 @Module({
@@ -109,6 +112,9 @@ import { SocialControlService } from '@gitroom/nestjs-libraries/database/prisma/
     SecureWebhooksService,
     SocialControlRepository,
     SocialControlService,
+    SocialProviderEventsRepository,
+    SocialProviderEventsService,
+    SocialProviderWebhookVerifier,
   ],
   get exports() {
     return this.providers;
