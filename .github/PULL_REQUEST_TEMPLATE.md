@@ -1,23 +1,46 @@
-<!-- Remember to first apply via [the contribution form](https://contribute.postiz.com/p/postiz) and sign the [CLA](https://contribute.postiz.com/p/postiz/cla) before submitting a PR. -->
+# Change type and outcome
 
-# What kind of change does this PR introduce?
+Describe the user/system outcome and select the change type:
 
-eg: Bug fix, feature, docs update, ...
+- [ ] Contract or architecture
+- [ ] Security or tenant isolation
+- [ ] Durable state, migration, or worker
+- [ ] Integration
+- [ ] Observability or operations
+- [ ] Product feature
 
-# Why was this change needed?
+# Why this change is needed
 
-Please link to related issues when possible, and explain WHY you changed things, not WHAT you changed.
+Explain the problem, authority boundary, and the evidence supporting the change.
 
-# Other information:
+# Stack and dependencies
 
-eg: Did you discuss this change with anybody before working on it (not required, but can be a good idea for bigger changes). Any plans for the future, etc?
+- Base/dependency branch:
+- Required contract version:
+- Required cross-repository branch/SHA:
+- Merge order:
 
-# Checklist:
+# Security and data review
 
-Put a "X" in the boxes below to indicate you have followed the checklist;
+- [ ] Middleware remains the only cross-system write boundary.
+- [ ] Tenant, issuer, audience, scope, idempotency, and replay behavior were reviewed.
+- [ ] No provider token, signing secret, credential, or sensitive payload was committed/logged.
+- [ ] PostgreSQL remains authoritative; Redis/n8n are not used as correctness truth.
+- [ ] Publishing and external delivery remained fail-closed during validation.
 
-- [ ] I have read the [CONTRIBUTING](https://github.com/gitroomhq/postiz-app/blob/main/CONTRIBUTING.md) guide.
-- [ ] I have signed the [Contributor License Agreement (CLA)](https://contribute.postiz.com/p/postiz/cla) ([ICLA](https://github.com/gitroomhq/postiz-app/blob/main/ICLA.md) for individuals, [CCLA](https://github.com/gitroomhq/postiz-app/blob/main/CCLA.md) for entities).
-- [ ] I confirm I have not used AI to submit this PR or generate code for it.
-- [ ] I checked that there were no similar issues or PRs already open for this.
-- [ ] This PR fixes just ONE issue
+# Migration, release, and rollback
+
+- Migration impact:
+- Backup/restore requirement:
+- Canary/read-back evidence:
+- Rollback digest/configuration/schema plan:
+
+# Validation evidence
+
+List exact commands, test counts, build results, and any known limitations.
+
+- [ ] Prisma schema and migrations validated when changed.
+- [ ] Relevant tests pass.
+- [ ] Backend/orchestrator/frontend builds pass when affected.
+- [ ] Contracts and deployment YAML parse and are formatted.
+- [ ] No live deployment or production mutation was performed by this PR.

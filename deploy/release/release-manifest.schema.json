@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://social.codestra.co/contracts/release-manifest.schema.json",
+  "title": "Codestra Social immutable release evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "image",
+    "digest",
+    "version",
+    "source_revision",
+    "build_created",
+    "migration_head",
+    "contracts",
+    "safety_flags"
+  ],
+  "properties": {
+    "image": { "type": "string", "pattern": "^ghcr\\.io/" },
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "version": { "type": "string", "minLength": 1 },
+    "source_revision": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "build_created": { "type": "string", "format": "date-time" },
+    "migration_head": { "type": "string", "pattern": "^[0-9]{14}_[a-z0-9_]+$" },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["openapi", "asyncapi"],
+      "properties": {
+        "openapi": { "const": "1.0.0" },
+        "asyncapi": { "const": "1.0.0" }
+      }
+    },
+    "safety_flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "social_publishing_enabled",
+        "external_delivery_enabled",
+        "publishing_kill_switch",
+        "middleware_outbox_enabled"
+      ],
+      "properties": {
+        "social_publishing_enabled": { "const": false },
+        "external_delivery_enabled": { "const": false },
+        "publishing_kill_switch": { "const": true },
+        "middleware_outbox_enabled": { "const": false }
+      }
+    }
+  }
+}

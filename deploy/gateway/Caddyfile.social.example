@@ -1,0 +1,29 @@
+# Reference only. The authoritative Caddy configuration belongs in the gateway
+# repository and must be reviewed with its complete certificate/network policy.
+
+social.codestra.co {
+  encode zstd gzip
+
+  @private path /internal/* /monitor/metrics /monitor/ready /monitor/version
+  respond @private 404
+
+  header {
+    -Server
+    Content-Security-Policy "frame-ancestors 'self'"
+    Referrer-Policy strict-origin-when-cross-origin
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options nosniff
+    X-Frame-Options SAMEORIGIN
+  }
+
+  reverse_proxy codestra-social:5000 {
+    header_up X-Forwarded-Proto https
+    health_uri /monitor/live
+  }
+}
+
+api.codestra.co {
+  encode zstd gzip
+  header -Server
+  reverse_proxy kong:8000
+}
