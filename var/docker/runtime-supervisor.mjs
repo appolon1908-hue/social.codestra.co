@@ -1,7 +1,6 @@
 import { spawn } from 'node:child_process';
 
 const root = '/app';
-const schema = `${root}/libraries/nestjs-libraries/src/database/prisma/schema.prisma`;
 const children = new Set();
 
 function shutdown(code = 0) {
@@ -13,7 +12,11 @@ function shutdown(code = 0) {
 }
 
 function start(command, args, name) {
-  const child = spawn(command, args, { cwd: root, env: process.env, stdio: 'inherit' });
+  const child = spawn(command, args, {
+    cwd: root,
+    env: process.env,
+    stdio: 'inherit',
+  });
   children.add(child);
   child.on('exit', (code, signal) => {
     children.delete(child);
@@ -25,14 +28,18 @@ function start(command, args, name) {
 process.on('SIGTERM', () => shutdown(0));
 process.on('SIGINT', () => shutdown(0));
 
-const migration = spawn('node', [
-  `${root}/node_modules/prisma/build/index.js`, 'migrate', 'deploy', '--schema', schema,
-], { cwd: root, env: process.env, stdio: 'inherit' });
+if (process.env.MIGRATE_ON_START === 'true') {
+  console.error(
+    '[codestra-runtime] MIGRATE_ON_START is forbidden; run the protected one-shot migration command before rollout'
+  );
+  process.exit(1);
+}
 
-migration.on('exit', (code) => {
-  if (code !== 0) return shutdown(code || 1);
-  start('nginx', ['-g', 'daemon off;'], 'nginx');
-  start('node', [`${root}/dist/apps/backend/src/main.js`], 'backend');
-  start('node', [`${root}/dist/apps/orchestrator/src/main.js`], 'orchestrator');
-  start('node', [`${root}/node_modules/next/dist/bin/next`, 'start', '-p', '4200'], 'frontend');
-});
+start('nginx', ['-g', 'daemon off;'], 'nginx');
+start('node', [`${root}/dist/apps/backend/src/main.js`], 'backend');
+start('node', [`${root}/dist/apps/orchestrator/src/main.js`], 'orchestrator');
+start(
+  'node',
+  [`${root}/node_modules/next/dist/bin/next`, 'start', '-p', '4200'],
+  'frontend'
+);

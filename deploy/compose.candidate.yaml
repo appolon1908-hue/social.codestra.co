@@ -1,6 +1,6 @@
 services:
   postiz:
-    image: codestra-social:${CODESTRA_IMAGE_VERSION:?immutable candidate version required}
+    image: ${CODESTRA_IMAGE_REPOSITORY:-ghcr.io/appolon1908-hue/social.codestra.co}@${CODESTRA_IMAGE_DIGEST:?sha256 image digest required}
     read_only: true
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
@@ -44,6 +44,8 @@ services:
       METRICS_ENABLED: 'false'
       METRICS_ALLOWED_IPS: ${METRICS_ALLOWED_IPS:-}
       IMAGE_DIGEST: ${CODESTRA_IMAGE_DIGEST:-unknown}
+      IMAGE_VERSION: ${CODESTRA_IMAGE_VERSION:?immutable candidate version required}
+      MIGRATE_ON_START: 'false'
       TRUSTED_PROXY_IPS: ${TRUSTED_PROXY_IPS:?exact Caddy container address required; loopback is trusted internally}
       AGENT_JSON_LIMIT: 2mb
 

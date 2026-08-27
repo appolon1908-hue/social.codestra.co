@@ -203,7 +203,19 @@ components:
       properties:
         command_id: { type: string, format: uuid }
         state:
-          enum: [requested, validated, persisted, queued, accepted, reconciled, completed, failed, dead_lettered, blocked]
+          enum:
+            [
+              requested,
+              validated,
+              persisted,
+              queued,
+              accepted,
+              reconciled,
+              completed,
+              failed,
+              dead_lettered,
+              blocked,
+            ]
         deliveries:
           type: array
           items: { $ref: '#/components/schemas/Delivery' }
@@ -215,7 +227,17 @@ components:
         account_id: { type: string }
         provider: { type: string }
         state:
-          enum: [pending, publishing, provider_accepted, published, retry_wait, failed, dead_lettered, cancelled]
+          enum:
+            [
+              pending,
+              publishing,
+              provider_accepted,
+              published,
+              retry_wait,
+              failed,
+              dead_lettered,
+              cancelled,
+            ]
         attempt: { type: integer, minimum: 0 }
         provider_post_id: { type: [string, 'null'] }
         reconciled_at: { type: [string, 'null'], format: date-time }

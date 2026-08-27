@@ -6,7 +6,7 @@ ENV NEXT_PUBLIC_VERSION=$NEXT_PUBLIC_VERSION
 COPY --from=rust-toolchain /usr/local/cargo /usr/local/cargo
 COPY --from=rust-toolchain /usr/local/rustup /usr/local/rustup
 ENV PATH=/usr/local/cargo/bin:$PATH RUSTUP_HOME=/usr/local/rustup CARGO_HOME=/usr/local/cargo
-RUN apt-get update && apt-get upgrade -y \
+RUN apt-get update \
     && apt-get install -y --no-install-recommends \
       clang cmake g++ make pkg-config protobuf-compiler libprotobuf-dev python3-pip libssl-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -18,7 +18,7 @@ RUN cd node_modules/@temporalio/core-bridge \
     && cp /usr/include/google/protobuf/field_mask.proto sdk-core/crates/protos/protos/api_upstream/google/protobuf/field_mask.proto \
     && cargo build --locked --release -p temporal-sdk-typescript-bridge \
     && cp target/release/libtemporal_sdk_typescript_bridge.so releases/x86_64-unknown-linux-gnu/index.node
-RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build
+RUN NODE_OPTIONS="--max-old-space-size=6144" pnpm run build
 RUN CI=true pnpm prune --prod \
     && rm -rf node_modules/@temporalio/core-bridge/target /root/.cache /root/.local/share/pnpm/store
 
@@ -26,12 +26,12 @@ FROM debian@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac944a6aa7ab59f2add76a
 ARG SOURCE_REVISION
 ARG BUILD_VERSION
 ARG BUILD_CREATED
-LABEL org.opencontainers.image.source="https://github.com/codestra/codestra-social" \
+LABEL org.opencontainers.image.source="https://github.com/appolon1908-hue/social.codestra.co" \
       org.opencontainers.image.revision=$SOURCE_REVISION \
       org.opencontainers.image.version=$BUILD_VERSION \
       org.opencontainers.image.created=$BUILD_CREATED \
       org.opencontainers.image.licenses="AGPL-3.0"
-RUN apt-get update && apt-get upgrade -y \
+RUN apt-get update \
     && apt-get install -y --no-install-recommends nginx libstdc++6 \
     && rm -rf /var/lib/apt/lists/* \
     && install -d -o 10001 -g 10001 /app /www /uploads /config
@@ -43,4 +43,6 @@ COPY --chown=10001:10001 var/docker/runtime-supervisor.mjs /usr/local/bin/codest
 ENV NODE_ENV=production HOME=/www SOURCE_REVISION=$SOURCE_REVISION IMAGE_VERSION=$BUILD_VERSION BUILD_CREATED=$BUILD_CREATED
 USER 10001:10001
 EXPOSE 5000
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+  CMD ["node", "-e", "fetch('http://127.0.0.1:5000/monitor/live').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
 CMD ["node", "/usr/local/bin/codestra-runtime-supervisor.mjs"]

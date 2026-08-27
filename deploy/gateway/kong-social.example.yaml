@@ -1,0 +1,57 @@
+_format_version: '3.0'
+_transform: true
+
+# Reference only. Authentication, mTLS, network allowlists, and Redis-backed
+# distributed rate limits must be completed in the authoritative gateway repo.
+services:
+  - name: codestra-middleware-social
+    url: https://middleware:8443
+    connect_timeout: 5000
+    read_timeout: 15000
+    write_timeout: 15000
+    retries: 2
+    tags: [codestra-social, reference-only]
+    routes:
+      - name: codestra-social-api-v1
+        hosts: [api.codestra.co]
+        paths: [/v1/social]
+        strip_path: false
+        preserve_host: true
+        protocols: [https]
+        tags: [codestra-social, public-api]
+      - name: codestra-social-events-v1
+        hosts: [api.codestra.co]
+        paths: [/v1/webhooks/social/events]
+        strip_path: false
+        preserve_host: true
+        protocols: [https]
+        tags: [codestra-social, service-api]
+
+plugins:
+  - name: correlation-id
+    service: codestra-middleware-social
+    config:
+      header_name: X-Correlation-Id
+      generator: uuid
+      echo_downstream: true
+
+  - name: request-size-limiting
+    service: codestra-middleware-social
+    config:
+      allowed_payload_size: 2
+      size_unit: megabytes
+      require_content_length: true
+
+  - name: rate-limiting
+    route: codestra-social-api-v1
+    config:
+      minute: 300
+      policy: local
+      limit_by: ip
+
+  - name: rate-limiting
+    route: codestra-social-events-v1
+    config:
+      minute: 1200
+      policy: local
+      limit_by: ip
