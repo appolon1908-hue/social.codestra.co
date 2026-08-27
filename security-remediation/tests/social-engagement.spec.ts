@@ -32,4 +32,19 @@ describe('Codestra engagement inbox', () => {
       })
     ).rejects.toThrow('engagement_not_found');
   });
+  it('makes repeated escalation idempotent without another outbox write', async () => {
+    const item = { id: 'e', tenantId: 't', state: 'ESCALATED' };
+    const prisma: any = {
+      socialEngagementItem: { findFirst: jest.fn().mockResolvedValue(item) },
+      $transaction: jest.fn(),
+    };
+    const service = new SocialEngagementService(prisma);
+    await expect(
+      service.escalate({ tenantId: 't', correlationId: 'c' } as any, 'e', {
+        actor: 'u',
+        reason: 'support',
+      })
+    ).resolves.toEqual(expect.objectContaining({ replayed: true }));
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
 });

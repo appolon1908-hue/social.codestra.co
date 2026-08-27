@@ -93,6 +93,21 @@ export class SocialApprovalService {
           : terminal
           ? 'APPROVED'
           : 'PENDING';
+      const claimed = await tx.socialApprovalRequest.updateMany({
+        where: {
+          id,
+          tenantId: auth.tenantId,
+          state: 'PENDING',
+          currentStage: request.currentStage,
+        },
+        data: {
+          state,
+          currentStage:
+            state === 'PENDING' ? { increment: 1 } : request.currentStage,
+        },
+      });
+      if (claimed.count !== 1)
+        throw new ConflictException('approval_concurrent_decision');
       await tx.socialApprovalDecision.create({
         data: {
           tenantId: auth.tenantId,
@@ -103,14 +118,7 @@ export class SocialApprovalService {
           comment: input.comment,
         },
       });
-      return tx.socialApprovalRequest.update({
-        where: { id },
-        data: {
-          state,
-          currentStage:
-            state === 'PENDING' ? { increment: 1 } : request.currentStage,
-        },
-      });
+      return tx.socialApprovalRequest.findUniqueOrThrow({ where: { id } });
     });
   }
   async createReviewToken(
