@@ -20,6 +20,11 @@ import { SocialOnboardingService } from '@gitroom/nestjs-libraries/database/pris
 import { SocialOnboardingTransitionDto } from '@gitroom/nestjs-libraries/dtos/social-control/social-onboarding.dto';
 import { SocialBillingService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-billing.service';
 import { SocialBillingEventDto } from '@gitroom/nestjs-libraries/dtos/social-control/social-billing-event.dto';
+import { SocialBrandService } from '@gitroom/nestjs-libraries/database/prisma/social-control/social-brand.service';
+import {
+  SocialAiGenerationRequestDto,
+  SocialBrandCreateDto,
+} from '@gitroom/nestjs-libraries/dtos/social-control/social-brand.dto';
 
 @ApiTags('Codestra Social private control plane')
 @Controller('/internal/v1/social')
@@ -28,13 +33,42 @@ export class InternalSocialController {
   constructor(
     private readonly social: SocialControlService,
     private readonly onboarding: SocialOnboardingService,
-    private readonly billing: SocialBillingService
+    private readonly billing: SocialBillingService,
+    private readonly brands: SocialBrandService
   ) {}
 
   @Get('/onboarding')
   @RequireServiceScopes('social.onboarding.read')
   getOnboarding(@GetServiceAuth() auth: ServiceAuthContext) {
     return this.onboarding.get(auth);
+  }
+
+  @Post('/brands')
+  @RequireServiceScopes('social.brands.write')
+  createBrand(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Body() body: SocialBrandCreateDto
+  ) {
+    return this.brands.createBrand(auth, body);
+  }
+
+  @Get('/brands/:brandId')
+  @RequireServiceScopes('social.brands.read')
+  getBrand(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Param('brandId') brandId: string
+  ) {
+    return this.brands.getBrand(auth, brandId);
+  }
+
+  @Post('/brain/generations')
+  @RequireServiceScopes('social.ai.generate')
+  generate(
+    @GetServiceAuth() auth: ServiceAuthContext,
+    @Headers('idempotency-key') key: string | undefined,
+    @Body() body: SocialAiGenerationRequestDto
+  ) {
+    return this.brands.requestGeneration(auth, key, body);
   }
 
   @Post('/billing/events')
