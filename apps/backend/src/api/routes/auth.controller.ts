@@ -26,6 +26,7 @@ import * as Sentry from '@sentry/nestjs';
 import { SessionService } from '@gitroom/nestjs-libraries/security/session.service';
 import { issueCsrfCookie } from '@gitroom/backend/services/auth/csrf.middleware';
 import { AuthService as AuthChecker } from '@gitroom/helpers/auth/auth.service';
+import crypto from 'node:crypto';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -255,8 +256,31 @@ export class AuthController {
   }
 
   @Get('/oauth/:provider')
-  async oauthLink(@Param('provider') provider: string, @Query() query: any) {
-    return this._authService.oauthLink(provider, query);
+  async oauthLink(
+    @Param('provider') provider: string,
+    @Query() query: any,
+    @Res({ passthrough: false }) response: Response
+  ) {
+    if (provider.toUpperCase() !== Provider.GENERIC) {
+      return response
+        .type('text/plain')
+        .send(await this._authService.oauthLink(provider, query));
+    }
+    const state = crypto.randomBytes(32).toString('base64url');
+    const verifier = crypto.randomBytes(48).toString('base64url');
+    const codeChallenge = crypto
+      .createHash('sha256')
+      .update(verifier)
+      .digest('base64url');
+    this.setTransientOauthCookie(response, 'codestra_oauth_state', state);
+    this.setTransientOauthCookie(response, 'codestra_oauth_verifier', verifier);
+    return response.type('text/plain').send(
+      await this._authService.oauthLink(provider, {
+        ...query,
+        state,
+        codeChallenge,
+      })
+    );
   }
 
   @Post('/activate')
@@ -318,8 +342,10 @@ export class AuthController {
   @Post('/oauth/:provider/exists')
   async oauthExists(
     @Body('code') code: string,
+    @Body('state') state: string,
     @Body('redirect_uri') redirect_uri: string,
     @Param('provider') provider: string,
+    @Req() req: Request,
     @Res({ passthrough: false }) response: Response,
     @RealIP() ip: string,
     @UserAgent() userAgent: string
@@ -329,8 +355,19 @@ export class AuthController {
       code,
       redirect_uri,
       ip,
-      userAgent
+      userAgent,
+      provider.toUpperCase() === Provider.GENERIC
+        ? {
+            expectedState: req.cookies?.codestra_oauth_state,
+            state,
+            codeVerifier: req.cookies?.codestra_oauth_verifier,
+          }
+        : undefined
     );
+
+    if (provider.toUpperCase() === Provider.GENERIC) {
+      this.clearTransientOauthCookies(response);
+    }
 
     if ('token' in result && result.token) {
       return response.json({ token: result.token });
@@ -376,5 +413,32 @@ export class AuthController {
       sameSite: 'lax',
       expires: expiresAt,
     });
+  }
+
+  private setTransientOauthCookie(
+    response: Response,
+    name: string,
+    value: string
+  ) {
+    response.cookie(name, value, {
+      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      path: '/',
+      secure: !process.env.NOT_SECURED,
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 10 * 60 * 1000,
+    });
+  }
+
+  private clearTransientOauthCookies(response: Response) {
+    for (const name of ['codestra_oauth_state', 'codestra_oauth_verifier']) {
+      response.clearCookie(name, {
+        domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+        path: '/',
+        secure: !process.env.NOT_SECURED,
+        httpOnly: true,
+        sameSite: 'lax',
+      });
+    }
   }
 }
