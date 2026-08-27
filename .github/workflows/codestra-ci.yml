@@ -65,7 +65,10 @@ jobs:
           cache: pnpm
 
       - name: Install locked dependencies
-        run: pnpm install --frozen-lockfile
+        run: >-
+          pnpm install --frozen-lockfile
+          --package-import-method=copy
+          --child-concurrency=1
 
       - name: Validate Prisma schema
         run: pnpm run prisma-validate
