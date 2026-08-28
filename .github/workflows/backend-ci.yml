@@ -2,19 +2,6 @@ name: Backend CI
 
 on:
   pull_request:
-    paths:
-      - 'apps/backend/**'
-      - 'apps/orchestrator/**'
-      - 'libraries/**'
-      - 'packages/**'
-      - 'contracts/**'
-      - 'scripts/**'
-      - 'docs/architecture/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'Dockerfile*'
-      - 'deploy/**'
-      - '.github/workflows/backend-ci.yml'
   push:
     branches: [main]
   workflow_dispatch:
