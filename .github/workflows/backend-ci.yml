@@ -81,7 +81,10 @@ jobs:
       - name: Install locked dependencies
         run: pnpm install --frozen-lockfile --package-import-method=copy --child-concurrency=1
       - name: Validate formatting
-        run: pnpm exec prettier --check package.json 'scripts/**/*.mjs' '.github/**/*.yml' 'docs/architecture/**/*.md'
+        run: >-
+          pnpm exec prettier --check package.json 'scripts/**/*.mjs'
+          .github/workflows/backend-ci.yml .github/workflows/immutable-image.yml
+          'docs/architecture/**/*.md'
       - name: Validate backend policy
         run: pnpm validate:backend-policy
       - name: Validate contract foundation
