@@ -1,23 +1,49 @@
-<!-- Remember to first apply via [the contribution form](https://contribute.postiz.com/p/postiz) and sign the [CLA](https://contribute.postiz.com/p/postiz/cla) before submitting a PR. -->
+# Outcome
 
-# What kind of change does this PR introduce?
+OUTCOME=
+BASE_BRANCH=main
+BASE_SHA=
+HEAD_SHA=
 
-eg: Bug fix, feature, docs update, ...
+# Contracts and persistence
 
-# Why was this change needed?
+PUBLIC_API_OPERATIONS_ADDED_OR_CHANGED=NONE
+PRIVATE_API_OPERATIONS_ADDED_OR_CHANGED=NONE
+OPENAPI_VERSION=UNCHANGED
+ASYNCAPI_EVENTS_ADDED_OR_CHANGED=NONE
+DATABASE_MIGRATIONS=NONE
+TENANT_ISOLATION_CONTROLS=
+IDEMPOTENCY_AND_CONCURRENCY=
+OUTBOX_OR_INBOX_IMPACT=NONE
 
-Please link to related issues when possible, and explain WHY you changed things, not WHAT you changed.
+# Safety and evidence
 
-# Other information:
+CAPABILITY_FLAGS=UNCHANGED
+LIVE_CAPABILITIES_ENABLED=NO
+PRODUCTION_DEPLOYED=NO
+TEST_COMMANDS=
+CI_RUN_URL=
+ROLLBACK_OR_FORWARD_FIX=
 
-eg: Did you discuss this change with anybody before working on it (not required, but can be a good idea for bigger changes). Any plans for the future, etc?
+## Authority and design
 
-# Checklist:
+- Authoritative service and durable store:
+- URLs and stable operation IDs changed:
+- Duplicate command/event behavior:
+- Cross-tenant denial mechanism:
+- Unknown external-outcome reconciliation:
+- Migration/backfill/restore plan:
+- Logs, metrics, alerts, and audit effects:
+- Why this can merge independently into `main`:
 
-Put a "X" in the boxes below to indicate you have followed the checklist;
+## Checklist
 
-- [ ] I have read the [CONTRIBUTING](https://github.com/gitroomhq/postiz-app/blob/main/CONTRIBUTING.md) guide.
-- [ ] I have signed the [Contributor License Agreement (CLA)](https://contribute.postiz.com/p/postiz/cla) ([ICLA](https://github.com/gitroomhq/postiz-app/blob/main/ICLA.md) for individuals, [CCLA](https://github.com/gitroomhq/postiz-app/blob/main/CCLA.md) for entities).
-- [ ] I confirm I have not used AI to submit this PR or generate code for it.
-- [ ] I checked that there were no similar issues or PRs already open for this.
-- [ ] This PR fixes just ONE issue
+- [ ] This PR targets `main` from current green `main`.
+- [ ] The applicable `docs/features/` specification is current.
+- [ ] Contracts, examples, URL registry, SDKs, and drift evidence are current.
+- [ ] Tenant isolation, idempotency, concurrency, and replay tests are included.
+- [ ] Migrations are forward-only, separately invoked, and replay-tested.
+- [ ] No direct cross-system or authoritative n8n/Redis behavior was added.
+- [ ] Dangerous capabilities default false and are checked during execution.
+- [ ] No secrets, generated reports, moving images, or stale evidence are committed.
+- [ ] Exact-head CI is green; this PR will not be self-merged.

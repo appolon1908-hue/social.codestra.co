@@ -36,7 +36,7 @@ export class OauthProvider extends AuthProviderAbstract {
     };
   }
 
-  generateLink(): string {
+  generateLink(query?: { state?: string; codeChallenge?: string }): string {
     const { authUrl, clientId, frontendUrl } = this.getConfig();
     const params = new URLSearchParams({
       client_id: clientId,
@@ -44,11 +44,21 @@ export class OauthProvider extends AuthProviderAbstract {
       response_type: 'code',
       redirect_uri: `${frontendUrl}/settings`,
     });
+    if (!query?.state || !query.codeChallenge) {
+      throw new Error('OIDC state and PKCE challenge are required');
+    }
+    params.set('state', query.state);
+    params.set('code_challenge', query.codeChallenge);
+    params.set('code_challenge_method', 'S256');
 
     return `${authUrl}?${params.toString()}`;
   }
 
-  async getToken(code: string, _redirectUri?: string): Promise<string> {
+  async getToken(
+    code: string,
+    _redirectUri?: string,
+    codeVerifier?: string
+  ): Promise<string> {
     const { tokenUrl, clientId, clientSecret, frontendUrl } = this.getConfig();
     const response = await fetch(`${tokenUrl}`, {
       method: 'POST',
@@ -62,6 +72,7 @@ export class OauthProvider extends AuthProviderAbstract {
         client_secret: clientSecret,
         code,
         redirect_uri: `${frontendUrl}/settings`,
+        code_verifier: codeVerifier || '',
       }),
     });
 

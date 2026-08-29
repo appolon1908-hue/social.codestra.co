@@ -1,0 +1,239 @@
+openapi: 3.1.0
+info:
+  title: Codestra Social private control API
+  version: 1.0.0
+  description: >-
+    Private service API consumed only by Codestra Middleware. Public callers use
+    api.codestra.co through Kong and Middleware; they never call this API directly.
+servers:
+  - url: https://social-internal.codestra.invalid
+    description: Placeholder private service name; never publish this hostname.
+security:
+  - serviceOAuth: [social.commands.read]
+    mutualTLS: []
+paths:
+  /internal/v1/social/commands/publish:
+    post:
+      operationId: requestSocialPublication
+      summary: Persist a publication command and return its durable identity
+      security:
+        - serviceOAuth: [social.commands.write]
+          mutualTLS: []
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicationCommand'
+      responses:
+        '202':
+          description: Durable command accepted; publication may still be disabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandAccepted'
+        '409':
+          description: Idempotency key was reused with a conflicting payload
+        '422':
+          description: Contract, tenant, capability, or provider validation failed
+  /internal/v1/social/commands/{commandId}:
+    get:
+      operationId: getSocialCommand
+      parameters:
+        - $ref: '#/components/parameters/CommandId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: Command and per-channel delivery state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandStatus'
+        '404': { description: Command not found in the caller tenant }
+  /internal/v1/social/deliveries/{deliveryId}:
+    get:
+      operationId: getSocialDelivery
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: Provider delivery, attempts, and reconciliation state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+        '404': { description: Delivery not found in the caller tenant }
+  /internal/v1/social/accounts/{accountId}/health:
+    get:
+      operationId: getSocialAccountHealth
+      security:
+        - serviceOAuth: [social.accounts.read]
+          mutualTLS: []
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: Connection health without provider credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountHealth'
+        '404': { description: Account not found in the caller tenant }
+  /health:
+    get:
+      security: []
+      operationId: health
+      responses:
+        '200': { description: Process is running }
+  /ready:
+    get:
+      security: []
+      operationId: readiness
+      responses:
+        '200': { description: Required dependencies and safety state are ready }
+        '503': { description: A required dependency or safety invariant failed }
+  /version:
+    get:
+      security: []
+      operationId: version
+      responses:
+        '200':
+          description: Immutable release identity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseIdentity'
+components:
+  securitySchemes:
+    serviceOAuth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.codestra.co/realms/codestra/protocol/openid-connect/token
+          scopes:
+            social.commands.write: Create governed social commands
+            social.commands.read: Read governed social commands
+            social.deliveries.read: Read delivery and reconciliation state
+            social.accounts.read: Read non-secret social-account health
+    mutualTLS:
+      type: mutualTLS
+  parameters:
+    CorrelationId:
+      name: X-Correlation-ID
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, minLength: 16, maxLength: 200 }
+    TenantId:
+      name: X-Tenant-ID
+      in: header
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 100 }
+    CommandId:
+      name: commandId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    DeliveryId:
+      name: deliveryId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    AccountId:
+      name: accountId
+      in: path
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 100 }
+  schemas:
+    PublicationCommand:
+      type: object
+      additionalProperties: false
+      required: [command_version, post, targets]
+      properties:
+        command_version: { const: '1.0' }
+        requested_by: { type: string, minLength: 1, maxLength: 200 }
+        schedule_at: { type: [string, 'null'], format: date-time }
+        post:
+          type: object
+          additionalProperties: false
+          required: [content]
+          properties:
+            content: { type: string, maxLength: 100000 }
+            media_ids:
+              type: array
+              maxItems: 20
+              items: { type: string }
+            metadata: { type: object, additionalProperties: true }
+        targets:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            additionalProperties: false
+            required: [account_id, provider, settings]
+            properties:
+              account_id: { type: string }
+              provider: { type: string }
+              settings: { type: object, additionalProperties: true }
+    CommandAccepted:
+      type: object
+      required: [command_id, state, idempotency_replayed, publishing_enabled]
+      properties:
+        command_id: { type: string, format: uuid }
+        state: { enum: [requested, validated, persisted, queued, blocked] }
+        idempotency_replayed: { type: boolean }
+        publishing_enabled: { type: boolean }
+    CommandStatus:
+      type: object
+      required: [command_id, state, deliveries]
+      properties:
+        command_id: { type: string, format: uuid }
+        state:
+          enum: [requested, validated, persisted, queued, accepted, reconciled, completed, failed, dead_lettered, blocked]
+        deliveries:
+          type: array
+          items: { $ref: '#/components/schemas/Delivery' }
+    Delivery:
+      type: object
+      required: [delivery_id, account_id, provider, state, attempt]
+      properties:
+        delivery_id: { type: string, format: uuid }
+        account_id: { type: string }
+        provider: { type: string }
+        state:
+          enum: [pending, publishing, provider_accepted, published, retry_wait, failed, dead_lettered, cancelled]
+        attempt: { type: integer, minimum: 0 }
+        provider_post_id: { type: [string, 'null'] }
+        reconciled_at: { type: [string, 'null'], format: date-time }
+        error_code: { type: [string, 'null'] }
+    AccountHealth:
+      type: object
+      required: [account_id, provider, state]
+      properties:
+        account_id: { type: string }
+        provider: { type: string }
+        state: { enum: [healthy, expiring, reconnect_required, disabled] }
+        scopes: { type: array, items: { type: string } }
+        expires_at: { type: [string, 'null'], format: date-time }
+    ReleaseIdentity:
+      type: object
+      required: [source_revision, image_digest, version, environment]
+      properties:
+        source_revision: { type: string }
+        image_digest: { type: string }
+        version: { type: string }
+        environment: { type: string }

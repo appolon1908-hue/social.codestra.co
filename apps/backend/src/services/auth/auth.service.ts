@@ -12,6 +12,7 @@ import { ForgotReturnPasswordDto } from '@gitroom/nestjs-libraries/dtos/auth/for
 import { EmailService } from '@gitroom/nestjs-libraries/services/email.service';
 import { NewsletterService } from '@gitroom/nestjs-libraries/newsletter/newsletter.service';
 import { SessionService } from '@gitroom/nestjs-libraries/security/session.service';
+import crypto from 'node:crypto';
 
 @Injectable()
 export class AuthService {
@@ -24,14 +25,20 @@ export class AuthService {
     private _sessionService: SessionService
   ) {}
   async canRegister(provider: string) {
+    if (process.env.DISABLE_REGISTRATION !== 'true') {
+      return true;
+    }
     if (
-      process.env.DISABLE_REGISTRATION !== 'true' ||
-      provider === Provider.GENERIC
+      provider === Provider.GENERIC &&
+      process.env.ALLOW_OIDC_JIT_PROVISIONING === 'true'
     ) {
       return true;
     }
-
-    return (await this._organizationService.getCount()) === 0;
+    return (
+      provider === Provider.LOCAL &&
+      process.env.DISABLE_LOCAL_AUTH !== 'true' &&
+      (await this._organizationService.getCount()) === 0
+    );
   }
 
   async routeAuth(
@@ -42,6 +49,9 @@ export class AuthService {
     addToOrg?: boolean | { orgId: string; role: 'USER' | 'ADMIN'; id: string }
   ) {
     if (provider === Provider.LOCAL) {
+      if (process.env.DISABLE_LOCAL_AUTH === 'true') {
+        throw new Error('Local authentication is disabled');
+      }
       if (process.env.DISALLOW_PLUS && body.email.includes('+')) {
         throw new Error('Email with plus sign is not allowed');
       }
@@ -321,10 +331,32 @@ export class AuthService {
     code: string,
     redirectUri: string | undefined,
     ip: string,
-    userAgent: string
+    userAgent: string,
+    oidc?: {
+      expectedState?: string;
+      state?: string;
+      codeVerifier?: string;
+    }
   ) {
     const providerInstance = this._providerManager.getProvider(provider);
-    const token = await providerInstance.getToken(code, redirectUri);
+    if (provider === Provider.GENERIC) {
+      const expected = oidc?.expectedState || '';
+      const received = oidc?.state || '';
+      if (
+        !expected ||
+        !received ||
+        expected.length !== received.length ||
+        !crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(received)) ||
+        !oidc?.codeVerifier
+      ) {
+        throw new Error('Invalid OIDC state');
+      }
+    }
+    const token = await providerInstance.getToken(
+      code,
+      redirectUri,
+      oidc?.codeVerifier
+    );
     const user = await providerInstance.getUser(token);
     if (!user) {
       throw new Error('Invalid user');

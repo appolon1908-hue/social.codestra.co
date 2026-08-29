@@ -1,6 +1,6 @@
 services:
   postiz:
-    image: ghcr.io/gitroomhq/postiz-app:latest
+    image: ${CODESTRA_SOCIAL_IMAGE:?set CODESTRA_SOCIAL_IMAGE to an immutable digest}
     container_name: postiz
     restart: always
     environment:
@@ -8,13 +8,24 @@ services:
       MAIN_URL: 'http://localhost:4007'
       FRONTEND_URL: 'http://localhost:4007'
       NEXT_PUBLIC_BACKEND_URL: 'http://localhost:4007/api'
-      JWT_SECRET: 'random string that is unique to every install - just type random characters here!'
-      DATABASE_URL: 'postgresql://postiz-user:postiz-password@postiz-postgres:5432/postiz-db-local'
+      JWT_SECRET: ${JWT_SECRET:?set a strong local JWT secret}
+      DATABASE_URL: 'postgresql://postiz-user:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postiz-postgres:5432/postiz-db-local'
       REDIS_URL: 'redis://postiz-redis:6379'
       BACKEND_INTERNAL_URL: 'http://localhost:3000'
       TEMPORAL_ADDRESS: 'temporal:7233'
       IS_GENERAL: 'true'
-      DISABLE_REGISTRATION: 'false'
+      DISABLE_REGISTRATION: 'true'
+      SOCIAL_PUBLISH: 'false'
+      SOCIAL_PROVIDER_WRITES: 'false'
+      SOCIAL_CALLBACK_PROCESSING: 'false'
+      SOCIAL_OUTBOX_DELIVERY: 'false'
+      SOCIAL_DEAD_LETTER_REPLAY: 'false'
+      BILLING_LIVE_CHARGE: 'false'
+      ODOO_WRITE: 'false'
+      N8N_DELIVERY_ENABLED: 'false'
+      KLYROW_WRITE: 'false'
+      TELNEXA_WRITE: 'false'
+      PRODUCTION_DEPLOYMENT: 'false'
 
       # === Storage Settings
       STORAGE_PROVIDER: 'local'
@@ -115,7 +126,7 @@ services:
       - postiz-config:/config/
       - postiz-uploads:/uploads/
     ports:
-      - '4007:5000'
+      - '127.0.0.1:4007:5000'
     networks:
       - postiz-network
       - temporal-network
@@ -130,7 +141,7 @@ services:
     container_name: postiz-postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: postiz-password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       POSTGRES_USER: postiz-user
       POSTGRES_DB: postiz-db-local
     volumes:
@@ -158,11 +169,12 @@ services:
 
   # For Application Monitoring / Debugging
   spotlight:
+    profiles: [debug]
     pull_policy: always
     container_name: spotlight
     ports:
-      - 8969:8969/tcp
-    image: ghcr.io/getsentry/spotlight:latest
+      - '127.0.0.1:8969:8969/tcp'
+    image: ${SPOTLIGHT_IMAGE:?set SPOTLIGHT_IMAGE to an immutable digest for debug}
     networks:
       - postiz-network
 
@@ -191,7 +203,7 @@ services:
     container_name: temporal-postgresql
     image: postgres:16
     environment:
-      POSTGRES_PASSWORD: temporal
+      POSTGRES_PASSWORD: ${TEMPORAL_POSTGRES_PASSWORD:?set TEMPORAL_POSTGRES_PASSWORD}
       POSTGRES_USER: temporal
     networks:
       - temporal-network
@@ -203,7 +215,7 @@ services:
   temporal:
     container_name: temporal
     ports:
-      - '7233:7233'
+      - '127.0.0.1:7233:7233'
     image: temporalio/auto-setup:1.28.1
     depends_on:
       - temporal-postgresql
@@ -212,7 +224,7 @@ services:
       - DB=postgres12
       - DB_PORT=5432
       - POSTGRES_USER=temporal
-      - POSTGRES_PWD=temporal
+      - POSTGRES_PWD=${TEMPORAL_POSTGRES_PASSWORD:?set TEMPORAL_POSTGRES_PASSWORD}
       - POSTGRES_SEEDS=temporal-postgresql
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
       - ENABLE_ES=true
@@ -240,6 +252,7 @@ services:
     tty: true
 
   temporal-ui:
+    profiles: [debug]
     container_name: temporal-ui
     image: temporalio/ui:2.34.0
     environment:
@@ -248,7 +261,7 @@ services:
     networks:
       - temporal-network
     ports:
-      - '8080:8080'
+      - '127.0.0.1:8080:8080'
 
 volumes:
   postgres-volume:

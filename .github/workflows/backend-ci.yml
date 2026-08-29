@@ -1,0 +1,145 @@
+name: Backend CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend policy, migration, test, and build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_DB: codestra_ci
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres -d codestra_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+      redis:
+        image: redis:7.4-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/codestra_ci
+      REDIS_URL: redis://127.0.0.1:6379
+      NODE_OPTIONS: --max-old-space-size=6144
+      SOCIAL_PUBLISH: 'false'
+      SOCIAL_PROVIDER_WRITES: 'false'
+      SOCIAL_CALLBACK_PROCESSING: 'false'
+      SOCIAL_OUTBOX_DELIVERY: 'false'
+      SOCIAL_DEAD_LETTER_REPLAY: 'false'
+      BILLING_LIVE_CHARGE: 'false'
+      ODOO_WRITE: 'false'
+      N8N_DELIVERY_ENABLED: 'false'
+      KLYROW_WRITE: 'false'
+      TELNEXA_WRITE: 'false'
+      PRODUCTION_DEPLOYMENT: 'false'
+    steps:
+      - name: Check out exact revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.34.0
+      - name: Use supported Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.14.0
+          cache: pnpm
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile --package-import-method=copy --child-concurrency=1
+      - name: Validate formatting
+        run: >-
+          pnpm exec prettier --check package.json 'scripts/**/*.mjs'
+          .github/workflows/backend-ci.yml .github/workflows/immutable-image.yml
+          'docs/architecture/**/*.md'
+      - name: Validate backend policy
+        run: pnpm validate:backend-policy
+      - name: Validate contract foundation
+        run: |
+          node scripts/validate-openapi.mjs
+          node scripts/validate-asyncapi.mjs
+          node scripts/validate-contract-drift.mjs
+      - name: Validate and generate Prisma
+        run: |
+          pnpm prisma-validate
+          pnpm prisma-generate
+      - name: Replay migrations on empty PostgreSQL
+        run: pnpm prisma-migrate-deploy
+      - name: Require clean migration status
+        run: pnpm prisma-migrate-status
+      - name: Run backend security tests
+        run: pnpm exec jest security-remediation/tests --runInBand --coverage=false
+      - name: Build backend and orchestrator
+        run: |
+          pnpm build:backend
+          pnpm build:orchestrator
+      - name: Record exact-SHA evidence
+        if: always()
+        run: |
+          mkdir -p release-evidence
+          printf 'source_sha=%s\nmigration_head=%s\n' "$GITHUB_SHA" "$(find libraries/nestjs-libraries/src/database/prisma/migrations -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort | tail -1)" > release-evidence/backend-ci.txt
+      - name: Upload exact-SHA evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: backend-ci-${{ github.sha }}
+          path: release-evidence/
+          if-no-files-found: error
+          retention-days: 30
+
+  container:
+    name: Backend container build and hardening
+    needs: backend
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    permissions:
+      contents: read
+    steps:
+      - name: Check out exact revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up BuildKit
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+      - name: Build exact candidate without publishing
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: Dockerfile.codestra
+          push: false
+          load: true
+          tags: codestra-social-ci:${{ github.sha }}
+          build-args: |
+            BUILD_CREATED=ci
+            BUILD_VERSION=${{ github.sha }}
+            NEXT_PUBLIC_VERSION=${{ github.sha }}
+            SOURCE_REVISION=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Inspect non-root runtime identity
+        run: |
+          user="$(docker image inspect codestra-social-ci:"$GITHUB_SHA" --format '{{.Config.User}}')"
+          test -n "$user"
+          test "$user" != '0'
+          test "$user" != 'root'
+          echo "runtime_user=$user"

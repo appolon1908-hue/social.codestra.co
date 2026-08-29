@@ -17,6 +17,7 @@ import { TemporalRegisterMissingSearchAttributesModule } from '@gitroom/nestjs-l
 import { InfiniteWorkflowRegisterModule } from '@gitroom/nestjs-libraries/temporal/infinite.workflow.register';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { ioRedis } from '@gitroom/nestjs-libraries/redis/redis.service';
+import { ServiceAuthModule } from '@gitroom/nestjs-libraries/security/service-auth/service-auth.module';
 
 @Global()
 @Module({
@@ -29,6 +30,7 @@ import { ioRedis } from '@gitroom/nestjs-libraries/redis/redis.service';
     ThirdPartyModule,
     VideoModule,
     ChatModule,
+    ServiceAuthModule,
     getTemporalModule(false),
     TemporalRegisterMissingSearchAttributesModule,
     InfiniteWorkflowRegisterModule,
@@ -61,6 +63,7 @@ import { ioRedis } from '@gitroom/nestjs-libraries/redis/redis.service';
     AgentModule,
     ThrottlerModule,
     ChatModule,
+    ServiceAuthModule,
   ],
 })
 export class AppModule {}
