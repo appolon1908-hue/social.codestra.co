@@ -1,0 +1,127 @@
+openapi: 3.1.0
+info:
+  title: Postly Social API for Codestra Middleware
+  version: 2.0.0
+paths:
+  /v1/social/accounts:
+    get:
+      operationId: listSocialAccounts
+      security: [{oauth2: [social.account.read]}]
+      responses: {'200': {description: Tenant-scoped account metadata}}
+    post:
+      operationId: requestSocialAccountConnection
+      security: [{oauth2: [social.account.write]}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'202': {$ref: '#/components/responses/OperationAccepted'}}
+  /v1/social/accounts/{account_id}/reconnect:
+    post:
+      operationId: reconnectSocialAccount
+      security: [{oauth2: [social.account.write]}]
+      parameters:
+        - {name: account_id, in: path, required: true, schema: {type: string, format: uuid}}
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      responses: {'202': {$ref: '#/components/responses/OperationAccepted'}}
+  /v1/social/content:
+    get:
+      operationId: listSocialContent
+      security: [{oauth2: [social.content.read]}]
+      responses: {'200': {description: Tenant-scoped content}}
+    post:
+      operationId: createSocialContent
+      security: [{oauth2: [social.content.write]}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'202': {$ref: '#/components/responses/OperationAccepted'}}
+  /v1/social/approvals:
+    post:
+      operationId: createSocialApproval
+      security: [{oauth2: [social.approval.request]}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'202': {$ref: '#/components/responses/OperationAccepted'}}
+  /v1/social/approvals/{approval_id}/approve:
+    post:
+      operationId: approveSocialContent
+      security: [{oauth2: [social.approval.decide]}]
+      parameters:
+        - {name: approval_id, in: path, required: true, schema: {type: string, format: uuid}}
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+        - {$ref: '#/components/parameters/IfMatch'}
+      responses: {'202': {$ref: '#/components/responses/OperationAccepted'}}
+  /v1/social/publications:
+    post:
+      operationId: createSocialPublication
+      security: [{oauth2: [social.publication.write]}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'202': {$ref: '#/components/responses/OperationAccepted'}}
+  /v1/social/publications/{publication_id}/schedule:
+    post:
+      operationId: scheduleSocialPublication
+      security: [{oauth2: [social.publication.schedule]}]
+      parameters:
+        - {name: publication_id, in: path, required: true, schema: {type: string, format: uuid}}
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+        - {$ref: '#/components/parameters/IfMatch'}
+      responses: {'202': {$ref: '#/components/responses/OperationAccepted'}}
+  /v1/social/publications/{publication_id}:
+    get:
+      operationId: getSocialPublication
+      security: [{oauth2: [social.publication.read]}]
+      parameters: [{name: publication_id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {'200': {description: Reconciled publication state}}
+  /v1/social/analytics:
+    get:
+      operationId: getSocialAnalytics
+      security: [{oauth2: [social.analytics.read]}]
+      responses: {'200': {description: Tenant-scoped analytics}}
+  /v1/social/inbox:
+    get:
+      operationId: listSocialInbox
+      security: [{oauth2: [social.inbox.read]}]
+      responses: {'200': {description: Safe inbox projection}}
+  /v1/social/inbox/{item_id}/classify:
+    post:
+      operationId: classifySocialInboxItem
+      security: [{oauth2: [social.inbox.classify]}]
+      parameters:
+        - {name: item_id, in: path, required: true, schema: {type: string, format: uuid}}
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      responses: {'202': {$ref: '#/components/responses/OperationAccepted'}}
+  /v1/webhooks/social/{provider}:
+    post:
+      operationId: receiveSocialProviderWebhook
+      security: []
+      parameters: [{name: provider, in: path, required: true, schema: {type: string, pattern: '^[a-z0-9-]+$'}}]
+      responses: {'202': {description: Durable callback acceptance after provider verification}}
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.codestra.co/realms/codestra/protocol/openid-connect/token
+          scopes:
+            social.account.read: Read account metadata
+            social.account.write: Request account connection state
+            social.content.read: Read content
+            social.content.write: Request content changes
+            social.approval.request: Request approval
+            social.approval.decide: Decide approved content
+            social.publication.write: Create publication operation
+            social.publication.schedule: Request schedule or cancellation
+            social.publication.read: Read publication state
+            social.analytics.read: Read analytics
+            social.inbox.read: Read safe inbox state
+            social.inbox.classify: Request classification
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: {type: string, minLength: 8, maxLength: 180}
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      schema: {type: string, minLength: 1, maxLength: 128}
+  responses:
+    OperationAccepted:
+      description: Durable asynchronous operation accepted
