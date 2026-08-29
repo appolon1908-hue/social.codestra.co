@@ -1,0 +1,91 @@
+{
+  "schema_version": "2.0",
+  "status": "SOURCE_ONLY",
+  "repository": "appolon1908-hue/social.codestra.co",
+  "product": "postly",
+  "upstream_implementation": "postiz",
+  "public_host": "social.codestra.co",
+  "workflow_family": "social.postly",
+  "machine_client": "n8n-social-automation",
+  "audience": "middleware-api",
+  "grant_type": "client_credentials",
+  "required_scopes": [
+    "automation.job.claim",
+    "automation.job.read",
+    "automation.job.heartbeat",
+    "automation.job.step.write",
+    "automation.job.complete",
+    "automation.job.fail",
+    "automation.command.social",
+    "automation.approval.request",
+    "automation.approval.read",
+    "automation.capability.read"
+  ],
+  "command_prefixes": [
+    "social."
+  ],
+  "events": [
+    "social.workspace.created",
+    "social.account.connected",
+    "social.account.disconnected",
+    "social.account.reauthorization_required",
+    "social.content.draft_created",
+    "social.content.approval_requested",
+    "social.content.approved",
+    "social.content.rejected",
+    "social.publication.scheduled",
+    "social.publication.due",
+    "social.publication.submitted",
+    "social.publication.published",
+    "social.publication.failed",
+    "social.publication.cancelled",
+    "social.engagement.lead_candidate",
+    "social.analytics.snapshot_ready",
+    "social.webhook.delivery_failed"
+  ],
+  "commands": [
+    "social.content.approval.request.v1",
+    "social.publication.schedule.v1",
+    "social.publication.cancel.v1",
+    "social.publication.status.read.v1",
+    "social.analytics.snapshot.request.v1",
+    "social.engagement.lead.review.v1",
+    "social.account.reauthorization.notify.v1"
+  ],
+  "capabilities": {
+    "SOCIAL_PUBLISH": false,
+    "SOCIAL_ACCOUNT_WRITE": false,
+    "SOCIAL_ENGAGEMENT_WRITEBACK": false,
+    "LEAD_PUBLISH": false,
+    "ENABLE_EXTERNAL_DELIVERY": false,
+    "DEAD_LETTER_REPLAY": false
+  },
+  "authority": {
+    "workspace_and_social_accounts": "postly",
+    "provider_oauth_tokens": "postly",
+    "content_and_approval_state": "postly",
+    "publication_and_provider_status": "postly",
+    "cross_system_writes": "codestra-middleware",
+    "automation_jobs_and_replay": "codestra-middleware",
+    "orchestration": "n8n"
+  },
+  "invariants": {
+    "direct_n8n_postly_access": false,
+    "direct_n8n_provider_access": false,
+    "provider_tokens_in_n8n": false,
+    "public_provider_webhooks_in_n8n": false,
+    "workflow_activation_enables_capability": false,
+    "unknown_outcome_reconciled_before_retry": true,
+    "exact_replay_returns_original_result": true,
+    "conflicting_replay_rejected": true,
+    "tenant_isolation_required": true,
+    "live_apply_authorized": false
+  },
+  "dependencies": {
+    "n8n_governance_pr": 1,
+    "n8n_contract_pr": 9,
+    "middleware_contract_pr": 15,
+    "keycloak_contract_pr": 10,
+    "n8n_branch": "automation/postly-social-v2-20260827"
+  }
+}

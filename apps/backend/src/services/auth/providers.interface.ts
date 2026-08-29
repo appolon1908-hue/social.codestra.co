@@ -2,14 +2,15 @@ import { Injectable } from '@nestjs/common';
 
 export abstract class AuthProviderAbstract {
   abstract generateLink(query?: any): Promise<string> | string;
-  abstract getToken(code: string, redirectUri?: string): Promise<string>;
+  abstract getToken(
+    code: string,
+    redirectUri?: string,
+    codeVerifier?: string
+  ): Promise<string>;
   abstract getUser(
     providerToken: string
   ): Promise<{ email: string; id: string }> | false;
-  async postRegistration(
-    providerToken: string,
-    orgId: string
-  ): Promise<void> {}
+  async postRegistration(providerToken: string, orgId: string): Promise<void> {}
 }
 
 export interface AuthProviderParams {

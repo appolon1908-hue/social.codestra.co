@@ -1,0 +1,26 @@
+{
+  "event_id": "5c45d7cf-ce7c-4552-bd5a-537909f0226a",
+  "event_type": "social.post.published",
+  "event_version": "1.0",
+  "occurred_at": "2026-08-27T18:00:00Z",
+  "received_at": "2026-08-27T18:00:01Z",
+  "source": "codestra-social",
+  "tenant_id": "tenant-example",
+  "customer_id": null,
+  "correlation_id": "ec9da62e-46bc-4e7b-8ef8-e4d363026598",
+  "causation_id": "a013d8c3-3cca-4be4-aac9-3419576310af",
+  "idempotency_key": "social-publication-example-0001",
+  "payload": {
+    "command_id": "a013d8c3-3cca-4be4-aac9-3419576310af",
+    "delivery_id": "93c6d743-04ee-4dfb-a4d4-bd93193f0fcb",
+    "post_id": "post-example",
+    "provider": "linkedin",
+    "provider_post_id": "provider-post-example",
+    "state": "published"
+  },
+  "metadata": {
+    "provider": "linkedin",
+    "provider_account_id": "account-example",
+    "provider_event_id": "provider-event-example"
+  }
+}
