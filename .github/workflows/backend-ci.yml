@@ -87,6 +87,27 @@ jobs:
         run: pnpm prisma-migrate-deploy
       - name: Require clean migration status
         run: pnpm prisma-migrate-status
+      - name: Test supported-head upgrade with representative data
+        env:
+          PGPASSWORD: postgres
+        run: |
+          createdb -h 127.0.0.1 -U postgres codestra_upgrade
+          psql -h 127.0.0.1 -U postgres -d codestra_upgrade \
+            -f libraries/nestjs-libraries/src/database/prisma/migrations/20260803000100_codestra_production_baseline/migration.sql
+          DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/codestra_upgrade \
+            node node_modules/prisma/build/index.js migrate resolve \
+            --applied 20260803000100_codestra_production_baseline \
+            --schema libraries/nestjs-libraries/src/database/prisma/schema.prisma
+          psql -h 127.0.0.1 -U postgres -d codestra_upgrade -c \
+            "INSERT INTO \"Announcement\" (id,title,description) VALUES ('ci-upgrade','upgrade fixture','representative pre-upgrade data');"
+          DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/codestra_upgrade \
+            node scripts/prisma-deploy.mjs
+          DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/codestra_upgrade \
+            pnpm prisma-migrate-status
+          psql -h 127.0.0.1 -U postgres -d codestra_upgrade -Atc \
+            "SELECT count(*) FROM \"Announcement\" WHERE id='ci-upgrade'" | grep -Fx 1
+          psql -h 127.0.0.1 -U postgres -d codestra_upgrade -Atc \
+            "SELECT column_default FROM information_schema.columns WHERE table_schema='public' AND table_name='User' AND column_name='securityVersion'" | grep -F '1'
       - name: Run backend security tests
         run: pnpm exec jest security-remediation/tests --runInBand --coverage=false
       - name: Build backend and orchestrator
