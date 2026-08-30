@@ -1,0 +1,11 @@
+# Add a second authorized reviewer before required CODEOWNERS approval is enabled.
+/apps/backend/ @appolon1908-hue
+/apps/orchestrator/ @appolon1908-hue
+/libraries/nestjs-libraries/src/security/ @appolon1908-hue
+/libraries/nestjs-libraries/src/database/ @appolon1908-hue
+/libraries/nestjs-libraries/src/integrations/ @appolon1908-hue
+/contracts/ @appolon1908-hue
+/docs/architecture/ @appolon1908-hue
+/.github/workflows/ @appolon1908-hue
+/Dockerfile* @appolon1908-hue
+/deploy/ @appolon1908-hue

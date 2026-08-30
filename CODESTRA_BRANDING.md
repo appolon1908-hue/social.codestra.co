@@ -1,6 +1,11 @@
 # Codestra Social branding overlay
 
-This branch is based exactly on upstream Postiz `v2.22.1` at commit `c90b6c625bc0ec470d6dcdb57c63608aaa9b7b74`. It preserves the upstream AGPL-3.0 license, Git history, package names, database schema, migrations, environment-variable compatibility, and technical identifiers.
+The initial source snapshot was derived from upstream Postiz `v2.22.1` at
+commit `c90b6c625bc0ec470d6dcdb57c63608aaa9b7b74`. The import was published as a
+snapshot and does not contain the complete upstream commit graph. It preserves
+the upstream AGPL-3.0 license, package names, database schema, migrations,
+environment-variable compatibility, and technical identifiers. The recorded
+revision supports tree comparison and auditable future upgrades.
 
 Customer-facing modifications identify the deployed product as **Codestra Social**, operated by **Codestra LLC**. They do not claim that Codestra LLC created the upstream software. The in-application `/legal/open-source` page acknowledges upstream and links to the applicable license and source history.
 
@@ -28,7 +33,8 @@ Legal address, jurisdiction, support/privacy email addresses, Terms URL, and Pri
 ## Branding audit classification
 
 - `CUSTOMER_FACING_REPLACE`: frontend pages/components, metadata, manifest, navigation, auth, customer errors, and email subjects/body text were changed to Codestra Social.
-- `LEGAL_PRESERVE`: `LICENSE`, upstream Git history, package metadata, and `/legal/open-source` preserve Postiz/upstream acknowledgment.
+- `LEGAL_PRESERVE`: `LICENSE`, the recorded upstream revision, package metadata,
+  and `/legal/open-source` preserve Postiz/upstream acknowledgment.
 - `TECHNICAL_PRESERVE`: package scopes, database/schema identifiers, migrations, Docker volumes, Temporal names, environment variables, and API fields remain unchanged.
 - `TEST_UPDATE`: authentication and metadata tests must assert Codestra-facing labels.
 - `DOCUMENTATION_REVIEW`: upstream developer documentation remains upstream documentation and is not rewritten as Codestra authorship.
