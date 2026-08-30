@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "codestra/integration/**"
+      - "monitoring/social-codestra-metrics-contract.v1.json"
       - "monitoring/prometheus-target.disabled.yml"
       - "monitoring/codestra-social-recording-rules.yml"
       - "docs/CODESTRA-INTEGRATION-FILES.md"

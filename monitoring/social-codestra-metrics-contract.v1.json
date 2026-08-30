@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0",
+  "application": "social.codestra.co",
+  "codestraBusiness": "codestra-social",
+  "status": "CONTRACT_PREPARED_NOT_SCRAPED",
+  "metricsEnabledByDefault": false,
+  "requiredLabels": [
+    "codestra_business",
+    "application",
+    "service",
+    "environment",
+    "server",
+    "region",
+    "deployment"
+  ],
+  "forbiddenLabels": [
+    "tenant_id",
+    "customer_id",
+    "organization_id",
+    "user_id",
+    "email",
+    "phone",
+    "request_id",
+    "trace_id",
+    "message_id",
+    "post_id",
+    "raw_url",
+    "query_string",
+    "idempotency_key"
+  ],
+  "metricFamilies": [
+    {
+      "name": "http_requests_total",
+      "type": "counter",
+      "purpose": "Inbound request volume by route template, method and status class."
+    },
+    {
+      "name": "http_request_duration_seconds",
+      "type": "histogram",
+      "purpose": "Inbound request latency by route template and method."
+    },
+    {
+      "name": "codestra_webhook_delivery_total",
+      "type": "counter",
+      "purpose": "Outbound webhook delivery attempts and terminal outcomes."
+    },
+    {
+      "name": "codestra_publication_failures_total",
+      "type": "counter",
+      "purpose": "Social publication failures by provider and normalized reason."
+    },
+    {
+      "name": "codestra_provider_circuit_open",
+      "type": "gauge",
+      "purpose": "Provider circuit state without tenant, user or content identifiers."
+    },
+    {
+      "name": "codestra_middleware_command_total",
+      "type": "counter",
+      "purpose": "Middleware command submissions and read-back outcomes."
+    },
+    {
+      "name": "codestra_auth_attempts_total",
+      "type": "counter",
+      "purpose": "Authentication outcomes by mechanism and coarse status class."
+    },
+    {
+      "name": "codestra_dependency_up",
+      "type": "gauge",
+      "purpose": "Dependency health for Caddy, Kong, Middleware, SDK, database and queue."
+    },
+    {
+      "name": "codestra_build_info",
+      "type": "gauge",
+      "purpose": "Build metadata with bounded labels."
+    }
+  ]
+}

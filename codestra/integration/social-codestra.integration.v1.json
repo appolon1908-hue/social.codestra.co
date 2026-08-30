@@ -39,7 +39,7 @@
       "fail": "POST /v2/automation/jobs/{job_id}/fail"
     },
     "allowedCommands": [
-      "communications.message.send.v1",
+      "email.message.send.v1",
       "intake.lead.create.v1",
       "intake.survey.response.submit.v1",
       "social.publication.event.v1",

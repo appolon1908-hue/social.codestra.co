@@ -11,6 +11,7 @@ This branch prepares the files needed to connect `social.codestra.co` to the Cod
 - `codestra/integration/n8n-orchestration.v1.json` — CP-POSTLY workflow import contract, inactive by default.
 - `codestra/integration/openbao-secret-aliases.v1.json` — secret alias manifest without secret values.
 - `codestra/integration/runtime.env.example` — non-secret runtime environment template.
+- `monitoring/social-codestra-metrics-contract.v1.json` — bounded metrics contract for Prometheus and Grafana.
 - `monitoring/prometheus-target.disabled.yml` — disabled Prometheus scrape target example.
 - `monitoring/codestra-social-recording-rules.yml` — social-specific recording rules for Grafana.
 - `docs/CODESTRA-INTEGRATION-FILES.md` — operator handoff.
@@ -36,6 +37,7 @@ Browser / social.codestra.co
 - No browser code receives Keycloak confidential-client secrets.
 - No browser code receives direct Middleware, Odoo, n8n, provider, SMS, email or voice credentials.
 - Product writes that affect external providers must go through Middleware.
+- Communications writes currently map to the Middleware `email.message.send.v1` command contract.
 - n8n may claim jobs and coordinate commands only through Middleware automation endpoints.
 - n8n must not call social provider APIs, Odoo, SMTP, SMS, PostgreSQL, Redis or OpenBao directly.
 - Metrics are disabled until Prometheus target approval.

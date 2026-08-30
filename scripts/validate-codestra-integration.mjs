@@ -9,6 +9,7 @@ const openBaoAliasesPath = path.join(root, 'codestra/integration/openbao-secret-
 const envPath = path.join(root, 'codestra/integration/runtime.env.example');
 const targetPath = path.join(root, 'monitoring/prometheus-target.disabled.yml');
 const rulesPath = path.join(root, 'monitoring/codestra-social-recording-rules.yml');
+const metricsContractPath = path.join(root, 'monitoring/social-codestra-metrics-contract.v1.json');
 const docsPath = path.join(root, 'docs/CODESTRA-INTEGRATION-FILES.md');
 
 function fail(message) {
@@ -28,6 +29,7 @@ const openBaoAliases = JSON.parse(read(openBaoAliasesPath));
 const env = read(envPath);
 const target = read(targetPath);
 const rules = read(rulesPath);
+const metricsContract = JSON.parse(read(metricsContractPath));
 const docs = read(docsPath);
 
 if (manifest.schemaVersion !== '1.0') fail('manifest schemaVersion must be 1.0');
@@ -42,6 +44,13 @@ if (manifest.productionGates?.metricsTargetEnabled !== false) fail('metrics targ
 if (manifest.productionGates?.n8nWorkflowsImported !== false) fail('n8n workflows must not be marked imported');
 if (manifest.productionGates?.n8nWorkflowsActive !== false) fail('n8n workflows must not be active by default');
 if (manifest.middleware?.automationApi?.commands !== 'POST /v2/automation/commands') fail('manifest must point at Middleware automation commands API');
+if (!manifest.middleware?.allowedCommands?.includes('email.message.send.v1')) fail('manifest must include email.message.send.v1');
+
+if (metricsContract.schemaVersion !== '1.0') fail('metrics contract schemaVersion must be 1.0');
+if (metricsContract.application !== manifest.application) fail('metrics contract application must match manifest');
+if (metricsContract.codestraBusiness !== manifest.codestraBusiness) fail('metrics contract business must match manifest');
+if (metricsContract.status !== 'CONTRACT_PREPARED_NOT_SCRAPED') fail('metrics contract must remain not scraped');
+if (metricsContract.metricsEnabledByDefault !== false) fail('metrics contract must keep metrics disabled by default');
 
 if (middlewareContract.status !== 'PREPARED_NOT_DEPLOYED') fail('middleware contract must remain prepared only');
 if (middlewareContract.invariants?.n8nIsWriteAuthority !== false) fail('n8n must not be write authority');
@@ -68,11 +77,17 @@ for (const alias of openBaoAliases.aliases || []) {
 
 for (const label of ['codestra_business', 'application', 'service', 'environment', 'server', 'region', 'deployment']) {
   if (!manifest.observability.requiredLabels.includes(label)) fail(`missing required label: ${label}`);
+  if (!metricsContract.requiredLabels.includes(label)) fail(`metrics contract missing required label: ${label}`);
   if (!target.includes(label)) fail(`disabled Prometheus target must include label: ${label}`);
 }
 
 for (const forbidden of manifest.observability.forbiddenLabels) {
   if (!target.includes(`labeldrop`) || !target.includes(forbidden)) fail(`Prometheus target must drop forbidden label: ${forbidden}`);
+  if (!metricsContract.forbiddenLabels.includes(forbidden)) fail(`metrics contract must forbid label: ${forbidden}`);
+}
+
+for (const metric of ['http_requests_total', 'codestra_webhook_delivery_total', 'codestra_publication_failures_total', 'codestra_middleware_command_total']) {
+  if (!metricsContract.metricFamilies.some((family) => family.name === metric)) fail(`metrics contract missing family: ${metric}`);
 }
 
 for (const flag of ['CODESTRA_INTAKE_BFF_ENABLED=false', 'CODESTRA_COMMUNICATIONS_ENABLED=false', 'CODESTRA_VOICE_CONTROLS_ENABLED=false', 'CODESTRA_N8N_ORCHESTRATION_ENABLED=false', 'CODESTRA_PROVIDER_LIVE_DELIVERY_ENABLED=false', 'METRICS_ENABLED=false']) {
