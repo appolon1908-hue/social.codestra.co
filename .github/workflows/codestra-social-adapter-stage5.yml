@@ -1,0 +1,22 @@
+name: Codestra Social Adapter Stage 5
+
+on:
+  pull_request:
+    paths:
+      - 'integrations/codestra-social/**'
+      - 'scripts/validate_codestra_social_adapter.py'
+      - '.github/workflows/codestra-social-adapter-stage5.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/validate_codestra_social_adapter.py
