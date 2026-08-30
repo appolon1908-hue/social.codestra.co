@@ -36,6 +36,12 @@
   },
   "commands": [
     {
+      "type": "email.message.send.v1",
+      "description": "Request governed social-product email through Middleware; SMTP delivery is owned by the Middleware email adapter.",
+      "deliveryDefault": "disabled",
+      "idempotencyKeyRequired": true
+    },
+    {
       "type": "social.publication.request.v1",
       "description": "Request a governed publication through Middleware so provider writes remain outside n8n and browser code.",
       "deliveryDefault": "disabled",
