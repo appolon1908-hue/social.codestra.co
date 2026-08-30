@@ -56,7 +56,7 @@ if (middlewareContract.status !== 'PREPARED_NOT_DEPLOYED') fail('middleware cont
 if (middlewareContract.invariants?.n8nIsWriteAuthority !== false) fail('n8n must not be write authority');
 if (middlewareContract.invariants?.externalProviderWritesBypassMiddleware !== false) fail('provider writes must not bypass Middleware');
 if (!middlewareContract.transport?.forbiddenDirectTargets?.includes('social-provider-api')) fail('middleware contract must forbid direct social provider API targets');
-for (const command of ['social.publication.request.v1', 'social.publication.cancel.v1', 'social.analytics.snapshot.request.v1', 'social.inbox.triage.request.v1']) {
+for (const command of ['email.message.send.v1', 'social.publication.request.v1', 'social.publication.cancel.v1', 'social.analytics.snapshot.request.v1', 'social.inbox.triage.request.v1']) {
   if (!middlewareContract.commands?.some((entry) => entry.type === command)) fail(`middleware contract missing command: ${command}`);
 }
 
@@ -86,7 +86,7 @@ for (const forbidden of manifest.observability.forbiddenLabels) {
   if (!metricsContract.forbiddenLabels.includes(forbidden)) fail(`metrics contract must forbid label: ${forbidden}`);
 }
 
-for (const metric of ['http_requests_total', 'codestra_webhook_delivery_total', 'codestra_publication_failures_total', 'codestra_middleware_command_total']) {
+for (const metric of ['http_requests_total', 'http_request_duration_seconds', 'codestra_webhook_delivery_total', 'codestra_publication_failures_total', 'codestra_middleware_command_total', 'codestra_build_info']) {
   if (!metricsContract.metricFamilies.some((family) => family.name === metric)) fail(`metrics contract missing family: ${metric}`);
 }
 
@@ -102,7 +102,7 @@ for (const fragment of ['codestra_social:http_requests:rate5m', 'codestra_social
   if (!rules.includes(fragment)) fail(`recording rules missing ${fragment}`);
 }
 
-for (const fragment of ['Caddy', 'Kong', 'Middleware', 'Activation Gates', 'CP-POSTLY-COMMON-ERROR']) {
+for (const fragment of ['Caddy', 'Kong', 'Middleware', 'Activation Gates', 'CP-POSTLY-COMMON-ERROR', 'social-codestra-metrics-contract.v1.json']) {
   if (!docs.includes(fragment)) fail(`docs missing ${fragment}`);
 }
 

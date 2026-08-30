@@ -41,6 +41,7 @@ Browser / social.codestra.co
 - n8n may claim jobs and coordinate commands only through Middleware automation endpoints.
 - n8n must not call social provider APIs, Odoo, SMTP, SMS, PostgreSQL, Redis or OpenBao directly.
 - Metrics are disabled until Prometheus target approval.
+- Metrics must use bounded infrastructure and service labels only; tenant, user, content, trace and message identifiers are forbidden.
 - Voice controls are UX only; they do not authorize PSTN dialing.
 
 ## Prepared Workflow Lane
