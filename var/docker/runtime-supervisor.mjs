@@ -24,9 +24,9 @@ function start(command, args, name) {
 process.on('SIGTERM', () => shutdown(0));
 process.on('SIGINT', () => shutdown(0));
 
-// Schema migration is deliberately not performed by application startup.
-// Release automation must run scripts/prisma-deploy.mjs as a separate one-shot
-// migration step before rolling out this runtime image.
+// Runtime replicas never execute schema migrations. Release orchestration must
+// invoke scripts/prisma-deploy.mjs once, as a separate migration job, and only
+// start/replace application replicas after that job succeeds.
 start('nginx', ['-g', 'daemon off;'], 'nginx');
 start('node', [`${root}/dist/apps/backend/src/main.js`], 'backend');
 start('node', [`${root}/dist/apps/orchestrator/src/main.js`], 'orchestrator');
