@@ -1,0 +1,19 @@
+groups:
+  - name: codestra-social-recording
+    interval: 30s
+    rules:
+      - record: codestra_social:http_requests:rate5m
+        expr: sum by (codestra_business, application, service, environment) (rate(http_requests_total{application="social.codestra.co"}[5m]))
+      - record: codestra_social:http_errors:ratio5m
+        expr: |
+          sum by (codestra_business, application, service, environment) (rate(http_requests_total{application="social.codestra.co",status=~"5.."}[5m]))
+          /
+          clamp_min(sum by (codestra_business, application, service, environment) (rate(http_requests_total{application="social.codestra.co"}[5m])), 1)
+      - record: codestra_social:webhook_delivery_failures:rate15m
+        expr: sum by (codestra_business, application, service, environment) (rate(codestra_webhook_delivery_total{application="social.codestra.co",outcome="failure"}[15m]))
+      - record: codestra_social:publication_failures:rate15m
+        expr: sum by (codestra_business, application, service, environment) (rate(codestra_publication_failures_total{application="social.codestra.co"}[15m]))
+      - record: codestra_social:provider_circuit_open:sum
+        expr: sum by (codestra_business, application, service, environment, provider) (codestra_provider_circuit_open{application="social.codestra.co"})
+      - record: codestra_social:middleware_command_failures:rate15m
+        expr: sum by (codestra_business, application, service, environment, command_type) (rate(codestra_middleware_command_total{application="social.codestra.co",outcome="failure"}[15m]))

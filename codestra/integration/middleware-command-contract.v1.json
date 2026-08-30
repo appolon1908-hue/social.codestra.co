@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0",
+  "application": "social.codestra.co",
+  "status": "PREPARED_NOT_DEPLOYED",
+  "authority": "Middleware-",
+  "transport": {
+    "baseUrl": "https://api.codestra.co",
+    "commandEndpoint": "/v2/automation/commands",
+    "statusEndpoint": "/v2/automation/commands/{command_id}",
+    "requiredHeaders": [
+      "Authorization",
+      "X-Tenant-ID",
+      "X-Correlation-ID",
+      "Idempotency-Key"
+    ],
+    "forbiddenDirectTargets": [
+      "n8n",
+      "odoo",
+      "postgresql",
+      "redis",
+      "smtp",
+      "sms-provider",
+      "social-provider-api",
+      "provider-oauth-token-store"
+    ]
+  },
+  "callerIdentity": {
+    "clientId": "social-codestra",
+    "audience": "middleware-api",
+    "requiredScopes": [
+      "social.middleware.command.write",
+      "social.middleware.status.read"
+    ],
+    "tenantSource": "service-account.tenant_id",
+    "tokenMaxSeconds": 300
+  },
+  "commands": [
+    {
+      "type": "social.publication.request.v1",
+      "description": "Request a governed publication through Middleware so provider writes remain outside n8n and browser code.",
+      "deliveryDefault": "disabled",
+      "idempotencyKeyRequired": true
+    },
+    {
+      "type": "social.publication.cancel.v1",
+      "description": "Cancel a scheduled or pending social publication through Middleware authority.",
+      "deliveryDefault": "disabled",
+      "idempotencyKeyRequired": true
+    },
+    {
+      "type": "social.analytics.snapshot.request.v1",
+      "description": "Request a tenant-safe analytics snapshot for orchestration or dashboard updates.",
+      "deliveryDefault": "read_only",
+      "idempotencyKeyRequired": true
+    },
+    {
+      "type": "social.inbox.triage.request.v1",
+      "description": "Request triage work for inbound social engagement without exposing provider tokens to n8n.",
+      "deliveryDefault": "disabled",
+      "idempotencyKeyRequired": true
+    }
+  ],
+  "eventsPublishedToMiddleware": [
+    "social.publication.created.v1",
+    "social.publication.status_changed.v1",
+    "social.publication.failed.v1",
+    "social.provider.connected.v1",
+    "social.provider.disconnected.v1",
+    "social.inbox.message.received.v1"
+  ],
+  "invariants": {
+    "n8nIsWriteAuthority": false,
+    "browserReceivesConfidentialCredentials": false,
+    "externalProviderWritesBypassMiddleware": false,
+    "workflowJsonMayContainCredentials": false,
+    "liveDeliveryEnabledByDefault": false
+  }
+}

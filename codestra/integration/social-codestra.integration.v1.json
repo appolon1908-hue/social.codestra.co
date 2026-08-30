@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "1.0",
+  "application": "social.codestra.co",
+  "codestraBusiness": "codestra-social",
+  "status": "INTEGRATION_FILES_PREPARED_NOT_DEPLOYED",
+  "publicHostname": "social.codestra.co",
+  "runtime": {
+    "backend": "apps/backend",
+    "frontend": "apps/frontend",
+    "orchestrator": "apps/orchestrator",
+    "sdk": "apps/sdk"
+  },
+  "identity": {
+    "authority": "Keycloak",
+    "expectedIssuer": "https://auth.codestra.co/realms/codestra",
+    "clientId": "social-codestra",
+    "requiredScopes": [
+      "social.read",
+      "social.write",
+      "communications.write",
+      "intake.write"
+    ],
+    "browserSecretsAllowed": false
+  },
+  "gateway": {
+    "edge": "Caddy",
+    "apiGateway": "Kong",
+    "canonicalApiBase": "https://api.codestra.co",
+    "directProviderWritesAllowed": false
+  },
+  "middleware": {
+    "authority": "Middleware-",
+    "automationApi": {
+      "claim": "POST /v2/automation/jobs/claim",
+      "commands": "POST /v2/automation/commands",
+      "commandStatus": "GET /v2/automation/commands/{command_id}",
+      "heartbeat": "POST /v2/automation/jobs/{job_id}/heartbeat",
+      "complete": "POST /v2/automation/jobs/{job_id}/complete",
+      "fail": "POST /v2/automation/jobs/{job_id}/fail"
+    },
+    "allowedCommands": [
+      "communications.message.send.v1",
+      "intake.lead.create.v1",
+      "intake.survey.response.submit.v1",
+      "social.publication.event.v1",
+      "social.publication.request.v1",
+      "social.publication.cancel.v1",
+      "social.analytics.snapshot.request.v1",
+      "social.inbox.triage.request.v1"
+    ],
+    "requiredHeaders": [
+      "Authorization",
+      "X-Tenant-ID",
+      "X-Correlation-ID",
+      "Idempotency-Key"
+    ]
+  },
+  "sdkPackages": {
+    "intake": [
+      "@codestra/intake-sdk",
+      "@codestra/intake-bff",
+      "@codestra/intake-form",
+      "@codestra/intake-survey",
+      "@codestra/intake-ui",
+      "@codestra/intake-voice-controls"
+    ],
+    "communications": [
+      "codestra_middleware_sdk"
+    ]
+  },
+  "observability": {
+    "metricsEndpoint": "/metrics",
+    "metricsEnabledByDefault": false,
+    "prometheusJob": "social-codestra",
+    "requiredLabels": [
+      "codestra_business",
+      "application",
+      "service",
+      "environment",
+      "server",
+      "region",
+      "deployment"
+    ],
+    "forbiddenLabels": [
+      "tenant_id",
+      "customer_id",
+      "organization_id",
+      "user_id",
+      "email",
+      "phone",
+      "request_id",
+      "trace_id",
+      "message_id",
+      "post_id",
+      "raw_url",
+      "query_string",
+      "idempotency_key"
+    ]
+  },
+  "productionGates": {
+    "deploymentChanged": false,
+    "liveWritesEnabled": false,
+    "metricsTargetEnabled": false,
+    "n8nWorkflowsImported": false,
+    "n8nWorkflowsActive": false,
+    "requiresKeycloakKongMatrix": true,
+    "requiresMiddlewareCanary": true,
+    "requiresPrometheusTargetApproval": true,
+    "requiresCpPostlyStagingProof": true
+  }
+}

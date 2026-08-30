@@ -1,0 +1,20 @@
+# Disabled-by-default Prometheus target for Codestra Social.
+# Move this into the Prometheus target inventory only after route, auth and network approval.
+
+- job_name: social-codestra
+  metrics_path: /metrics
+  scheme: https
+  honor_labels: false
+  static_configs:
+    - targets: []
+      labels:
+        codestra_business: codestra-social
+        application: social.codestra.co
+        service: social-backend
+        environment: pending
+        server: pending
+        region: pending
+        deployment: pending
+  relabel_configs:
+    - action: labeldrop
+      regex: "(tenant_id|customer_id|organization_id|user_id|email|phone|request_id|trace_id|message_id|post_id|raw_url|query_string|idempotency_key)"
