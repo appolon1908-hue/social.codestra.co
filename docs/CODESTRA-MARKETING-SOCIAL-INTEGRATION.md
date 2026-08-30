@@ -70,4 +70,4 @@ social.engagement.received
 social.analytics.updated
 
 ## Boundary rule
-`social.codestra.co` is the social publishing implementation platform. `Codesrea-Social-` is the enterprise Codestra service boundary. Business applications and the shared SDK target the Codestra Social API, not undocumented internals of this runtime.
+`social.codestra.co` is the social publishing implementation platform. `Codestra Social` is the enterprise Codestra service boundary. Business applications and the shared SDK target the Codestra Social API, not undocumented internals of this runtime.
