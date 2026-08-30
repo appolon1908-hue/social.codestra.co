@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   id-token: write
   packages: write
@@ -16,7 +17,7 @@ concurrency:
 
 jobs:
   verify:
-    name: Verify main-reachable source
+    name: Verify exact-SHA source and CI evidence
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -29,6 +30,19 @@ jobs:
         run: |
           git fetch --no-tags origin main
           git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - name: Require successful Backend CI for exact SHA
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run_id="$(gh api \
+            -H 'Accept: application/vnd.github+json' \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/backend-ci.yml/runs?head_sha=${GITHUB_SHA}&status=success&per_page=100" \
+            --jq '[.workflow_runs[] | select(.conclusion == "success")][0].id // empty')"
+          test -n "$run_id"
+          echo "backend_ci_run_id=$run_id"
+          mkdir -p exact-sha-ci
+          gh run download "$run_id" --repo "$GITHUB_REPOSITORY" --name "backend-ci-${GITHUB_SHA}" --dir exact-sha-ci
+          grep -Fx "source_sha=${GITHUB_SHA}" exact-sha-ci/backend-ci.txt
       - name: Reject moving images and destructive migrations
         run: |
           node scripts/validate-no-latest-images.mjs
