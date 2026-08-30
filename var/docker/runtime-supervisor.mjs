@@ -26,7 +26,7 @@ process.on('SIGINT', () => shutdown(0));
 
 // Runtime replicas never execute schema migrations. Release orchestration must
 // invoke scripts/prisma-deploy.mjs once, as a separate migration job, and only
-// start/replace application replicas after that job succeeds.
+// start or replace application replicas after that migration job succeeds.
 start('nginx', ['-g', 'daemon off;'], 'nginx');
 start('node', [`${root}/dist/apps/backend/src/main.js`], 'backend');
 start('node', [`${root}/dist/apps/orchestrator/src/main.js`], 'orchestrator');
