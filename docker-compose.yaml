@@ -137,7 +137,7 @@ services:
         condition: service_healthy
 
   postiz-postgres:
-    image: postgres:17-alpine
+    image: postgres:17-alpine@sha256:18cfe3ef5e6815560c98237d6216d1e5119702fb0f3894c8785dd58b8bbe5d73
     container_name: postiz-postgres
     restart: always
     environment:
@@ -154,7 +154,7 @@ services:
       timeout: 3s
       retries: 3
   postiz-redis:
-    image: redis:7.2
+    image: redis:7.2@sha256:74566c6910d13ae61e7ce73ebd3127438a1fe805b309b097c323142719ec8a5b
     container_name: postiz-redis
     restart: always
     healthcheck:
@@ -183,7 +183,7 @@ services:
   # -----------------------
   temporal-elasticsearch:
     container_name: temporal-elasticsearch
-    image: elasticsearch:7.17.27
+    image: elasticsearch:7.17.27@sha256:9a6443f55243f6acbfeb4a112d15eb3b9aac74bf25e0e39fa19b3ddd3a6879d0
     environment:
       - cluster.routing.allocation.disk.threshold_enabled=true
       - cluster.routing.allocation.disk.watermark.low=512mb
@@ -201,7 +201,7 @@ services:
 
   temporal-postgresql:
     container_name: temporal-postgresql
-    image: postgres:16
+    image: postgres:16@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94
     environment:
       POSTGRES_PASSWORD: ${TEMPORAL_POSTGRES_PASSWORD:?set TEMPORAL_POSTGRES_PASSWORD}
       POSTGRES_USER: temporal
@@ -216,7 +216,7 @@ services:
     container_name: temporal
     ports:
       - '127.0.0.1:7233:7233'
-    image: temporalio/auto-setup:1.28.1
+    image: temporalio/auto-setup:1.28.1@sha256:607d68caa111338d754771efb876c92dfcdae06d056e4530bb31cd0f37406e6a
     depends_on:
       - temporal-postgresql
       - temporal-elasticsearch
@@ -240,7 +240,7 @@ services:
 
   temporal-admin-tools:
     container_name: temporal-admin-tools
-    image: temporalio/admin-tools:1.28.1-tctl-1.18.4-cli-1.4.1
+    image: temporalio/admin-tools:1.28.1-tctl-1.18.4-cli-1.4.1@sha256:01537b62d995f27a0f0d33a01ac4caa6779622f454fb2eb36fed0dccd45c6244
     environment:
       - TEMPORAL_ADDRESS=temporal:7233
       - TEMPORAL_CLI_ADDRESS=temporal:7233
@@ -254,7 +254,7 @@ services:
   temporal-ui:
     profiles: [debug]
     container_name: temporal-ui
-    image: temporalio/ui:2.34.0
+    image: temporalio/ui:2.34.0@sha256:cb17ea423d76a8a19a269d0bcd81fc12eee1f6365acd2a56b590dafb35696a95
     environment:
       - TEMPORAL_ADDRESS=temporal:7233
       - TEMPORAL_CORS_ORIGINS=http://127.0.0.1:3000
