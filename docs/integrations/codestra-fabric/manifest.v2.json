@@ -1,0 +1,21 @@
+{
+  "schema_version": "2.0",
+  "system": "postly-social",
+  "authority": ["workspaces", "social_accounts", "provider_tokens", "content", "media", "approvals", "schedules", "provider_references", "publication_state", "inbox", "analytics", "account_health"],
+  "integration_boundary": "MIDDLEWARE_ONLY",
+  "n8n_direct_access": false,
+  "provider_tokens_in_n8n": false,
+  "database_direct_access": false,
+  "service_identity": "postly-adapter",
+  "event_delivery": "DURABLE_STATE_AND_TRANSACTIONAL_OUTBOX",
+  "unknown_publication_reconcile_before_retry": true,
+  "success_authority": "POSTLY_PROVIDER_RECONCILIATION",
+  "capabilities": {
+    "SOCIAL_PUBLISH": false,
+    "SOCIAL_ACCOUNT_WRITE": false,
+    "SOCIAL_ENGAGEMENT_WRITEBACK": false,
+    "LEAD_PUBLISH": false,
+    "ODOO_WRITE": false,
+    "DEAD_LETTER_REPLAY": false
+  }
+}
