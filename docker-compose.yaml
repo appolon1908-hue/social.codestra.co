@@ -141,9 +141,9 @@ services:
         - CMD
         - node
         - -e
-        - "fetch('http://127.0.0.1:5000/api/monitor/live').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+        - "if(process.env.PUBLISHING_KILL_SWITCH==='false')process.exit(1);fetch('http://127.0.0.1:3002/health/status',{signal:AbortSignal.timeout(5000)}).then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
       interval: 30s
-      timeout: 5s
+      timeout: 8s
       retries: 3
       start_period: 30s
 
