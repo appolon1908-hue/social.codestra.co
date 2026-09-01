@@ -4,6 +4,10 @@ import { PrismaService } from '@gitroom/nestjs-libraries/database/prisma/prisma.
 import { Request, Response } from 'express';
 import { ioRedis } from '@gitroom/nestjs-libraries/redis/redis.service';
 import net from 'node:net';
+import {
+  runtimeCapabilities,
+  runtimeVersion,
+} from '@gitroom/backend/api/routes/runtime-evidence';
 
 function metric(name: string, value: number, labels = '') {
   return `${name}${labels ? `{${labels}}` : ''} ${
@@ -28,6 +32,45 @@ function tcpCheck(host: string, port: number, timeoutMs = 1500) {
 @Controller('/monitor')
 export class MonitorController {
   constructor(private readonly prisma: PrismaService) {}
+
+  @Get('/live')
+  live() {
+    return { status: 'ok' };
+  }
+
+  @Get('/ready')
+  async ready(@Res() response: Response) {
+    const [postgres, redis, temporal] = await Promise.all([
+      this.prisma.$queryRaw`SELECT 1`.then(() => true).catch(() => false),
+      ioRedis
+        .ping()
+        .then((reply) => reply === 'PONG')
+        .catch(() => false),
+      (() => {
+        const [host, port] = (process.env.TEMPORAL_ADDRESS || 'temporal:7233')
+          .replace(/^https?:\/\//, '')
+          .split(':');
+        return tcpCheck(host, Number(port || '7233')).then(Boolean);
+      })(),
+    ]);
+    const ready = postgres && redis && temporal;
+    return response
+      .status(ready ? 200 : 503)
+      .json({
+        status: ready ? 'ready' : 'not_ready',
+        dependencies: { postgres, redis, temporal },
+      });
+  }
+
+  @Get('/version')
+  version() {
+    return runtimeVersion(process.env);
+  }
+
+  @Get('/capabilities')
+  capabilities() {
+    return runtimeCapabilities(process.env);
+  }
 
   @Get('/queue/:name')
   async getMessagesGroup(@Param('name') name: string) {
