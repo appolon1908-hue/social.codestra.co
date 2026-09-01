@@ -12,14 +12,16 @@ Authority and safety:
   quiesce the application, set `CODESTRA_SOCIAL_QUIESCED=true`, and prove zero
   remaining application database connections.
 - Plaintext dump/archive work is accepted only below an existing `tmpfs` root.
-- The published artifact is OpenPGP-encrypted, checksum-bound, atomically
-  identified, and records the exact 40-character source SHA plus image digest.
+- The published artifact is OpenPGP-encrypted, signed by an exact configured
+  backup-identity fingerprint, checksum-bound, atomically identified, and
+  records the exact source SHA, image digest, and applied migration head.
 - Database credentials are accepted only through an owner/mode-checked
   `PGPASSFILE`; secret values never enter metadata or logs.
-- Restore requires explicit authorization, an empty database whose name is
-  visibly isolated, an empty uploads directory, and exact expected source/image
-  identities. It never cleans or creates a database and never targets the
-  source database identity.
+- Restore requires explicit authorization, signature verification against the
+  expected fingerprint, a database with no user schemas or objects whose name
+  is visibly isolated, an empty uploads directory, and exact expected source,
+  image, and migration identities. It never cleans or creates a database and
+  never targets the source database identity.
 - Archive paths, symbolic links, database schema, upload count, evidence
   checksums, freshness and isolated target class fail closed.
 

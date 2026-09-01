@@ -2,13 +2,17 @@
 set -Eeuo pipefail
 umask 077
 
-required=(PGHOST PGPORT PGDATABASE PGUSER PGPASSFILE CODESTRA_SOCIAL_UPLOADS_DIR CODESTRA_SOCIAL_BACKUP_ROOT CODESTRA_SOCIAL_RECOVERY_WORK_ROOT CODESTRA_RELEASE_SHA CODESTRA_IMAGE_DIGEST CODESTRA_BACKUP_GPG_RECIPIENT CODESTRA_EXPECTED_DATABASE)
+required=(PGHOST PGPORT PGDATABASE PGUSER PGPASSFILE CODESTRA_SOCIAL_UPLOADS_DIR CODESTRA_SOCIAL_BACKUP_ROOT CODESTRA_SOCIAL_RECOVERY_WORK_ROOT CODESTRA_RELEASE_SHA CODESTRA_IMAGE_DIGEST CODESTRA_MIGRATION_HEAD CODESTRA_BACKUP_GPG_RECIPIENT CODESTRA_BACKUP_GPG_SIGNING_FINGERPRINT CODESTRA_EXPECTED_DATABASE)
 for name in "${required[@]}"; do
   [[ -n "${!name:-}" ]] || { echo "required recovery setting is missing: $name" >&2; exit 2; }
 done
 [[ "${CODESTRA_SOCIAL_QUIESCED:-false}" == true ]] || { echo "social application must be quiesced by reviewed deployment authority" >&2; exit 2; }
 [[ "$CODESTRA_RELEASE_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "release SHA is not immutable" >&2; exit 2; }
 [[ "$CODESTRA_IMAGE_DIGEST" =~ ^sha256:[0-9a-f]{64}$ ]] || { echo "image digest is not immutable" >&2; exit 2; }
+[[ "$CODESTRA_MIGRATION_HEAD" =~ ^[0-9]{14}_[a-z0-9_]+$ ]] || { echo "migration head is invalid" >&2; exit 2; }
+[[ "$CODESTRA_BACKUP_GPG_SIGNING_FINGERPRINT" =~ ^[A-Fa-f0-9]{40}$ ]] || { echo "backup signing fingerprint is invalid" >&2; exit 2; }
+CODESTRA_BACKUP_GPG_SIGNING_FINGERPRINT=${CODESTRA_BACKUP_GPG_SIGNING_FINGERPRINT^^}
+gpg --batch --list-secret-keys "$CODESTRA_BACKUP_GPG_SIGNING_FINGERPRINT" >/dev/null 2>&1 || { echo "authorized backup signing key is unavailable" >&2; exit 2; }
 [[ "$CODESTRA_EXPECTED_DATABASE" =~ ^[A-Za-z0-9_-]+$ ]] || { echo "expected database identity is invalid" >&2; exit 2; }
 [[ ! -L "$PGPASSFILE" && -f "$PGPASSFILE" ]] || { echo "protected PostgreSQL passfile is invalid" >&2; exit 2; }
 [[ "$(stat -c '%a' "$PGPASSFILE")" =~ ^(400|600)$ ]] || { echo "unsafe PostgreSQL passfile mode" >&2; exit 2; }
@@ -25,6 +29,8 @@ database_name=$(psql -XAtq -v ON_ERROR_STOP=1 -c 'select current_database()')
 [[ "$database_name" == "$CODESTRA_EXPECTED_DATABASE" ]] || { echo "unexpected database identity" >&2; exit 2; }
 application_connections=$(psql -XAtq -v ON_ERROR_STOP=1 -c "select count(*) from pg_stat_activity where datname=current_database() and pid <> pg_backend_pid()")
 [[ "$application_connections" == 0 ]] || { echo "database still has application connections" >&2; exit 2; }
+migration_applied=$(psql -XAtq -v ON_ERROR_STOP=1 -v expected_migration="$CODESTRA_MIGRATION_HEAD" -c "select count(*) from \"_prisma_migrations\" where migration_name=:'expected_migration' and finished_at is not null and rolled_back_at is null")
+[[ "$migration_applied" == 1 ]] || { echo "expected migration head is not applied" >&2; exit 2; }
 
 install -d -m 0700 "$CODESTRA_SOCIAL_BACKUP_ROOT"
 exec 9>"$CODESTRA_SOCIAL_BACKUP_ROOT/.backup.lock"
@@ -57,6 +63,8 @@ STAMP=$stamp
 DATABASE=$database_name
 RELEASE_SHA=$CODESTRA_RELEASE_SHA
 IMAGE_DIGEST=$CODESTRA_IMAGE_DIGEST
+MIGRATION_HEAD=$CODESTRA_MIGRATION_HEAD
+SIGNING_FINGERPRINT=$CODESTRA_BACKUP_GPG_SIGNING_FINGERPRINT
 UPLOAD_FILE_COUNT=$upload_files
 CONSISTENCY_WINDOW_START=$window_start
 CONSISTENCY_WINDOW_END=$window_end
@@ -79,13 +87,18 @@ STAMP=$stamp
 DATABASE=$database_name
 RELEASE_SHA=$CODESTRA_RELEASE_SHA
 IMAGE_DIGEST=$CODESTRA_IMAGE_DIGEST
+MIGRATION_HEAD=$CODESTRA_MIGRATION_HEAD
+SIGNING_FINGERPRINT=$CODESTRA_BACKUP_GPG_SIGNING_FINGERPRINT
 UPLOAD_FILE_COUNT=$upload_files
 ENCRYPTION=OPENPGP
 APPLICATION_QUIESCED=true
 EOF
-(cd "$publish" && sha256sum recovery.tar.gpg METADATA >SHA256SUMS)
+(cd "$publish" && sha256sum recovery.tar.gpg METADATA >SIGNED-MANIFEST)
+gpg --batch --yes --local-user "$CODESTRA_BACKUP_GPG_SIGNING_FINGERPRINT" \
+  --detach-sign --output "$publish/SIGNED-MANIFEST.sig" "$publish/SIGNED-MANIFEST"
+(cd "$publish" && sha256sum recovery.tar.gpg METADATA SIGNED-MANIFEST SIGNED-MANIFEST.sig >SHA256SUMS)
 chmod 0600 "$publish"/*
-sync "$publish/recovery.tar.gpg" "$publish/METADATA" "$publish/SHA256SUMS"
+sync "$publish/recovery.tar.gpg" "$publish/METADATA" "$publish/SIGNED-MANIFEST" "$publish/SIGNED-MANIFEST.sig" "$publish/SHA256SUMS"
 sync -d "$publish"
 mv "$publish" "$destination"
 sync -d "$CODESTRA_SOCIAL_BACKUP_ROOT"
