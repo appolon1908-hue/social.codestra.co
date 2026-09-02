@@ -26,6 +26,7 @@ import {
   AuthorizationActions,
   Sections,
 } from '@gitroom/backend/services/auth/permissions/permission.exception.class';
+import { isRuntimeCapabilityEnabled } from '@gitroom/helpers/configuration/runtime-capabilities';
 
 export type ChannelsContext = {
   integrations: string;
@@ -42,6 +43,7 @@ export class CopilotController {
   @Post('/chat')
   chatAgent(@Req() req: Request, @Res() res: Response) {
     if (
+      !isRuntimeCapabilityEnabled('EXTERNAL_MODEL_CALLS_ENABLED') ||
       process.env.OPENAI_API_KEY === undefined ||
       process.env.OPENAI_API_KEY === ''
     ) {
@@ -71,6 +73,7 @@ export class CopilotController {
     @GetOrgFromRequest() organization: Organization
   ) {
     if (
+      !isRuntimeCapabilityEnabled('EXTERNAL_MODEL_CALLS_ENABLED') ||
       process.env.OPENAI_API_KEY === undefined ||
       process.env.OPENAI_API_KEY === ''
     ) {

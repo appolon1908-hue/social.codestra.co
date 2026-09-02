@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Agent } from '@mastra/core/agent';
 import { openai } from '@ai-sdk/openai';
+import { requireRuntimeCapability } from '@gitroom/helpers/configuration/runtime-capabilities';
 import { Memory } from '@mastra/memory';
 import { pStore } from '@gitroom/nestjs-libraries/chat/mastra.store';
 import { array, object, string } from 'zod';
@@ -41,11 +42,13 @@ export class LoadToolsService {
   }
 
   async agent() {
+    requireRuntimeCapability('EXTERNAL_MODEL_CALLS_ENABLED');
     const tools = await this.loadTools();
     return new Agent({
       id: 'postiz',
       name: 'postiz',
-      description: 'Agent that helps manage and schedule social media posts for users',
+      description:
+        'Agent that helps manage and schedule social media posts for users',
       instructions: ({ requestContext }) => {
         const ui: string = requestContext.get('ui' as never);
         return `

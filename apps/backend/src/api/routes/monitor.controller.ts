@@ -4,6 +4,7 @@ import { PrismaService } from '@gitroom/nestjs-libraries/database/prisma/prisma.
 import { Request, Response } from 'express';
 import { ioRedis } from '@gitroom/nestjs-libraries/redis/redis.service';
 import net from 'node:net';
+import { isRuntimeCapabilityEnabled } from '@gitroom/helpers/configuration/runtime-capabilities';
 
 function metric(name: string, value: number, labels = '') {
   return `${name}${labels ? `{${labels}}` : ''} ${
@@ -138,7 +139,34 @@ export class MonitorController {
         'dependency="elasticsearch"'
       ),
       '# TYPE codestra_ai_available gauge\n',
-      metric('codestra_ai_available', process.env.OPENAI_API_KEY ? 1 : 0),
+      metric(
+        'codestra_ai_available',
+        isRuntimeCapabilityEnabled('EXTERNAL_MODEL_CALLS_ENABLED') &&
+          process.env.OPENAI_API_KEY
+          ? 1
+          : 0
+      ),
+      '# TYPE codestra_runtime_capability_enabled gauge\n',
+      metric(
+        'codestra_runtime_capability_enabled',
+        isRuntimeCapabilityEnabled('BILLING_LIVE_CHARGE') ? 1 : 0,
+        'capability="billing_live_charge"'
+      ),
+      metric(
+        'codestra_runtime_capability_enabled',
+        isRuntimeCapabilityEnabled('EXTERNAL_MODEL_CALLS_ENABLED') ? 1 : 0,
+        'capability="external_model_calls"'
+      ),
+      metric(
+        'codestra_runtime_capability_enabled',
+        isRuntimeCapabilityEnabled('WEBHOOK_DELIVERY_ENABLED') ? 1 : 0,
+        'capability="webhook_delivery"'
+      ),
+      metric(
+        'codestra_runtime_capability_enabled',
+        process.env.PUBLISHING_KILL_SWITCH === 'false' ? 1 : 0,
+        'capability="social_publishing"'
+      ),
     ].join('');
     return response.type('text/plain; version=0.0.4').send(body);
   }
