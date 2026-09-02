@@ -55,8 +55,6 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
   const { backendUrl, billingEnabled, isGeneral, aiAgentEnabled } =
     useVariables();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Feedback icon component attaches Sentry feedback to a top-bar icon when DSN is present
   const searchParams = useSearchParams();
   const load = useCallback(async (path: string) => {
     return await (await fetch(path)).json();
@@ -136,7 +134,7 @@ const ApplicationShell = ({
           <ContinueProvider />
           <div
             className={clsx(
-              'flex min-w-0 flex-col min-h-screen text-newTextColor p-[4px] md:p-[12px]',
+              'hz-social-app-shell flex min-w-0 flex-col min-h-screen text-newTextColor p-[4px] md:p-[12px]',
               jakartaSans.className
             )}
           >
@@ -148,7 +146,7 @@ const ApplicationShell = ({
                 <AnnouncementBanner />
                 <div className="flex min-w-0 flex-1 gap-[8px]">
                   <Support />
-                  <div className="hidden md:flex flex-col bg-newBgColorInner w-[80px] rounded-[12px]">
+                  <div className="hz-social-rail hidden md:flex flex-col bg-newBgColorInner w-[80px] rounded-[12px]">
                     <div
                       id="left-menu"
                       className={clsx(
@@ -187,8 +185,8 @@ const ApplicationShell = ({
                       </nav>
                     </div>
                   )}
-                  <div className="min-w-0 flex-1 bg-newBgLineColor rounded-[12px] overflow-hidden flex flex-col gap-[1px] blurMe">
-                    <div className="flex bg-newBgColorInner min-h-[64px] md:h-[80px] px-[12px] md:px-[20px] items-center">
+                  <div className="hz-social-main min-w-0 flex-1 bg-newBgLineColor rounded-[12px] overflow-hidden flex flex-col gap-[1px] blurMe">
+                    <div className="hz-social-topbar flex bg-newBgColorInner min-h-[64px] md:h-[80px] px-[12px] md:px-[20px] items-center">
                       <button
                         type="button"
                         className="mr-3 min-h-[44px] min-w-[44px] rounded-lg bg-btnSimple md:hidden"
@@ -197,8 +195,14 @@ const ApplicationShell = ({
                       >
                         ☰
                       </button>
-                      <div className="text-[18px] md:text-[24px] font-[600] flex flex-1 min-w-0 truncate">
-                        <Title />
+                      <div className="flex min-w-0 flex-1 items-center gap-[12px]">
+                        <div className="hz-social-product-identity hidden lg:flex">
+                          <span className="hz-social-product-name">Codestra Social</span>
+                          <span className="hz-social-domain">social.codestra.co</span>
+                        </div>
+                        <div className="min-w-0 truncate text-[18px] md:text-[24px] font-[600]">
+                          <Title />
+                        </div>
                       </div>
                       <div className="hidden md:flex gap-[20px] text-textItemBlur">
                         <StreakComponent />

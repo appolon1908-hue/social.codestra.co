@@ -2,6 +2,7 @@ import { SentryComponent } from '@gitroom/frontend/components/layout/sentry.comp
 
 export const dynamic = 'force-dynamic';
 import '../global.scss';
+import '../horizon.scss';
 import 'react-tooltip/dist/react-tooltip.css';
 import '@copilotkit/react-ui/styles.css';
 import LayoutContext from '@gitroom/frontend/components/layout/layout.context';
@@ -24,6 +25,7 @@ import {
 import { HtmlComponent } from '@gitroom/frontend/components/layout/html.component';
 import Script from 'next/script';
 import { ChangeDirClient } from '@gitroom/frontend/components/new-layout/change.dir.client';
+import { PortfolioFooter } from '@gitroom/frontend/components/new-layout/portfolio.footer';
 
 const jakartaSans = Plus_Jakarta_Sans({
   weight: ['600', '500'],
@@ -38,23 +40,30 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     ? PlausibleProvider
     : Fragment;
   return (
-    <html lang={language}>
+    <html
+      lang={language}
+      data-horizon-root
+      data-horizon-theme="social"
+    >
       <head>
-        <title>Codestra</title>
+        <title>Codestra Social</title>
         <meta
           name="description"
-          content="Plan, create, schedule, and manage your social content from one secure workspace."
+          content="Plan, create, schedule, and manage social content from one secure Codestra workspace."
         />
-        <meta property="og:title" content="Codestra" />
+        <meta name="application-name" content="Codestra Social" />
+        <meta name="theme-color" content="#07090c" />
+        <meta property="og:title" content="Codestra Social" />
         <meta
           property="og:description"
-          content="Plan, create, schedule, and manage your social content from one secure workspace."
+          content="Plan, create, schedule, and manage social content from one secure Codestra workspace."
         />
         <meta property="og:image" content="/og-codestra.png" />
         <meta property="og:url" content="https://social.codestra.co" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Codestra" />
+        <meta name="twitter:title" content="Codestra Social" />
         <meta name="twitter:image" content="/og-codestra.png" />
+        <link rel="canonical" href="https://social.codestra.co" />
         <link
           rel="icon"
           href="/favicon-32x32.png"
@@ -80,7 +89,10 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       </head>
       <ChangeDirClient />
       <body
-        className={clsx(jakartaSans.className, 'dark text-primary !bg-primary')}
+        className={clsx(
+          jakartaSans.className,
+          'horizon-social-root dark text-primary !bg-primary'
+        )}
       >
         <VariableContextComponent
           storageProvider={
@@ -125,7 +137,6 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           }
         >
           <SentryComponent>
-            {/*<SetTimezone />*/}
             <HtmlComponent />
             <DubAnalytics />
             <FacebookComponent />
@@ -139,6 +150,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
                   <UtmSaver />
                   {children}
                 </LayoutContext>
+                <PortfolioFooter />
               </PHProvider>
             </Plausible>
           </SentryComponent>
