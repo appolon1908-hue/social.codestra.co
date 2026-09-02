@@ -2,9 +2,10 @@
   "schema_version": 1,
   "generated_from": [
     "apps/backend/src",
-    "apps/orchestrator/src"
+    "apps/orchestrator/src",
+    "libraries/nestjs-libraries/src/chat/start.mcp.ts"
   ],
-  "route_count": 211,
+  "route_count": 219,
   "routes": [
     {
       "method": "GET",
@@ -15,6 +16,39 @@
       "controller_decorators": [],
       "handler_decorators": [],
       "parameter_decorators": []
+    },
+    {
+      "method": "ANY",
+      "path": "/.well-known/oauth-authorization-server",
+      "controller": null,
+      "handler": "app.use",
+      "source": "libraries/nestjs-libraries/src/chat/start.mcp.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [],
+      "transport_registration": "express-middleware"
+    },
+    {
+      "method": "ANY",
+      "path": "/.well-known/oauth-protected-resource",
+      "controller": null,
+      "handler": "app.use",
+      "source": "libraries/nestjs-libraries/src/chat/start.mcp.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [],
+      "transport_registration": "express-middleware"
+    },
+    {
+      "method": "ANY",
+      "path": "/.well-known/openai-apps-challenge",
+      "controller": null,
+      "handler": "app.use",
+      "source": "libraries/nestjs-libraries/src/chat/start.mcp.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [],
+      "transport_registration": "express-middleware"
     },
     {
       "method": "GET",
@@ -1187,6 +1221,39 @@
       ]
     },
     {
+      "method": "ANY",
+      "path": "/mcp",
+      "controller": null,
+      "handler": "app.use",
+      "source": "libraries/nestjs-libraries/src/chat/start.mcp.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [],
+      "transport_registration": "express-middleware"
+    },
+    {
+      "method": "ANY",
+      "path": "/mcp-oauth",
+      "controller": null,
+      "handler": "app.use",
+      "source": "libraries/nestjs-libraries/src/chat/start.mcp.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [],
+      "transport_registration": "express-middleware"
+    },
+    {
+      "method": "ANY",
+      "path": "/mcp/:id",
+      "controller": null,
+      "handler": "app.use",
+      "source": "libraries/nestjs-libraries/src/chat/start.mcp.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [],
+      "transport_registration": "express-middleware"
+    },
+    {
       "method": "GET",
       "path": "/media",
       "controller": "MediaController",
@@ -1388,6 +1455,17 @@
       "parameter_decorators": [
         "Body"
       ]
+    },
+    {
+      "method": "ANY",
+      "path": "/message/:id",
+      "controller": null,
+      "handler": "app.use",
+      "source": "libraries/nestjs-libraries/src/chat/start.mcp.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [],
+      "transport_registration": "express-middleware"
     },
     {
       "method": "GET",
@@ -2522,6 +2600,17 @@
       "parameter_decorators": [
         "GetOrgFromRequest"
       ]
+    },
+    {
+      "method": "ANY",
+      "path": "/sse/:id",
+      "controller": null,
+      "handler": "app.use",
+      "source": "libraries/nestjs-libraries/src/chat/start.mcp.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [],
+      "transport_registration": "express-middleware"
     },
     {
       "method": "POST",

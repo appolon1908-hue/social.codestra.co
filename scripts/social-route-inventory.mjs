@@ -5,6 +5,9 @@ import ts from 'typescript';
 const root = resolve(import.meta.dirname, '..');
 const output = resolve(root, 'contracts/generated/social-route-inventory.json');
 const roots = ['apps/backend/src', 'apps/orchestrator/src'];
+const middlewareTransportSources = [
+  'libraries/nestjs-libraries/src/chat/start.mcp.ts',
+];
 const methods = new Map([
   ['Get', 'GET'],
   ['Post', 'POST'],
@@ -74,9 +77,10 @@ function normalizePath(controllerPath, methodPath) {
 }
 
 const routes = [];
-for (const sourcePath of roots.flatMap((directory) =>
-  filesUnder(resolve(root, directory))
-)) {
+for (const sourcePath of [
+  ...roots.flatMap((directory) => filesUnder(resolve(root, directory))),
+  ...middlewareTransportSources.map((path) => resolve(root, path)),
+]) {
   const source = ts.createSourceFile(
     sourcePath,
     readFileSync(sourcePath, 'utf8'),
@@ -125,6 +129,37 @@ for (const sourcePath of roots.flatMap((directory) =>
       }
     }
   });
+
+  if (middlewareTransportSources.includes(relative(root, sourcePath))) {
+    const visit = (node) => {
+      if (
+        ts.isCallExpression(node) &&
+        ts.isPropertyAccessExpression(node.expression) &&
+        ts.isIdentifier(node.expression.expression) &&
+        node.expression.expression.text === 'app' &&
+        node.expression.name.text === 'use'
+      ) {
+        const paths = [
+          literalArgument({ arguments: node.arguments }, ''),
+        ].flat();
+        for (const path of paths.filter(Boolean)) {
+          routes.push({
+            method: 'ANY',
+            path: normalizePath('', path),
+            controller: null,
+            handler: 'app.use',
+            source: relative(root, sourcePath),
+            controller_decorators: [],
+            handler_decorators: [],
+            parameter_decorators: [],
+            transport_registration: 'express-middleware',
+          });
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(source);
+  }
 }
 
 routes.sort((left, right) =>
@@ -149,7 +184,7 @@ if (duplicates.length) {
 const document = `${JSON.stringify(
   {
     schema_version: 1,
-    generated_from: roots,
+    generated_from: [...roots, ...middlewareTransportSources],
     route_count: routes.length,
     routes,
   },

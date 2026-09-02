@@ -7,11 +7,14 @@ generated SDK, and drift evidence for every Social backend and orchestrator
 transport. PostgreSQL/domain authority and all runtime behavior remain unchanged.
 
 The first mechanical input is a deterministic inventory of every literal NestJS
-HTTP route on current `main`. It records method, normalized path, controller,
-handler, source file, controller/handler decorators, and parameter decorators
-that expose existing tenant and actor injection evidence. It rejects duplicate
-method/path authority. Decorator presence is evidence for classification; it
-does not itself classify or authorize a route.
+HTTP route and directly registered MCP/OAuth Express middleware transport on
+current `main`. It records method, normalized path, controller, handler, source
+file, controller/handler decorators, and parameter decorators that expose
+existing tenant and actor injection evidence. Express `app.use` registrations
+are recorded as `ANY` because that is the actual method surface until BE-1
+narrows or retires it. It rejects duplicate method/path authority. Decorator
+presence is evidence for classification; it does not itself classify or
+authorize a route.
 
 ## Contract decisions still required
 
