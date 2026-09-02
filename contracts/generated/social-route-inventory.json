@@ -11,1477 +11,3231 @@
       "path": "/",
       "controller": "RootController",
       "handler": "getRoot",
-      "source": "apps/backend/src/api/routes/root.controller.ts"
+      "source": "apps/backend/src/api/routes/root.controller.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": []
     },
     {
       "method": "GET",
       "path": "/admin/errors",
       "controller": "AdminController",
       "handler": "listErrors",
-      "source": "apps/backend/src/api/routes/admin.controller.ts"
+      "source": "apps/backend/src/api/routes/admin.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/admin/errors/platforms",
       "controller": "AdminController",
       "handler": "listPlatforms",
-      "source": "apps/backend/src/api/routes/admin.controller.ts"
+      "source": "apps/backend/src/api/routes/admin.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/admin/stats",
       "controller": "AdminController",
       "handler": "getStats",
-      "source": "apps/backend/src/api/routes/admin.controller.ts"
+      "source": "apps/backend/src/api/routes/admin.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/analytics/:integration",
       "controller": "AnalyticsController",
       "handler": "getIntegration",
-      "source": "apps/backend/src/api/routes/analytics.controller.ts"
+      "source": "apps/backend/src/api/routes/analytics.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param",
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/analytics/post/:postId",
       "controller": "AnalyticsController",
       "handler": "getPostAnalytics",
-      "source": "apps/backend/src/api/routes/analytics.controller.ts"
+      "source": "apps/backend/src/api/routes/analytics.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param",
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/announcements",
       "controller": "AnnouncementsController",
       "handler": "getAnnouncements",
-      "source": "apps/backend/src/api/routes/announcements.controller.ts"
+      "source": "apps/backend/src/api/routes/announcements.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": []
     },
     {
       "method": "POST",
       "path": "/announcements",
       "controller": "AnnouncementsController",
       "handler": "createAnnouncement",
-      "source": "apps/backend/src/api/routes/announcements.controller.ts"
+      "source": "apps/backend/src/api/routes/announcements.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/announcements/:id",
       "controller": "AnnouncementsController",
       "handler": "deleteAnnouncement",
-      "source": "apps/backend/src/api/routes/announcements.controller.ts"
+      "source": "apps/backend/src/api/routes/announcements.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/auth/activate",
       "controller": "AuthController",
       "handler": "activate",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "RealIP",
+        "Res",
+        "UserAgent"
+      ]
     },
     {
       "method": "GET",
       "path": "/auth/can-register",
       "controller": "AuthController",
       "handler": "canRegister",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": []
     },
     {
       "method": "POST",
       "path": "/auth/forgot",
       "controller": "AuthController",
       "handler": "forgot",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "POST",
       "path": "/auth/forgot-return",
       "controller": "AuthController",
       "handler": "forgotReturn",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "POST",
       "path": "/auth/login",
       "controller": "AuthController",
       "handler": "login",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "RealIP",
+        "Req",
+        "Res",
+        "UserAgent"
+      ]
     },
     {
       "method": "GET",
       "path": "/auth/oauth-mobile-callback",
       "controller": "AuthController",
       "handler": "mobileCallback",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Query",
+        "Res"
+      ]
     },
     {
       "method": "GET",
       "path": "/auth/oauth/:provider",
       "controller": "AuthController",
       "handler": "oauthLink",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Param",
+        "Query"
+      ]
     },
     {
       "method": "POST",
       "path": "/auth/oauth/:provider/exists",
       "controller": "AuthController",
       "handler": "oauthExists",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "Param",
+        "RealIP",
+        "Res",
+        "UserAgent"
+      ]
     },
     {
       "method": "POST",
       "path": "/auth/refresh",
       "controller": "AuthController",
       "handler": "refresh",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Req",
+        "Res"
+      ]
     },
     {
       "method": "POST",
       "path": "/auth/register",
       "controller": "AuthController",
       "handler": "register",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "RealIP",
+        "Req",
+        "Res",
+        "UserAgent"
+      ]
     },
     {
       "method": "POST",
       "path": "/auth/resend-activation",
       "controller": "AuthController",
       "handler": "resendActivation",
-      "source": "apps/backend/src/api/routes/auth.controller.ts"
+      "source": "apps/backend/src/api/routes/auth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "GET",
       "path": "/autopost",
       "controller": "AutopostController",
       "handler": "getAutoposts",
-      "source": "apps/backend/src/api/routes/autopost.controller.ts"
+      "source": "apps/backend/src/api/routes/autopost.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/autopost",
       "controller": "AutopostController",
       "handler": "createAutopost",
-      "source": "apps/backend/src/api/routes/autopost.controller.ts"
+      "source": "apps/backend/src/api/routes/autopost.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/autopost/:id",
       "controller": "AutopostController",
       "handler": "deleteAutopost",
-      "source": "apps/backend/src/api/routes/autopost.controller.ts"
+      "source": "apps/backend/src/api/routes/autopost.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "PUT",
       "path": "/autopost/:id",
       "controller": "AutopostController",
       "handler": "updateAutopost",
-      "source": "apps/backend/src/api/routes/autopost.controller.ts"
+      "source": "apps/backend/src/api/routes/autopost.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/autopost/:id/active",
       "controller": "AutopostController",
       "handler": "changeActive",
-      "source": "apps/backend/src/api/routes/autopost.controller.ts"
+      "source": "apps/backend/src/api/routes/autopost.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/autopost/send",
       "controller": "AutopostController",
       "handler": "sendWebhook",
-      "source": "apps/backend/src/api/routes/autopost.controller.ts"
+      "source": "apps/backend/src/api/routes/autopost.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/billing",
       "controller": "BillingController",
       "handler": "getCurrentBilling",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/billing/add-subscription",
       "controller": "BillingController",
       "handler": "addSubscription",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/billing/apply-discount",
       "controller": "BillingController",
       "handler": "applyDiscount",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/billing/cancel",
       "controller": "BillingController",
       "handler": "cancel",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/billing/cancel-subscription",
       "controller": "BillingController",
       "handler": "cancelSubscription",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/billing/charges",
       "controller": "BillingController",
       "handler": "getCharges",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/billing/chatbase-refund",
       "controller": "BillingController",
       "handler": "chatbaseRefund",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/billing/chatbase-refund/preview",
       "controller": "BillingController",
       "handler": "chatbaseRefundPreview",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/billing/check-discount",
       "controller": "BillingController",
       "handler": "checkDiscount",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/billing/check/:id",
       "controller": "BillingController",
       "handler": "checkId",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/billing/embedded",
       "controller": "BillingController",
       "handler": "embedded",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "POST",
       "path": "/billing/finish-trial",
       "controller": "BillingController",
       "handler": "finishTrial",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/billing/is-trial-finished",
       "controller": "BillingController",
       "handler": "isTrialFinished",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/billing/portal",
       "controller": "BillingController",
       "handler": "modifyPayment",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/billing/prorate",
       "controller": "BillingController",
       "handler": "prorate",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/billing/refund-charges",
       "controller": "BillingController",
       "handler": "refundCharges",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/billing/subscribe",
       "controller": "BillingController",
       "handler": "subscribe",
-      "source": "apps/backend/src/api/routes/billing.controller.ts"
+      "source": "apps/backend/src/api/routes/billing.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "GET",
       "path": "/copilot/:thread/list",
       "controller": "CopilotController",
       "handler": "getMessagesList",
-      "source": "apps/backend/src/api/routes/copilot.controller.ts"
+      "source": "apps/backend/src/api/routes/copilot.controller.ts",
+      "controller_decorators": [],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/copilot/agent",
       "controller": "CopilotController",
       "handler": "agent",
-      "source": "apps/backend/src/api/routes/copilot.controller.ts"
+      "source": "apps/backend/src/api/routes/copilot.controller.ts",
+      "controller_decorators": [],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Req",
+        "Res"
+      ]
     },
     {
       "method": "POST",
       "path": "/copilot/chat",
       "controller": "CopilotController",
       "handler": "chatAgent",
-      "source": "apps/backend/src/api/routes/copilot.controller.ts"
+      "source": "apps/backend/src/api/routes/copilot.controller.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Req",
+        "Res"
+      ]
     },
     {
       "method": "GET",
       "path": "/copilot/credits",
       "controller": "CopilotController",
       "handler": "calculateCredits",
-      "source": "apps/backend/src/api/routes/copilot.controller.ts"
+      "source": "apps/backend/src/api/routes/copilot.controller.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/copilot/list",
       "controller": "CopilotController",
       "handler": "getList",
-      "source": "apps/backend/src/api/routes/copilot.controller.ts"
+      "source": "apps/backend/src/api/routes/copilot.controller.ts",
+      "controller_decorators": [],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/enterprise/create-user",
       "controller": "EnterpriseController",
       "handler": "createUser",
-      "source": "apps/backend/src/api/routes/enterprise.controller.ts"
+      "source": "apps/backend/src/api/routes/enterprise.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "POST",
       "path": "/enterprise/delete-channel",
       "controller": "EnterpriseController",
       "handler": "deleteChannel",
-      "source": "apps/backend/src/api/routes/enterprise.controller.ts"
+      "source": "apps/backend/src/api/routes/enterprise.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "POST",
       "path": "/enterprise/url",
       "controller": "EnterpriseController",
       "handler": "redirectParams",
-      "source": "apps/backend/src/api/routes/enterprise.controller.ts"
+      "source": "apps/backend/src/api/routes/enterprise.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "GET",
       "path": "/health/status",
       "controller": "HealthController",
       "handler": "getHealthStatus",
-      "source": "apps/orchestrator/src/health.controller.ts"
+      "source": "apps/orchestrator/src/health.controller.ts",
+      "controller_decorators": [],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Res"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/integrations",
       "controller": "IntegrationsController",
       "handler": "deleteChannel",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/integrations",
       "controller": "NoAuthIntegrationsController",
       "handler": "getIntegrations",
-      "source": "apps/backend/src/api/routes/no.auth.integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/no.auth.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": []
     },
     {
       "method": "GET",
       "path": "/integrations/:id",
       "controller": "IntegrationsController",
       "handler": "getSingleIntegration",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Param",
+        "Query"
+      ]
     },
     {
       "method": "PUT",
       "path": "/integrations/:id/customer-name",
       "controller": "IntegrationsController",
       "handler": "updateOnCustomerName",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "PUT",
       "path": "/integrations/:id/group",
       "controller": "IntegrationsController",
       "handler": "updateIntegrationGroup",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/:id/nickname",
       "controller": "IntegrationsController",
       "handler": "setNickname",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/integrations/:id/plugs",
       "controller": "IntegrationsController",
       "handler": "getPlugsByIntegrationId",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/:id/plugs",
       "controller": "IntegrationsController",
       "handler": "postPlugsByIntegrationId",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/:id/settings",
       "controller": "IntegrationsController",
       "handler": "updateProviderSettings",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/:id/time",
       "controller": "IntegrationsController",
       "handler": "setTime",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/integrations/:identifier/internal-plugs",
       "controller": "IntegrationsController",
       "handler": "getInternalPlugs",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/integrations/customers",
       "controller": "IntegrationsController",
       "handler": "getCustomers",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/disable",
       "controller": "IntegrationsController",
       "handler": "disableChannel",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/enable",
       "controller": "IntegrationsController",
       "handler": "enableChannel",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/extension-refresh",
       "controller": "NoAuthIntegrationsController",
       "handler": "extensionRefreshCookies",
-      "source": "apps/backend/src/api/routes/no.auth.integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/no.auth.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/function",
       "controller": "IntegrationsController",
       "handler": "functionIntegration",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/integrations/list",
       "controller": "IntegrationsController",
       "handler": "getIntegrationList",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/mentions",
       "controller": "IntegrationsController",
       "handler": "mentions",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/moltbook/register",
       "controller": "IntegrationsController",
       "handler": "moltbookRegister",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "GET",
       "path": "/integrations/moltbook/status",
       "controller": "IntegrationsController",
       "handler": "moltbookStatus",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/integrations/plug/list",
       "controller": "IntegrationsController",
       "handler": "getPlugList",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": []
     },
     {
       "method": "PUT",
       "path": "/integrations/plugs/:id/activate",
       "controller": "IntegrationsController",
       "handler": "changePlugActivation",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/provider/:id/connect",
       "controller": "IntegrationsController",
       "handler": "saveProviderPage",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/public/provider/:id/connect",
       "controller": "NoAuthIntegrationsController",
       "handler": "saveProviderPage",
-      "source": "apps/backend/src/api/routes/no.auth.integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/no.auth.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/integrations/social-connect/:integration",
       "controller": "NoAuthIntegrationsController",
       "handler": "connectSocialMedia",
-      "source": "apps/backend/src/api/routes/no.auth.integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/no.auth.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies",
+        "UseFilters"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/integrations/social/:integration",
       "controller": "IntegrationsController",
       "handler": "getIntegrationUrl",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param",
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/integrations/telegram/updates",
       "controller": "IntegrationsController",
       "handler": "getUpdates",
-      "source": "apps/backend/src/api/routes/integrations.controller.ts"
+      "source": "apps/backend/src/api/routes/integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/media",
       "controller": "MediaController",
       "handler": "getMedia",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "POST",
       "path": "/media/:endpoint",
       "controller": "MediaController",
       "handler": "uploadFile",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param",
+        "Req",
+        "Res"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/media/:id",
       "controller": "MediaController",
       "handler": "deleteMedia",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/media/generate-image",
       "controller": "MediaController",
       "handler": "generateImage",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "POST",
       "path": "/media/generate-image-with-prompt",
       "controller": "MediaController",
       "handler": "generateImageFromText",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "POST",
       "path": "/media/generate-video",
       "controller": "MediaController",
       "handler": "generateVideo",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/media/generate-video/:type/allowed",
       "controller": "MediaController",
       "handler": "generateVideoAllowed",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/media/information",
       "controller": "MediaController",
       "handler": "saveMediaInformation",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/media/save-media",
       "controller": "MediaController",
       "handler": "saveMedia",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "POST",
       "path": "/media/upload-server",
       "controller": "MediaController",
       "handler": "uploadServer",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "UseInterceptors",
+        "UsePipes"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "UploadedFile"
+      ]
     },
     {
       "method": "POST",
       "path": "/media/upload-simple",
       "controller": "MediaController",
       "handler": "uploadSimple",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "UseInterceptors",
+        "UsePipes"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "UploadedFile"
+      ]
     },
     {
       "method": "GET",
       "path": "/media/video-options",
       "controller": "MediaController",
       "handler": "getVideos",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": []
     },
     {
       "method": "POST",
       "path": "/media/video/function",
       "controller": "MediaController",
       "handler": "videoFunction",
-      "source": "apps/backend/src/api/routes/media.controller.ts"
+      "source": "apps/backend/src/api/routes/media.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "GET",
       "path": "/monitor/metrics",
       "controller": "MonitorController",
       "handler": "metrics",
-      "source": "apps/backend/src/api/routes/monitor.controller.ts"
+      "source": "apps/backend/src/api/routes/monitor.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Req",
+        "Res"
+      ]
     },
     {
       "method": "GET",
       "path": "/monitor/queue/:name",
       "controller": "MonitorController",
       "handler": "getMessagesGroup",
-      "source": "apps/backend/src/api/routes/monitor.controller.ts"
+      "source": "apps/backend/src/api/routes/monitor.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/notifications",
       "controller": "NotificationsController",
       "handler": "mainPageList",
-      "source": "apps/backend/src/api/routes/notifications.controller.ts"
+      "source": "apps/backend/src/api/routes/notifications.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/notifications/list",
       "controller": "NotificationsController",
       "handler": "notifications",
-      "source": "apps/backend/src/api/routes/notifications.controller.ts"
+      "source": "apps/backend/src/api/routes/notifications.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/oauth/authorize",
       "controller": "OAuthController",
       "handler": "authorize",
-      "source": "apps/backend/src/api/routes/oauth.controller.ts"
+      "source": "apps/backend/src/api/routes/oauth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Query"
+      ]
     },
     {
       "method": "POST",
       "path": "/oauth/authorize",
       "controller": "OAuthAuthorizedController",
       "handler": "approveOrDeny",
-      "source": "apps/backend/src/api/routes/oauth.controller.ts"
+      "source": "apps/backend/src/api/routes/oauth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/oauth/token",
       "controller": "OAuthController",
       "handler": "token",
-      "source": "apps/backend/src/api/routes/oauth.controller.ts"
+      "source": "apps/backend/src/api/routes/oauth.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts",
       "controller": "PostsController",
       "handler": "getPosts",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "POST",
       "path": "/posts",
       "controller": "PostsController",
       "handler": "createPost",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/posts/:group",
       "controller": "PostsController",
       "handler": "deletePost",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts/:id",
       "controller": "PostsController",
       "handler": "getPost",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/posts/:id/comments",
       "controller": "PostsController",
       "handler": "createComment",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "PUT",
       "path": "/posts/:id/date",
       "controller": "PostsController",
       "handler": "changeDate",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts/:id/missing",
       "controller": "PostsController",
       "handler": "getMissingContent",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "PUT",
       "path": "/posts/:id/release-id",
       "controller": "PostsController",
       "handler": "updateReleaseId",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts/:id/statistics",
       "controller": "PostsController",
       "handler": "getStatistics",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts/find-slot",
       "controller": "PostsController",
       "handler": "findSlot",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts/find-slot/:id",
       "controller": "PostsController",
       "handler": "findSlotIntegration",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/posts/generator",
       "controller": "PostsController",
       "handler": "generatePosts",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Res"
+      ]
     },
     {
       "method": "POST",
       "path": "/posts/generator/draft",
       "controller": "PostsController",
       "handler": "generatePostsDraft",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts/group/:group",
       "controller": "PostsController",
       "handler": "getPostsByGroup",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts/group/:group/debug-export",
       "controller": "PostsController",
       "handler": "getPostGroupDebugExport",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts/list",
       "controller": "PostsController",
       "handler": "getPostsList",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts/old",
       "controller": "PostsController",
       "handler": "oldPosts",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "POST",
       "path": "/posts/separate-posts",
       "controller": "PostsController",
       "handler": "separatePosts",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/posts/should-shortlink",
       "controller": "PostsController",
       "handler": "shouldShortlink",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "GET",
       "path": "/posts/tags",
       "controller": "PostsController",
       "handler": "getTags",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/posts/tags",
       "controller": "PostsController",
       "handler": "createTag",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/posts/tags/:id",
       "controller": "PostsController",
       "handler": "deleteTag",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "PUT",
       "path": "/posts/tags/:id",
       "controller": "PostsController",
       "handler": "editTag",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/posts/valid",
       "controller": "PostsController",
       "handler": "validatePosts",
-      "source": "apps/backend/src/api/routes/posts.controller.ts"
+      "source": "apps/backend/src/api/routes/posts.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/public/agent",
       "controller": "PublicController",
       "handler": "createAgent",
-      "source": "apps/backend/src/api/routes/public.controller.ts"
+      "source": "apps/backend/src/api/routes/public.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "POST",
       "path": "/public/modify-subscription",
       "controller": "PublicController",
       "handler": "modifySubscription",
-      "source": "apps/backend/src/api/routes/public.controller.ts"
+      "source": "apps/backend/src/api/routes/public.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/posts/:id",
       "controller": "PublicController",
       "handler": "getPreview",
-      "source": "apps/backend/src/api/routes/public.controller.ts"
+      "source": "apps/backend/src/api/routes/public.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/posts/:id/comments",
       "controller": "PublicController",
       "handler": "getComments",
-      "source": "apps/backend/src/api/routes/public.controller.ts"
+      "source": "apps/backend/src/api/routes/public.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/stream",
       "controller": "PublicController",
       "handler": "streamFile",
-      "source": "apps/backend/src/api/routes/public.controller.ts"
+      "source": "apps/backend/src/api/routes/public.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Query",
+        "Req",
+        "Res"
+      ]
     },
     {
       "method": "POST",
       "path": "/public/t",
       "controller": "PublicController",
       "handler": "trackEvent",
-      "source": "apps/backend/src/api/routes/public.controller.ts"
+      "source": "apps/backend/src/api/routes/public.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "RealIP",
+        "Req",
+        "Res",
+        "UserAgent"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/analytics/:integration",
       "controller": "PublicIntegrationsController",
       "handler": "getAnalytics",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param",
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/analytics/post/:postId",
       "controller": "PublicIntegrationsController",
       "handler": "getPostAnalytics",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param",
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/find-slot/:id",
       "controller": "PublicIntegrationsController",
       "handler": "findSlotIntegration",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/public/v1/generate-video",
       "controller": "PublicIntegrationsController",
       "handler": "generateVideo",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/groups",
       "controller": "PublicIntegrationsController",
       "handler": "listGroups",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/integration-settings/:id",
       "controller": "PublicIntegrationsController",
       "handler": "getIntegrationSettings",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/public/v1/integration-trigger/:id",
       "controller": "PublicIntegrationsController",
       "handler": "triggerIntegrationTool",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/integrations",
       "controller": "PublicIntegrationsController",
       "handler": "listIntegration",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/public/v1/integrations/:id",
       "controller": "PublicIntegrationsController",
       "handler": "deleteChannel",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/is-connected",
       "controller": "PublicIntegrationsController",
       "handler": "getActiveIntegrations",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/notifications",
       "controller": "PublicIntegrationsController",
       "handler": "getNotifications",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/posts",
       "controller": "PublicIntegrationsController",
       "handler": "getPosts",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "POST",
       "path": "/public/v1/posts",
       "controller": "PublicIntegrationsController",
       "handler": "createPost",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/public/v1/posts/:id",
       "controller": "PublicIntegrationsController",
       "handler": "deletePost",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/posts/:id/missing",
       "controller": "PublicIntegrationsController",
       "handler": "getMissingContent",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "PUT",
       "path": "/public/v1/posts/:id/release-id",
       "controller": "PublicIntegrationsController",
       "handler": "updateReleaseId",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "PUT",
       "path": "/public/v1/posts/:id/status",
       "controller": "PublicIntegrationsController",
       "handler": "changePostStatus",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/public/v1/posts/group/:group",
       "controller": "PublicIntegrationsController",
       "handler": "deletePostByGroup",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/public/v1/social/:integration",
       "controller": "PublicIntegrationsController",
       "handler": "getIntegrationUrl",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param",
+        "Query"
+      ]
     },
     {
       "method": "POST",
       "path": "/public/v1/upload",
       "controller": "PublicIntegrationsController",
       "handler": "uploadSimple",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "UseInterceptors",
+        "UsePipes"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "UploadedFile"
+      ]
     },
     {
       "method": "POST",
       "path": "/public/v1/upload-from-url",
       "controller": "PublicIntegrationsController",
       "handler": "uploadsFromUrl",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/public/v1/video/function",
       "controller": "PublicIntegrationsController",
       "handler": "videoFunction",
-      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts"
+      "source": "apps/backend/src/public-api/routes/v1/public.integrations.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body"
+      ]
     },
     {
       "method": "GET",
       "path": "/sets",
       "controller": "SetsController",
       "handler": "getSets",
-      "source": "apps/backend/src/api/routes/sets.controller.ts"
+      "source": "apps/backend/src/api/routes/sets.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/sets",
       "controller": "SetsController",
       "handler": "createASet",
-      "source": "apps/backend/src/api/routes/sets.controller.ts"
+      "source": "apps/backend/src/api/routes/sets.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "PUT",
       "path": "/sets",
       "controller": "SetsController",
       "handler": "updateSet",
-      "source": "apps/backend/src/api/routes/sets.controller.ts"
+      "source": "apps/backend/src/api/routes/sets.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/sets/:id",
       "controller": "SetsController",
       "handler": "deleteSet",
-      "source": "apps/backend/src/api/routes/sets.controller.ts"
+      "source": "apps/backend/src/api/routes/sets.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/settings/shortlink",
       "controller": "SettingsController",
       "handler": "getShortlinkPreference",
-      "source": "apps/backend/src/api/routes/settings.controller.ts"
+      "source": "apps/backend/src/api/routes/settings.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/settings/shortlink",
       "controller": "SettingsController",
       "handler": "updateShortlinkPreference",
-      "source": "apps/backend/src/api/routes/settings.controller.ts"
+      "source": "apps/backend/src/api/routes/settings.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/settings/team",
       "controller": "SettingsController",
       "handler": "getTeam",
-      "source": "apps/backend/src/api/routes/settings.controller.ts"
+      "source": "apps/backend/src/api/routes/settings.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/settings/team",
       "controller": "SettingsController",
       "handler": "inviteTeamMember",
-      "source": "apps/backend/src/api/routes/settings.controller.ts"
+      "source": "apps/backend/src/api/routes/settings.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/settings/team/:id",
       "controller": "SettingsController",
       "handler": "deleteTeamMember",
-      "source": "apps/backend/src/api/routes/settings.controller.ts"
+      "source": "apps/backend/src/api/routes/settings.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/settings/team/add",
       "controller": "SettingsController",
       "handler": "addTeamMember",
-      "source": "apps/backend/src/api/routes/settings.controller.ts"
+      "source": "apps/backend/src/api/routes/settings.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/signatures",
       "controller": "SignatureController",
       "handler": "getSignatures",
-      "source": "apps/backend/src/api/routes/signature.controller.ts"
+      "source": "apps/backend/src/api/routes/signature.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/signatures",
       "controller": "SignatureController",
       "handler": "createSignature",
-      "source": "apps/backend/src/api/routes/signature.controller.ts"
+      "source": "apps/backend/src/api/routes/signature.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/signatures/:id",
       "controller": "SignatureController",
       "handler": "deleteSignature",
-      "source": "apps/backend/src/api/routes/signature.controller.ts"
+      "source": "apps/backend/src/api/routes/signature.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "PUT",
       "path": "/signatures/:id",
       "controller": "SignatureController",
       "handler": "updateSignature",
-      "source": "apps/backend/src/api/routes/signature.controller.ts"
+      "source": "apps/backend/src/api/routes/signature.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/signatures/default",
       "controller": "SignatureController",
       "handler": "getDefaultSignature",
-      "source": "apps/backend/src/api/routes/signature.controller.ts"
+      "source": "apps/backend/src/api/routes/signature.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/stripe",
       "controller": "StripeController",
       "handler": "stripe",
-      "source": "apps/backend/src/api/routes/stripe.controller.ts"
+      "source": "apps/backend/src/api/routes/stripe.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Req"
+      ]
     },
     {
       "method": "GET",
       "path": "/third-party",
       "controller": "ThirdPartyController",
       "handler": "getSavedThirdParty",
-      "source": "apps/backend/src/api/routes/third-party.controller.ts"
+      "source": "apps/backend/src/api/routes/third-party.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/third-party/:id",
       "controller": "ThirdPartyController",
       "handler": "deleteById",
-      "source": "apps/backend/src/api/routes/third-party.controller.ts"
+      "source": "apps/backend/src/api/routes/third-party.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/third-party/:id/import",
       "controller": "ThirdPartyController",
       "handler": "importMedia",
-      "source": "apps/backend/src/api/routes/third-party.controller.ts"
+      "source": "apps/backend/src/api/routes/third-party.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/third-party/:id/submit",
       "controller": "ThirdPartyController",
       "handler": "generate",
-      "source": "apps/backend/src/api/routes/third-party.controller.ts"
+      "source": "apps/backend/src/api/routes/third-party.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/third-party/:identifier",
       "controller": "ThirdPartyController",
       "handler": "addApiKey",
-      "source": "apps/backend/src/api/routes/third-party.controller.ts"
+      "source": "apps/backend/src/api/routes/third-party.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/third-party/function/:id/:functionName",
       "controller": "ThirdPartyController",
       "handler": "callFunction",
-      "source": "apps/backend/src/api/routes/third-party.controller.ts"
+      "source": "apps/backend/src/api/routes/third-party.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/third-party/list",
       "controller": "ThirdPartyController",
       "handler": "getThirdPartyList",
-      "source": "apps/backend/src/api/routes/third-party.controller.ts"
+      "source": "apps/backend/src/api/routes/third-party.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": []
     },
     {
       "method": "GET",
       "path": "/user/agent-media-sso",
       "controller": "UsersController",
       "handler": "getAgentMediaSsoUrl",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/api-key/rotate",
       "controller": "UsersController",
       "handler": "rotateApiKey",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/approved-apps",
       "controller": "ApprovedAppsController",
       "handler": "list",
-      "source": "apps/backend/src/api/routes/approved-apps.controller.ts"
+      "source": "apps/backend/src/api/routes/approved-apps.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/user/approved-apps/:id",
       "controller": "ApprovedAppsController",
       "handler": "revoke",
-      "source": "apps/backend/src/api/routes/approved-apps.controller.ts"
+      "source": "apps/backend/src/api/routes/approved-apps.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/change-org",
       "controller": "UsersController",
       "handler": "changeOrg",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "Res"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/chatbase-token",
       "controller": "UsersController",
       "handler": "getChatbaseToken",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/email-notifications",
       "controller": "UsersController",
       "handler": "getEmailNotifications",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/email-notifications",
       "controller": "UsersController",
       "handler": "updateEmailNotifications",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/impersonate",
       "controller": "UsersController",
       "handler": "getImpersonate",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest",
+        "Query"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/impersonate",
       "controller": "UsersController",
       "handler": "setImpersonate",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetUserFromRequest",
+        "Res"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/join-org",
       "controller": "UsersController",
       "handler": "joinOrg",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetUserFromRequest",
+        "Res"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/logout",
       "controller": "UsersController",
       "handler": "logout",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest",
+        "Req",
+        "Res"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/user/oauth-app",
       "controller": "OAuthAppController",
       "handler": "deleteApp",
-      "source": "apps/backend/src/api/routes/oauth-app.controller.ts"
+      "source": "apps/backend/src/api/routes/oauth-app.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/oauth-app",
       "controller": "OAuthAppController",
       "handler": "getApp",
-      "source": "apps/backend/src/api/routes/oauth-app.controller.ts"
+      "source": "apps/backend/src/api/routes/oauth-app.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/oauth-app",
       "controller": "OAuthAppController",
       "handler": "createApp",
-      "source": "apps/backend/src/api/routes/oauth-app.controller.ts"
+      "source": "apps/backend/src/api/routes/oauth-app.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "PUT",
       "path": "/user/oauth-app",
       "controller": "OAuthAppController",
       "handler": "updateApp",
-      "source": "apps/backend/src/api/routes/oauth-app.controller.ts"
+      "source": "apps/backend/src/api/routes/oauth-app.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/oauth-app/rotate-secret",
       "controller": "OAuthAppController",
       "handler": "rotateSecret",
-      "source": "apps/backend/src/api/routes/oauth-app.controller.ts"
+      "source": "apps/backend/src/api/routes/oauth-app.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/organizations",
       "controller": "UsersController",
       "handler": "getOrgs",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/password",
       "controller": "UsersController",
       "handler": "changePassword",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetUserFromRequest",
+        "Res"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/personal",
       "controller": "UsersController",
       "handler": "getPersonalInformation",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/personal",
       "controller": "UsersController",
       "handler": "changePersonal",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/self",
       "controller": "UsersController",
       "handler": "getSelf",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/sessions",
       "controller": "UsersController",
       "handler": "listSessions",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/sessions/recent-auth",
       "controller": "UsersController",
       "handler": "confirmRecentAuthentication",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/sessions/revoke-all",
       "controller": "UsersController",
       "handler": "revokeAllSessions",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/subscription",
       "controller": "UsersController",
       "handler": "getSubscription",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "GET",
       "path": "/user/subscription/tiers",
       "controller": "UsersController",
       "handler": "tiers",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": []
     },
     {
       "method": "POST",
       "path": "/user/switch",
       "controller": "UsersController",
       "handler": "switchUser",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "POST",
       "path": "/user/t",
       "controller": "UsersController",
       "handler": "trackEvent",
-      "source": "apps/backend/src/api/routes/users.controller.ts"
+      "source": "apps/backend/src/api/routes/users.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "Body",
+        "GetUserFromRequest",
+        "RealIP",
+        "Req",
+        "Res",
+        "UserAgent"
+      ]
     },
     {
       "method": "GET",
       "path": "/webhooks",
       "controller": "WebhookController",
       "handler": "list",
-      "source": "apps/backend/src/api/routes/webhooks.controller.ts"
+      "source": "apps/backend/src/api/routes/webhooks.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest"
+      ]
     },
     {
       "method": "POST",
       "path": "/webhooks",
       "controller": "WebhookController",
       "handler": "create",
-      "source": "apps/backend/src/api/routes/webhooks.controller.ts"
+      "source": "apps/backend/src/api/routes/webhooks.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Req"
+      ]
     },
     {
       "method": "DELETE",
       "path": "/webhooks/:id",
       "controller": "WebhookController",
       "handler": "remove",
-      "source": "apps/backend/src/api/routes/webhooks.controller.ts"
+      "source": "apps/backend/src/api/routes/webhooks.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "PUT",
       "path": "/webhooks/:id",
       "controller": "WebhookController",
       "handler": "update",
-      "source": "apps/backend/src/api/routes/webhooks.controller.ts"
+      "source": "apps/backend/src/api/routes/webhooks.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "GET",
       "path": "/webhooks/:id/deliveries",
       "controller": "WebhookController",
       "handler": "history",
-      "source": "apps/backend/src/api/routes/webhooks.controller.ts"
+      "source": "apps/backend/src/api/routes/webhooks.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/webhooks/:id/enabled",
       "controller": "WebhookController",
       "handler": "setEnabled",
-      "source": "apps/backend/src/api/routes/webhooks.controller.ts"
+      "source": "apps/backend/src/api/routes/webhooks.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/webhooks/:id/test",
       "controller": "WebhookController",
       "handler": "test",
-      "source": "apps/backend/src/api/routes/webhooks.controller.ts"
+      "source": "apps/backend/src/api/routes/webhooks.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "GetOrgFromRequest",
+        "Param"
+      ]
     },
     {
       "method": "POST",
       "path": "/webhooks/dead-letters/:id/replay",
       "controller": "WebhookController",
       "handler": "replay",
-      "source": "apps/backend/src/api/routes/webhooks.controller.ts"
+      "source": "apps/backend/src/api/routes/webhooks.controller.ts",
+      "controller_decorators": [
+        "ApiTags"
+      ],
+      "handler_decorators": [
+        "CheckPolicies"
+      ],
+      "parameter_decorators": [
+        "Body",
+        "GetOrgFromRequest",
+        "GetUserFromRequest",
+        "Param",
+        "Req"
+      ]
     }
   ]
 }

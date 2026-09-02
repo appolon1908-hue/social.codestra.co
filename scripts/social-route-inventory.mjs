@@ -39,6 +39,12 @@ function decoratorCall(decorator) {
   return name ? { name, arguments: expression.arguments } : null;
 }
 
+function decoratorNames(node) {
+  return decorators(node)
+    .map(decoratorCall)
+    .flatMap((call) => (call ? [call.name] : []));
+}
+
 function literalArgument(call, fallback = '') {
   const argument = call?.arguments?.[0];
   if (!argument) return fallback;
@@ -85,8 +91,19 @@ for (const sourcePath of roots.flatMap((directory) =>
       .find((call) => call?.name === 'Controller');
     if (!controller) return;
     const controllerPaths = [literalArgument(controller, '')].flat();
+    const controllerDecorators = decoratorNames(node)
+      .filter((name) => name !== 'Controller')
+      .sort();
     for (const member of node.members) {
       if (!ts.isMethodDeclaration(member) || !member.name) continue;
+      const handlerDecorators = decoratorNames(member)
+        .filter((name) => !methods.has(name))
+        .sort();
+      const parameterDecorators = [
+        ...new Set(
+          member.parameters.flatMap((parameter) => decoratorNames(parameter))
+        ),
+      ].sort();
       for (const call of decorators(member).map(decoratorCall)) {
         const method = call && methods.get(call.name);
         if (!method) continue;
@@ -99,6 +116,9 @@ for (const sourcePath of roots.flatMap((directory) =>
               controller: node.name.text,
               handler: member.name.getText(source),
               source: relative(root, sourcePath),
+              controller_decorators: controllerDecorators,
+              handler_decorators: handlerDecorators,
+              parameter_decorators: parameterDecorators,
             });
           }
         }
