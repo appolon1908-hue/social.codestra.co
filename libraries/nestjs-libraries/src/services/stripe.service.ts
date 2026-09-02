@@ -11,7 +11,10 @@ import { AuthService } from '@gitroom/helpers/auth/auth.service';
 import { TrackService } from '@gitroom/nestjs-libraries/track/track.service';
 import { UsersService } from '@gitroom/nestjs-libraries/database/prisma/users/users.service';
 import { TrackEnum } from '@gitroom/nestjs-libraries/user/track.enum';
-import { requireRuntimeCapability } from '@gitroom/helpers/configuration/runtime-capabilities';
+import {
+  isRuntimeCapabilityEnabled,
+  requireRuntimeCapability,
+} from '@gitroom/helpers/configuration/runtime-capabilities';
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -38,7 +41,6 @@ export class StripeService {
       | Stripe.CustomerSubscriptionCreatedEvent
       | Stripe.CustomerSubscriptionUpdatedEvent
   ) {
-    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     if (event.data.object.status === 'incomplete') {
       return false;
     }
@@ -51,6 +53,8 @@ export class StripeService {
     if (!getOrgFromCustomer?.allowTrial) {
       return true;
     }
+
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
 
     console.log('Checking card');
 
@@ -117,6 +121,12 @@ export class StripeService {
         return { ok: false };
       }
     } catch (err) {
+      if (
+        err instanceof Error &&
+        err.message === 'runtime_capability_disabled:BILLING_LIVE_CHARGE'
+      ) {
+        throw err;
+      }
       return { ok: false };
     }
 
@@ -166,8 +176,10 @@ export class StripeService {
   async syncCustomerEmailsAfterSwitch(
     accounts: { id: string; email: string }[]
   ) {
-    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     if (!process.env.STRIPE_PUBLISHABLE_KEY) {
+      return;
+    }
+    if (!isRuntimeCapabilityEnabled('BILLING_LIVE_CHARGE')) {
       return;
     }
     const emailByCustomer = new Map<string, string>();

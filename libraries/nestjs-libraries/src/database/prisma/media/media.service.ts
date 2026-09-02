@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { MediaRepository } from '@gitroom/nestjs-libraries/database/prisma/media/media.repository';
 import { OpenaiService } from '@gitroom/nestjs-libraries/openai/openai.service';
 import { generationError } from '@gitroom/nestjs-libraries/openai/generation.error';
+import { requireRuntimeCapability } from '@gitroom/helpers/configuration/runtime-capabilities';
 import { SubscriptionService } from '@gitroom/nestjs-libraries/database/prisma/subscriptions/subscription.service';
 import { Organization } from '@prisma/client';
 import { SaveMediaInformationDto } from '@gitroom/nestjs-libraries/dtos/media/save.media.information.dto';
@@ -57,8 +58,18 @@ export class MediaService {
     }
   }
 
-  saveFile(org: string, fileName: string, filePath: string, originalName?: string) {
-    return this._mediaRepository.saveFile(org, fileName, filePath, originalName);
+  saveFile(
+    org: string,
+    fileName: string,
+    filePath: string,
+    originalName?: string
+  ) {
+    return this._mediaRepository.saveFile(
+      org,
+      fileName,
+      filePath,
+      originalName
+    );
   }
 
   getMedia(org: string, page: number, search?: string) {
@@ -88,6 +99,7 @@ export class MediaService {
 
   async generateVideo(org: Organization, body: VideoDto) {
     try {
+      requireRuntimeCapability('EXTERNAL_MODEL_CALLS_ENABLED');
       const totalCredits = await this._subscriptionService.checkCredits(
         org,
         'ai_videos'
@@ -135,6 +147,7 @@ export class MediaService {
   }
 
   async videoFunction(identifier: string, functionName: string, body: any) {
+    requireRuntimeCapability('EXTERNAL_MODEL_CALLS_ENABLED');
     const video = this._videoManager.getVideoByName(identifier);
     if (!video) {
       throw new Error(`Video with identifier ${identifier} not found`);
