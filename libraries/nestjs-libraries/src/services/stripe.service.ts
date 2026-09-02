@@ -11,6 +11,10 @@ import { AuthService } from '@gitroom/helpers/auth/auth.service';
 import { TrackService } from '@gitroom/nestjs-libraries/track/track.service';
 import { UsersService } from '@gitroom/nestjs-libraries/database/prisma/users/users.service';
 import { TrackEnum } from '@gitroom/nestjs-libraries/user/track.enum';
+import {
+  isRuntimeCapabilityEnabled,
+  requireRuntimeCapability,
+} from '@gitroom/helpers/configuration/runtime-capabilities';
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -49,6 +53,8 @@ export class StripeService {
     if (!getOrgFromCustomer?.allowTrial) {
       return true;
     }
+
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
 
     console.log('Checking card');
 
@@ -115,6 +121,12 @@ export class StripeService {
         return { ok: false };
       }
     } catch (err) {
+      if (
+        err instanceof Error &&
+        err.message === 'runtime_capability_disabled:BILLING_LIVE_CHARGE'
+      ) {
+        throw err;
+      }
       return { ok: false };
     }
 
@@ -167,6 +179,9 @@ export class StripeService {
     if (!process.env.STRIPE_PUBLISHABLE_KEY) {
       return;
     }
+    if (!isRuntimeCapabilityEnabled('BILLING_LIVE_CHARGE')) {
+      return;
+    }
     const emailByCustomer = new Map<string, string>();
     for (const account of accounts) {
       const organizations = await this._organizationService.getOrgsByUserId(
@@ -197,6 +212,8 @@ export class StripeService {
     if (organization.paymentId) {
       return organization.paymentId;
     }
+
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
 
     const users = await this._organizationService.getTeam(organization.id);
     const customer = await stripe.customers.create({
@@ -238,6 +255,7 @@ export class StripeService {
   }
 
   async prorate(organizationId: string, body: BillingSubscribeDto) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const org = await this._organizationService.getOrgById(organizationId);
     const customer = await this.createOrGetCustomer(org!);
     const priceData = pricing[body.billing];
@@ -333,6 +351,7 @@ export class StripeService {
   }
 
   async setToCancel(organizationId: string) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const id = makeId(10);
     const org = await this._organizationService.getOrgById(organizationId);
     const customer = await this.createOrGetCustomer(org!);
@@ -397,6 +416,7 @@ export class StripeService {
   }
 
   async createBillingPortalLink(customer: string) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     return stripe.billingPortal.sessions.create({
       customer,
       return_url: process.env['FRONTEND_URL'] + '/billing',
@@ -464,6 +484,7 @@ export class StripeService {
     userId: string,
     allowTrial: boolean
   ) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const user = await this._userService.getUserById(userId);
 
     try {
@@ -540,6 +561,7 @@ export class StripeService {
     userId: string,
     allowTrial: boolean
   ) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const isUtm = body.utm ? `&utm_source=${body.utm}` : '';
 
     if (body.dub) {
@@ -581,6 +603,7 @@ export class StripeService {
   }
 
   async finishTrial(paymentId: string) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const list = (
       await stripe.subscriptions.list({
         customer: paymentId,
@@ -632,6 +655,7 @@ export class StripeService {
   }
 
   async applyDiscount(customer: string) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const check = this.checkDiscount(customer);
     if (!check) {
       return false;
@@ -693,6 +717,7 @@ export class StripeService {
     body: BillingSubscribeDto,
     allowTrial: boolean
   ) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const id = makeId(10);
     const priceData = pricing[body.billing];
     const org = await this._organizationService.getOrgById(organizationId);
@@ -759,6 +784,7 @@ export class StripeService {
     body: BillingSubscribeDto,
     allowTrial: boolean
   ) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const id = makeId(10);
     const priceData = pricing[body.billing];
     const org = await this._organizationService.getOrgById(organizationId);
@@ -934,6 +960,7 @@ export class StripeService {
   }
 
   async refundCharges(organizationId: string, chargeIds: string[]) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const org = await this._organizationService.getOrgById(organizationId);
     if (!org?.paymentId) {
       throw new Error('No payment customer found for this organization');
@@ -955,6 +982,7 @@ export class StripeService {
   }
 
   async cancelSubscription(organizationId: string) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const org = await this._organizationService.getOrgById(organizationId);
     if (!org?.paymentId) {
       throw new Error('No payment customer found for this organization');
@@ -1091,6 +1119,7 @@ export class StripeService {
   }
 
   async chatbaseRefund(organizationId: string) {
+    requireRuntimeCapability('BILLING_LIVE_CHARGE');
     const preview = await this.chatbaseRefundPreview(organizationId);
     if (!preview.eligible) {
       return {

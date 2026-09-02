@@ -4,6 +4,7 @@ import {
 } from '@gitroom/nestjs-libraries/3rdparties/thirdparty.interface';
 import { OpenaiService } from '@gitroom/nestjs-libraries/openai/openai.service';
 import { timer } from '@gitroom/helpers/utils/timer';
+import { requireRuntimeCapability } from '@gitroom/helpers/configuration/runtime-capabilities';
 
 @ThirdParty({
   identifier: 'heygen',
@@ -119,6 +120,7 @@ export class HeygenProvider extends ThirdPartyAbstract<{
       type: 'talking_photo' | 'avatar';
     }
   ): Promise<string> {
+    requireRuntimeCapability('EXTERNAL_MODEL_CALLS_ENABLED');
     const {
       data: { video_id },
     } = await (

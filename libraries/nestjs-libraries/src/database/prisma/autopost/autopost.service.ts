@@ -17,6 +17,7 @@ import { makeId } from '@gitroom/nestjs-libraries/services/make.is';
 import { TemporalService } from 'nestjs-temporal-core';
 import { TypedSearchAttributes } from '@temporalio/common';
 import { organizationId } from '@gitroom/nestjs-libraries/temporal/temporal.search.attribute';
+import { requireRuntimeCapability } from '@gitroom/helpers/configuration/runtime-capabilities';
 const parser = new Parser();
 
 interface WorkflowChannelsState {
@@ -43,6 +44,16 @@ const dalle = new DallEAPIWrapper({
   apiKey: process.env.OPENAI_API_KEY,
   model: 'chatgpt-image-latest',
 });
+
+const externalModel = () => {
+  requireRuntimeCapability('EXTERNAL_MODEL_CALLS_ENABLED');
+  return model;
+};
+
+const externalImageModel = () => {
+  requireRuntimeCapability('EXTERNAL_MODEL_CALLS_ENABLED');
+  return dalle;
+};
 
 const generateContent = z.object({
   socialMediaPostContent: z
@@ -213,7 +224,8 @@ export class AutopostService {
       };
     }
 
-    const structuredOutput = model.withStructuredOutput(generateContent);
+    const structuredOutput =
+      externalModel().withStructuredOutput(generateContent);
     const { socialMediaPostContent } = await ChatPromptTemplate.fromTemplate(
       `
         You are an assistant that gets raw 'description' of a content and generate a social media post content.
@@ -240,7 +252,7 @@ export class AutopostService {
   }
 
   async generatePicture(state: WorkflowChannelsState) {
-    const structuredOutput = model.withStructuredOutput(dallePrompt);
+    const structuredOutput = externalModel().withStructuredOutput(dallePrompt);
     const { generatedTextToBeSentToDallE } =
       await ChatPromptTemplate.fromTemplate(
         `
@@ -255,7 +267,9 @@ export class AutopostService {
           content: state.load.description || state.description,
         });
 
-    const image = await dalle.invoke(generatedTextToBeSentToDallE);
+    const image = await externalImageModel().invoke(
+      generatedTextToBeSentToDallE
+    );
 
     return { ...state, image };
   }

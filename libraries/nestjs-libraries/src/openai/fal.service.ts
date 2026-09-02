@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import pLimit from 'p-limit';
+import { requireRuntimeCapability } from '@gitroom/helpers/configuration/runtime-capabilities';
 const limit = pLimit(10);
 
 @Injectable()
@@ -10,6 +11,7 @@ export class FalService {
     text: string,
     isVertical: boolean = false
   ): Promise<string> {
+    requireRuntimeCapability('EXTERNAL_MODEL_CALLS_ENABLED');
     const { images, video, ...all } = await (
       await limit(() =>
         fetch(`https://fal.run/fal-ai/${model}`, {
