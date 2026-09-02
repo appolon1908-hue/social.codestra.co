@@ -1,0 +1,296 @@
+/*
+ * Horizon application adapter for Codestra Social.
+ * Authority: appolon1908-hue/SDK-repository@7db4c6549a0a007922355090f03c082a308f3855
+ */
+
+:root .dark {
+  --new-back-drop: #030405;
+  --new-settings: #171b22;
+  --new-border: rgb(255 255 255 / 0.14);
+  --new-bgColor: #07090c;
+  --new-bgColorInner: #0f1217;
+  --new-sep: rgb(255 255 255 / 0.2);
+  --new-bgLineColor: #202630;
+  --new-textItemFocused: #f4f6f8;
+  --new-textItemBlur: #a7b0bc;
+  --new-boxFocused: rgb(255 159 159 / 0.12);
+  --new-textColor: 244 246 248;
+  --new-blockSeparator: rgb(255 255 255 / 0.12);
+  --new-btn-simple: #202630;
+  --new-btn-text: #f4f6f8;
+  --new-btn-primary: #a23e4d;
+  --new-ai-btn: #8a3c90;
+  --new-box-hover: rgb(255 255 255 / 0.07);
+  --new-table-border: rgb(255 255 255 / 0.14);
+  --new-table-header: #171b22;
+  --new-table-text: #a7b0bc;
+  --new-table-text-focused: #ff9f9f;
+  --new-small-strips: #171b22;
+  --new-big-strips: #0f1217;
+  --new-col-color: #202630;
+  --new-menu-dots: #858f9c;
+  --new-menu-hover: #f4f6f8;
+  --menu-shadow: 0 24px 70px rgb(0 0 0 / 0.42);
+  --color-primary: #07090c;
+  --color-secondary: #0f1217;
+  --color-text: #f4f6f8;
+  --color-third: #0f1217;
+  --color-forth: #a23e4d;
+  --color-seventh: #ff9f9f;
+  --color-input: #171b22;
+  --color-table-border: rgb(255 255 255 / 0.14);
+}
+
+:root .light {
+  --new-back-drop: rgb(7 9 12 / 0.52);
+  --new-settings: #f0f1ed;
+  --new-border: rgb(7 9 12 / 0.14);
+  --new-bgColor: #f7f7f4;
+  --new-bgColorInner: #ffffff;
+  --new-sep: rgb(7 9 12 / 0.2);
+  --new-bgLineColor: #e2e4df;
+  --new-textItemFocused: #0a0c0f;
+  --new-textItemBlur: #555f6b;
+  --new-boxFocused: rgb(162 62 77 / 0.1);
+  --new-textColor: 10 12 15;
+  --new-blockSeparator: rgb(7 9 12 / 0.1);
+  --new-btn-simple: #eef0ec;
+  --new-btn-text: #0a0c0f;
+  --new-btn-primary: #a23e4d;
+  --new-ai-btn: #8a3c90;
+  --new-box-hover: rgb(7 9 12 / 0.05);
+  --new-table-border: rgb(7 9 12 / 0.14);
+  --new-table-header: #f1f2ee;
+  --new-table-text: #555f6b;
+  --new-table-text-focused: #a23e4d;
+  --new-small-strips: #f1f2ee;
+  --new-big-strips: #ffffff;
+  --new-col-color: #eceee9;
+  --new-menu-dots: #707985;
+  --new-menu-hover: #0a0c0f;
+  --menu-shadow: 0 24px 70px rgb(20 25 32 / 0.16);
+  --color-primary: #f7f7f4;
+  --color-secondary: #ffffff;
+  --color-text: #0a0c0f;
+  --color-third: #ffffff;
+  --color-forth: #a23e4d;
+  --color-seventh: #a23e4d;
+  --color-input: #f1f2ee;
+  --color-table-border: rgb(7 9 12 / 0.14);
+}
+
+html[data-horizon-root],
+html[data-horizon-root] body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--new-bgColor);
+  color: rgb(var(--new-textColor));
+}
+
+html[data-horizon-root] body {
+  font-family: "Inter", "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-horizon-root] *,
+[data-horizon-root] *::before,
+[data-horizon-root] *::after {
+  box-sizing: border-box;
+}
+
+[data-horizon-root] :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid #ff9f9f;
+  outline-offset: 3px;
+}
+
+[data-horizon-root] :where(button, input, select, textarea) {
+  border-radius: 0.25rem;
+}
+
+[data-horizon-root] :where([class*="rounded-[12px]"], [class*="rounded-xl"], [class*="rounded-2xl"]) {
+  border-radius: 0.5rem;
+}
+
+.hz-social-logo {
+  border-radius: 999px !important;
+  border-color: rgb(255 255 255 / 0.2) !important;
+  background: #0f1217 !important;
+  box-shadow: none !important;
+}
+
+.light .hz-social-logo {
+  border-color: rgb(7 9 12 / 0.18) !important;
+  background: #ffffff !important;
+}
+
+.hz-social-product-identity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-inline-end: 1rem;
+  border-inline-end: 1px solid var(--new-blockSeparator);
+}
+
+.hz-social-product-name {
+  color: rgb(var(--new-textColor));
+  font-family: "Space Grotesk", "Plus Jakarta Sans", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hz-social-domain {
+  color: var(--new-textItemBlur);
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.hz-social-footer {
+  border-top: 1px solid var(--new-border);
+  background: var(--new-bgColorInner);
+  color: rgb(var(--new-textColor));
+}
+
+.hz-social-footer__inner {
+  width: min(100%, 90rem);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(16rem, 1.4fr) repeat(3, minmax(8rem, 1fr));
+  gap: clamp(1.5rem, 4vw, 4rem);
+  padding: clamp(2.5rem, 5vw, 4.5rem) clamp(1rem, 4vw, 4rem) 1.5rem;
+}
+
+.hz-social-footer__brand {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+}
+
+.hz-social-footer__eyebrow,
+.hz-social-footer__heading {
+  margin: 0;
+  color: var(--new-textItemBlur);
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hz-social-footer__title {
+  margin: 0;
+  max-width: 20ch;
+  font-family: "Space Grotesk", "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.hz-social-footer__copy {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--new-textItemBlur);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.hz-social-footer__links {
+  list-style: none;
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.9rem 0 0;
+  padding: 0;
+}
+
+.hz-social-footer__link {
+  color: var(--new-textItemBlur);
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.hz-social-footer__link:hover {
+  color: rgb(var(--new-textColor));
+}
+
+.hz-social-domains {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.hz-social-domain-chip {
+  min-height: 1.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-inline: 0.7rem;
+  border: 1px solid var(--new-border);
+  border-radius: 999px;
+  color: var(--new-textItemBlur);
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.65rem;
+  text-decoration: none;
+}
+
+.hz-social-domain-chip::before {
+  content: "";
+  width: 0.38rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ff9f9f;
+}
+
+.hz-social-footer__bottom {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--new-border);
+  color: var(--new-textItemBlur);
+  font-size: 0.72rem;
+}
+
+@media (max-width: 72rem) {
+  .hz-social-footer__inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hz-social-footer__brand,
+  .hz-social-footer__bottom {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 48rem) {
+  .hz-social-product-identity {
+    display: none;
+  }
+  .hz-social-footer__inner {
+    grid-template-columns: 1fr;
+  }
+  .hz-social-footer__brand,
+  .hz-social-footer__bottom {
+    grid-column: auto;
+  }
+  .hz-social-footer__bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-horizon-root] *,
+  [data-horizon-root] *::before,
+  [data-horizon-root] *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
