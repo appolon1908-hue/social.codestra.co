@@ -1,4 +1,13 @@
 import { existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+
+execFileSync(
+  process.execPath,
+  ['scripts/social-route-inventory.mjs', '--check'],
+  {
+    stdio: 'inherit',
+  }
+);
 
 const required = [
   'contracts/openapi/social-v2.yaml',

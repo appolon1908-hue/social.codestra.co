@@ -36,6 +36,8 @@
     "prisma-migrate-status": "prisma migrate status --schema ./libraries/nestjs-libraries/src/database/prisma/schema.prisma",
     "prisma-db-pull": "prisma db pull --schema ./libraries/nestjs-libraries/src/database/prisma/schema.prisma",
     "validate:backend-policy": "node scripts/validate-no-destructive-prisma.mjs && node scripts/validate-no-latest-images.mjs && node scripts/validate-no-direct-cross-system-writes.mjs && node scripts/validate-tenant-repositories.mjs",
+    "contracts:routes:generate": "node scripts/social-route-inventory.mjs",
+    "contracts:routes:check": "node scripts/social-route-inventory.mjs --check",
     "docker-build": "./var/docker/docker-build.sh",
     "docker-create": "./var/docker/docker-create.sh",
     "postinstall": "pnpm run prisma-generate",
