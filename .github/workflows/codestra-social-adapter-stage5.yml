@@ -2,21 +2,32 @@ name: Codestra Social Adapter Stage 5
 
 on:
   pull_request:
-    paths:
-      - 'integrations/codestra-social/**'
-      - 'scripts/validate_codestra_social_adapter.py'
-      - '.github/workflows/codestra-social-adapter-stage5.yml'
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
 
+concurrency:
+  group: codestra-social-adapter-stage5-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   certify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Check out exact workflow SHA
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          python-version: '3.12'
-      - run: python scripts/validate_codestra_social_adapter.py
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Certify the fail-closed Codestra Social adapter
+        run: python3 scripts/validate_codestra_social_adapter.py
