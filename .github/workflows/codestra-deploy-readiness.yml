@@ -1,0 +1,91 @@
+name: Codestra deploy readiness
+
+on:
+  pull_request:
+    branches: ["**"]
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+    inputs:
+      operation:
+        required: true
+        type: choice
+        default: verify
+        options: [verify, release, deploy-staging-readonly, certify-staging-readonly, promote-production-readonly]
+      confirmation:
+        required: false
+        type: string
+        default: ""
+      canary_percent:
+        required: false
+        type: string
+        default: "1"
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+  attestations: write
+
+jobs:
+  validate-i18n-lock:
+    name: Validate generated i18n checksum lock
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Prove the allowlisted file contains only generated checksums
+        run: |
+          set -Eeuo pipefail
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          import re
+          from pathlib import Path
+
+          path = Path("i18n.lock")
+          lines = path.read_text(encoding="utf-8").splitlines()
+          if lines[:2] != ["version: 1", "checksums:"]:
+              raise SystemExit("i18n.lock header differs from the generated lock format")
+          section = re.compile(r"^  [0-9a-f]{32}:$")
+          entry = re.compile(r"^    [a-z0-9_]+: [0-9a-f]{32}$")
+          section_count = 0
+          entry_count = 0
+          for number, line in enumerate(lines[2:], 3):
+              if not line:
+                  continue
+              if section.fullmatch(line):
+                  section_count += 1
+                  continue
+              if entry.fullmatch(line):
+                  entry_count += 1
+                  continue
+              raise SystemExit(f"i18n.lock line {number} is outside the checksum-only grammar")
+          if section_count == 0 or entry_count == 0:
+              raise SystemExit("i18n.lock is empty")
+          print(f"I18N_CHECKSUM_SECTIONS={section_count}")
+          print(f"I18N_CHECKSUM_ENTRIES={entry_count}")
+          print("I18N_LOCK_INTEGRITY=PASS")
+          PY
+
+  deploy-readiness:
+    needs:
+      - validate-i18n-lock
+    uses: appolon1908-hue/Infustruction-repo/.github/workflows/reusable-codestra-deploy-readiness.yml@1b4a90810eb03db3eae2b676b2d418daa434ec16
+    with:
+      repository_class: specialized-service
+      run_stack_tests: false
+      artifact_strategy: auto
+      runtime_deployable: true
+      health_paths: "/health,/ready,/version"
+      operation: ${{ github.event_name == 'workflow_dispatch' && inputs.operation || 'verify' }}
+      confirmation: ${{ github.event_name == 'workflow_dispatch' && inputs.confirmation || '' }}
+      canary_percent: ${{ github.event_name == 'workflow_dispatch' && inputs.canary_percent || '1' }}

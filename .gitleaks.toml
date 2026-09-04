@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Generated i18n checksum lock; every value is independently constrained to a 32-character lowercase checksum"
+paths = ['''^i18n\.lock$''']
