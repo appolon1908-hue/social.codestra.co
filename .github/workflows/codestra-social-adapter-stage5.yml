@@ -2,6 +2,9 @@ name: Codestra Social Adapter Stage 5
 
 on:
   pull_request:
+  push:
+    branches:
+      - main
     paths:
       - 'integrations/codestra-social/**'
       - 'scripts/validate_codestra_social_adapter.py'
@@ -12,11 +15,24 @@ permissions:
 
 jobs:
   certify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Check out exact source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Prove exact source identity
+        env:
+          EXPECTED_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD_SHA"
+          test -z "$(git status --porcelain)"
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
-      - run: python scripts/validate_codestra_social_adapter.py
+      - name: Validate the fail-closed Social adapter contract
+        run: python scripts/validate_codestra_social_adapter.py
